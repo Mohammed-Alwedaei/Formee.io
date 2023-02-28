@@ -10,9 +10,31 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{EEA84132-EB33-4865-AD30-CB3AC5D749D5}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Forms", "Forms", "{CB56AE69-BE1D-44B7-98E9-D7FF2AE89AAE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Clients", "Clients", "{5327718E-AA54-4ABF-AE12-57F2E2DD907C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Gateways", "Gateways", "{1FE1CC74-A308-4D8F-A63F-735256EDE6D8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Formee.Services.Forms", "Formee.Services.Forms\Formee.Services.Forms.csproj", "{9ABDD120-35EC-489E-87C2-8525BF4AD926}"
+EndProject
 Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9ABDD120-35EC-489E-87C2-8525BF4AD926}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9ABDD120-35EC-489E-87C2-8525BF4AD926}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9ABDD120-35EC-489E-87C2-8525BF4AD926}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9ABDD120-35EC-489E-87C2-8525BF4AD926}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{CB56AE69-BE1D-44B7-98E9-D7FF2AE89AAE} = {EEA84132-EB33-4865-AD30-CB3AC5D749D5}
+		{9ABDD120-35EC-489E-87C2-8525BF4AD926} = {CB56AE69-BE1D-44B7-98E9-D7FF2AE89AAE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7B55007A-667E-4B6C-8191-2B44D3B586F5}
