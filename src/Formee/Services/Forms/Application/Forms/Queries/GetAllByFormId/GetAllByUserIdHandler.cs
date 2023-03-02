@@ -1,4 +1,6 @@
-﻿namespace Application.Forms.Queries.GetAllByUserId;
+﻿using Application.Forms.Queries.GetAllByFormId;
+
+namespace Application.Forms.Queries.GetAllByUserId;
 
 public class GetAllByUserIdHandler : IRequestHandler
     <GetAllByUserIdQuery, ResponseEntity>
@@ -14,7 +16,8 @@ public class GetAllByUserIdHandler : IRequestHandler
         CancellationToken cancellationToken)
     {
         var formsFromDb = await _genericRepository
-            .GetAllByUserIdAsync(request.UserId, new[]
+            .GetAllByConditionAsync(
+                f => f.UserId == request.UserId, new[]
             {
                 "Fields",
                 "Details"

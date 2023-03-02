@@ -14,16 +14,17 @@ public interface IGenericRepository<TEntity> where TEntity : class
     /// <param name="filter"></param>
     /// <param name="includes"></param>
     /// <returns>TEntity</returns>
-    Task<TEntity> GetOneByIdAsync(Expression<Func<TEntity, bool>> id, 
+    Task<TEntity> GetOneByIdAsync(Expression<Func<TEntity, bool>> filter, 
         string[]? includes = null);
 
     /// <summary>
-    /// Get all entities that matches the user id
+    /// Get all entities that matches the condition
     /// </summary>
-    /// <param name="userId"></param>
+    /// <param name="filter"></param>
     /// <param name="includes"></param>
     /// <returns>List of TEntity</returns>
-    Task<List<TEntity>> GetAllByUserIdAsync(Guid userId, string[]? includes = null);
+    Task<List<TEntity>> GetAllByConditionAsync(
+        Expression<Func<TEntity, bool>> filter, string[]? includes = null);
 
     /// <summary>
     /// Create an entity in the database table

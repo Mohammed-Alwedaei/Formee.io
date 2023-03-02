@@ -10,8 +10,7 @@ namespace Infrastructure.Repositories;
 /// GenericRepository contains all the operations used in the API (Presentation) layer
 /// </summary>
 /// <typeparam name="TEntity"></typeparam>
-/// <typeparam name="TContext"></typeparam>
-public class GenericRepository<TEntity, TContext> : IGenericRepository<TEntity>
+public class GenericRepository<TEntity> : IGenericRepository<TEntity>
     where TEntity : class
 {
     private readonly ApplicationDbContext _context;
@@ -40,13 +39,16 @@ public class GenericRepository<TEntity, TContext> : IGenericRepository<TEntity>
             }
         }
 
-        return await query.FirstAsync();
+        return await query.FirstOrDefaultAsync();
     }
 
     /// <inheritdoc />
-    public async Task<List<TEntity>> GetAllByUserIdAsync(Guid userId, string[]? includes = null)
+    public async Task<List<TEntity>> GetAllByConditionAsync(
+        Expression<Func<TEntity, bool>> filter, string[]? includes = null)
     {
         IQueryable<TEntity> query = DbSet;
+
+        query = query.Where(filter);
 
         if (includes is not null)
         {

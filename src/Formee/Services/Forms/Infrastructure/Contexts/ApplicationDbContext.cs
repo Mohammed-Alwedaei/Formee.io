@@ -19,4 +19,6 @@ public class ApplicationDbContext : DbContext
     public DbSet<DetailsEntity> Details { get; set; }
 
     public DbSet<FieldEntity> Fields { get; set; }
+
+    public DbSet<FieldsWarehouseEntity> FieldsWarehouse { get; set; }
 }

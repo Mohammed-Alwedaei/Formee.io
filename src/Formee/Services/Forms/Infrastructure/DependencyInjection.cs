@@ -23,7 +23,10 @@ public static class DependencyInjection
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         
         services.AddScoped<IGenericRepository<FormEntity>, 
-            GenericRepository<FormEntity, ApplicationDbContext>>();
+            GenericRepository<FormEntity>>();
+
+        services.AddScoped<IGenericRepository<FieldEntity>,
+            GenericRepository<FieldEntity>>();
 
         return services;
     }

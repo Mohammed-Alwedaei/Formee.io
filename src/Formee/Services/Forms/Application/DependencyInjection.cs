@@ -19,6 +19,7 @@ public static class DependencyInjection
         services.AddMediatR(cfg 
             => cfg.RegisterServicesFromAssemblies(
                 Assembly.GetExecutingAssembly()));
+
         return services;
     }
 }

@@ -2,25 +2,34 @@
 using Domain.Entities;
 using Application.Forms.Queries.GetById;
 using Application.Forms.Commands.Create;
+using Application.Fields.Queries.GetById;
 using Application.Forms.Commands.DeleteById;
 using Application.Forms.Commands.UpdateById;
-using Application.Forms.Queries.GetAllByUserId;
+using Application.Forms.Queries.GetAllByFormId;
+using Application.Fields.Queries.GetAllByUserId;
+using Microsoft.SqlServer.Server;
+using Application.Fields.Commands.Create;
 
 namespace Presentation.Extensions;
 
 /// <summary>
 /// Register Forms endpoints
 /// </summary>
-public static class AddEndpoints
+public static class Endpoints
 {
     /// <summary>
     /// Add Forms API endpoints to the web application
     /// </summary>
     /// <param name="app"></param>
     /// <returns>web application with api endpoints</returns>
-    public static WebApplication AddFormsEndpoints(this WebApplication app)
+    public static WebApplication UseFormsEndpoints(this WebApplication app)
     {
-        var forms = app.MapGroup("/api/forms");
+        var forms = app
+            .MapGroup("/api/forms")
+            .WithTags("Forms")
+            .AllowAnonymous();
+            // .RequireAuthorization();
+
         var logger = app.Logger;
 
         /*
@@ -38,7 +47,8 @@ public static class AddEndpoints
             var result = await mediator
                 .Send(new GetAllByUserIdQuery(userId));
 
-            if (result.IsSuccessRequest is not true) return Results.NotFound();
+            if (result.IsSuccessRequest is not true)
+                return Results.NotFound(result);
 
             return Results.Ok(result);
         });
@@ -58,7 +68,8 @@ public static class AddEndpoints
             var result = await mediator
                 .Send(new GetFormByIdQuery(id));
 
-            if(result is null) return Results.NotFound();
+            if(result.IsSuccessRequest is not true) 
+                return Results.NotFound(result);
 
             return Results.Ok(result);
         });
@@ -119,6 +130,65 @@ public static class AddEndpoints
 
             var result = await mediator.Send(new
                 DeleteByIdCommand(id));
+
+            return result.IsSuccessRequest is not true
+                ? Results.Problem()
+                : Results.Ok(result);
+        });
+
+        return app;
+    }
+
+    public static WebApplication UseFieldsEndpoints(this WebApplication app)
+    {
+        var fields = app
+            .MapGroup("/api/fields")
+            .WithTags("Fields")
+            .AllowAnonymous();
+            // .RequireAuthorization();
+
+        var logger = app.Logger;
+
+        fields.MapGet("/{id:int}", async
+            (IMediator mediator, int id) =>
+        {
+            logger.LogInformation(
+                "GET: request to route /api/fields/{id} at " +
+                "{datetime}", id, DateTime.Now);
+
+            var result = await mediator
+                .Send(new GetFieldByIdQuery(id));
+
+            if (result.IsSuccessRequest is not true)
+                return Results.NotFound(result);
+
+            return Results.Ok(result);
+        });
+
+        fields.MapGet("/all/{formId:int}", async
+            (IMediator mediator, int formId) =>
+        {
+            logger.LogInformation(
+                "GET: request to route /api/fields/{formId} at " +
+                "{datetime}", formId, DateTime.Now);
+
+            var result = await mediator
+                .Send(new GetAllByFormIdQuery(formId));
+
+            return result.IsSuccessRequest is not true 
+                ? Results.NotFound(result) 
+                : Results.Ok(result);
+        });
+
+        fields.MapPost("/", async
+            (IMediator mediator, FieldEntity field) =>
+        {
+            logger.LogInformation(
+                "POST: request to route /api/fields at " +
+                "{datetime}", DateTime.Now);
+
+            var result = await mediator.Send(new
+                CreateFieldCommand(field));
 
             return result.IsSuccessRequest is not true
                 ? Results.Problem()

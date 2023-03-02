@@ -22,11 +22,6 @@ public class FieldEntity
     public string Name { get; set; } = null!;
 
     [Required]
-    [MinLength(5)]
-    [MaxLength(512)]
-    public string Value { get; set; } = null!;
-
-    [Required]
     [MinLength(2)]
     [MaxLength(15)]
     public string DataType { get; set; } = null!;
