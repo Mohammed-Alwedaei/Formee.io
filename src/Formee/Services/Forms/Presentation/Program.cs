@@ -1,6 +1,9 @@
 using Infrastructure;
+using Presentation.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddTransient<GlobalExceptionHandler>();
 
 // Add services to the container.
 builder.Services
@@ -17,11 +20,17 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/error");
+}
+
 app.UseHttpsRedirection();
 
 app.UseIdentityManagement();
 
 app.UseFormsEndpoints()
-    .UseFieldsEndpoints();
+    .UseFieldsEndpoints()
+    .UseErrorEndpoints();
 
 app.Run();

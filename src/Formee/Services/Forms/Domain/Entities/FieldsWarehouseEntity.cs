@@ -12,4 +12,6 @@ public class FieldsWarehouseEntity
     [MinLength(3)]
     [MaxLength(1024)]
     public string Value { get; set; } = null!;
+
+    public DateTime CreatedDate { get; set; } = DateTime.Now;
 }

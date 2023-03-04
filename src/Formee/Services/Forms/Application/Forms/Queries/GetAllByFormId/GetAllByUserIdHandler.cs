@@ -23,14 +23,13 @@ public class GetAllByUserIdHandler : IRequestHandler
                 "Details"
             });
 
-        if (!formsFromDb.Any()) return new ResponseEntity
+        if (!formsFromDb.Any())
         {
-            Error = $"The requested entities for user id of {request.UserId} are not found",
-        };
+            throw new NotFoundException(ErrorMessages.NotFound);
+        }
 
         return new ResponseEntity
         {
-            IsSuccessRequest = true,
             Results = formsFromDb
         };
     }

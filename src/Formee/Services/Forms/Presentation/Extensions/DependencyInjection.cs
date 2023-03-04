@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Presentation.Middlewares;
 
 namespace Presentation.Extensions;
 
@@ -67,6 +68,7 @@ public static class DependencyInjection
     public static WebApplication UseIdentityManagement(
         this WebApplication app)
     {
+        app.UseMiddleware<GlobalExceptionHandler>();
         app.UseAuthentication();
         app.UseAuthorization();
 

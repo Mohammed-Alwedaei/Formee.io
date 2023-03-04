@@ -23,14 +23,13 @@ public class GetFormByIdHandler : IRequestHandler
                 "Details"
             });
 
-        if (formFromDb is null) return new ResponseEntity
+        if (formFromDb is null)
         {
-            Error = $"The requested entity of id {request.Id} is not found",
-        };
+            throw new NotFoundException(ErrorMessages.NotFound);
+        }
 
         return new ResponseEntity
         {
-            IsSuccessRequest = true,
             Results = formFromDb
         };
     }

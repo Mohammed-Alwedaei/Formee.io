@@ -31,17 +31,8 @@ public class CreateFormHandler : IRequestHandler<CreateFormCommand, ResponseEnti
 
         await _unitOfWork.SaveChangesAsync();
 
-        if (result.Id == 0)
-        {
-            return new ResponseEntity
-            {
-                Error = "Could not create the requested entity"
-            };
-        }
-
         return new ResponseEntity
         {
-            IsSuccessRequest = true,
             Results = result
         };
     }

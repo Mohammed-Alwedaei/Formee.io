@@ -29,34 +29,21 @@ public class DeleteByIdHandler : IRequestHandler<DeleteByIdCommand,
         CancellationToken cancellationToken)
     {
         if (request.Id == 0)
-            return new ResponseEntity
-            {
-                Error = "Entity id is not provided"
-            };
+            throw new BadRequestException(ErrorMessages.BadRequest);
 
         var entityFromDb = await _genericRepository
             .GetOneByIdAsync(x => x.Id == request.Id);
 
-        if (entityFromDb.Id is 0 || entityFromDb.UserId == Guid.Empty)
-            return new ResponseEntity
-            {
-                Error = "Could not find the requested entity"
-            };
+        if (entityFromDb is null)
+            throw new NotFoundException(ErrorMessages.NotFound);
 
         var result = _genericRepository
-            .DeleteByIdAsync(entityFromDb);
-
-        if (result.Id is 0 || result.UserId == Guid.Empty)
-            return new ResponseEntity
-            {
-                Error = "Could not delete the entity"
-            };
+            .DeleteByIdAsync(entityFromDb, x => x.IsDeleted);
 
         await _unitOfWork.SaveChangesAsync();
 
         return new ResponseEntity
         {
-            IsSuccessRequest = true,
             Results = result
         };
     }

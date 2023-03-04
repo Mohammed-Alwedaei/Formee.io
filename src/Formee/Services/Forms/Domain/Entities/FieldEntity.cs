@@ -5,11 +5,8 @@
 /// Relationship type: many-to-one
 /// Relationship with: FormEntity
 /// </summary>
-public class FieldEntity
+public class FieldEntity : Entity
 {
-    [Key]
-    public int Id { get; set; }
-
     public int FormId { get; set; }
 
     [JsonIgnore]

@@ -20,27 +20,25 @@ public class GetFieldByIdHandler : IRequestHandler
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
-    public async Task<ResponseEntity> Handle(GetFieldByIdQuery request, 
+    public async Task<ResponseEntity> Handle(GetFieldByIdQuery request,
         CancellationToken cancellationToken)
     {
         if (request.Id == 0)
-            return new ResponseEntity
-            {
-                Error = "Invalid id input"
-            };
+        {
+            throw new BadRequestException(ErrorMessages.BadRequest);
+        }    
 
         var result = await _genericRepository
             .GetOneByIdAsync(f => f.Id == request.Id);
 
-        if(result is null)
-            return new ResponseEntity
-            {
-                Error = $"The requested entity of id {request.Id} is not found"
-            };
+        if (result is null)
+
+        {
+            throw new NotFoundException(ErrorMessages.NotFound);
+        }
 
         return new ResponseEntity
         {
-            IsSuccessRequest = true,
             Results = result
         };
     }

@@ -78,9 +78,11 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity>
     }
 
     /// <inheritdoc />
-    public TEntity DeleteByIdAsync(TEntity entity)
+    public TEntity DeleteByIdAsync(TEntity entity, Expression<Func<TEntity, bool>> filter)
     {
-        var entry = _context.Set<TEntity>().Remove(entity);
+        _context.Attach(entity);
+        var entry = _context.Entry(entity);
+        entry.State = EntityState.Modified;
 
         return entry.Entity;
     }

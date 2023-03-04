@@ -34,7 +34,6 @@ public class UpdateFormByIdHandler : IRequestHandler<UpdateFormByIdCommand,
 
         return new ResponseEntity
         {
-            IsSuccessRequest = true,
             Results = result
         };
     }

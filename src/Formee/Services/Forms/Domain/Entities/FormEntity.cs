@@ -5,11 +5,9 @@
 /// Relationship type: [one-to-many, one-to-one]
 /// Relationship with: [FieldEntity, DetailsEntity]
 /// </summary>
-public class FormEntity
+public class FormEntity : Entity
 {
-    [Key]
-    public int Id { get; set; }
-
+    
     [Required]
     public Guid UserId { get; set; }
 
@@ -20,4 +18,6 @@ public class FormEntity
     public DetailsEntity? Details { get; set; }
 
     public virtual List<FieldEntity>? Fields { get; set; }
+
+    
 }

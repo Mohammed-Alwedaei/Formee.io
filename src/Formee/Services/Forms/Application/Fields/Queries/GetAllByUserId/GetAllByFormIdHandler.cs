@@ -15,23 +15,20 @@ public class GetAllByFormIdHandler : IRequestHandler
         CancellationToken cancellationToken)
     {
         if (request.FormId is 0)
-            return new ResponseEntity
-            {
-                Error = "Invalid UserId input"
-            };
+        {
+            throw new BadRequestException(ErrorMessages.BadRequest);
+        }
 
         var result = await _genericRepository
             .GetAllByConditionAsync(f => f.FormId == request.FormId);
 
-        if (!result.Any()) return new ResponseEntity
+        if (!result.Any()) 
         {
-            Error = $"The requested entities for form id of {request.FormId} " +
-                    "are not found",
-        };
+           throw new NotFoundException(ErrorMessages.NotFound);
+        }
 
         return new ResponseEntity
         {
-            IsSuccessRequest = true,
             Results = result
         };
     }

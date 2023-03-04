@@ -21,10 +21,9 @@ public class CreateFieldHandler : IRequestHandler
             cancellationToken);
 
         if (!validationResult.IsValid)
-            return new ResponseEntity
-            {
-                Error = validationResult.Errors.FirstOrDefault()?.ToString(),
-            };
+        {
+            throw new BadRequestException(ErrorMessages.BadRequest);
+        }
 
         var result = await _genericRepository
             .CreateAsync(request.Field);
@@ -33,7 +32,6 @@ public class CreateFieldHandler : IRequestHandler
 
         return new ResponseEntity
         {
-            IsSuccessRequest = true,
             Results = result
         };
     }

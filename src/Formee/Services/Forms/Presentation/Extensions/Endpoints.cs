@@ -7,8 +7,9 @@ using Application.Forms.Commands.DeleteById;
 using Application.Forms.Commands.UpdateById;
 using Application.Forms.Queries.GetAllByFormId;
 using Application.Fields.Queries.GetAllByUserId;
-using Microsoft.SqlServer.Server;
 using Application.Fields.Commands.Create;
+using Application.Fields.Commands.UpdateById;
+using Application.Fields.Commands.DeleteById;
 
 namespace Presentation.Extensions;
 
@@ -47,9 +48,6 @@ public static class Endpoints
             var result = await mediator
                 .Send(new GetAllByUserIdQuery(userId));
 
-            if (result.IsSuccessRequest is not true)
-                return Results.NotFound(result);
-
             return Results.Ok(result);
         });
 
@@ -67,9 +65,6 @@ public static class Endpoints
 
             var result = await mediator
                 .Send(new GetFormByIdQuery(id));
-
-            if(result.IsSuccessRequest is not true) 
-                return Results.NotFound(result);
 
             return Results.Ok(result);
         });
@@ -89,9 +84,7 @@ public static class Endpoints
             var result = await mediator.Send(new
                 CreateFormCommand(form));
 
-            return result.IsSuccessRequest is not true 
-                ? Results.Problem() 
-                : Results.Ok(result);
+            return Results.Ok(result);
         });
 
         /*
@@ -109,9 +102,7 @@ public static class Endpoints
             var result = await mediator.Send(new
                 UpdateFormByIdCommand(form));
 
-            return result.IsSuccessRequest is not true 
-                ? Results.Problem() 
-                : Results.Ok(result);
+            return Results.Ok(result);
         });
 
         /*
@@ -131,9 +122,7 @@ public static class Endpoints
             var result = await mediator.Send(new
                 DeleteByIdCommand(id));
 
-            return result.IsSuccessRequest is not true
-                ? Results.Problem()
-                : Results.Ok(result);
+            return Results.Ok(result);
         });
 
         return app;
@@ -159,9 +148,6 @@ public static class Endpoints
             var result = await mediator
                 .Send(new GetFieldByIdQuery(id));
 
-            if (result.IsSuccessRequest is not true)
-                return Results.NotFound(result);
-
             return Results.Ok(result);
         });
 
@@ -175,9 +161,7 @@ public static class Endpoints
             var result = await mediator
                 .Send(new GetAllByFormIdQuery(formId));
 
-            return result.IsSuccessRequest is not true 
-                ? Results.NotFound(result) 
-                : Results.Ok(result);
+            return Results.Ok(result);
         });
 
         fields.MapPost("/", async
@@ -190,11 +174,43 @@ public static class Endpoints
             var result = await mediator.Send(new
                 CreateFieldCommand(field));
 
-            return result.IsSuccessRequest is not true
-                ? Results.Problem()
-                : Results.Ok(result);
+            return Results.Ok(result);
+        });
+
+        fields.MapPut("/", async
+            (IMediator mediator, FieldEntity field) =>
+        {
+            logger.LogInformation(
+                "PUT: request to route /api/fields at " +
+                "{datetime}", DateTime.Now);
+
+            var result = await mediator.Send(new
+                UpdateFieldByIdCommand(field));
+
+            return Results.Ok(result);
+        });
+
+        fields.MapDelete("/{id:int}", async
+            (IMediator mediator, int id) =>
+        {
+            logger.LogInformation(
+                "PUT: request to route /api/fields at " +
+                "{datetime}", DateTime.Now);
+
+            var result = await mediator.Send(new
+                DeleteFieldByIdCommand(id));
+
+            return Results.Ok(result);
         });
 
         return app;
     }
+
+    public static WebApplication UseErrorEndpoints(this WebApplication app)
+    {
+        app.Map("/error", () => Results.Problem());
+
+        return app;
+    }
+
 }

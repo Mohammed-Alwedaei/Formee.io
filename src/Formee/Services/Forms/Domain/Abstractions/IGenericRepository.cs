@@ -45,5 +45,5 @@ public interface IGenericRepository<TEntity> where TEntity : class
     /// </summary>
     /// <param name="entity"></param>
     /// <returns></returns>
-    TEntity DeleteByIdAsync(TEntity entity);
+    TEntity DeleteByIdAsync(TEntity entity, Expression<Func<TEntity, bool>> filter);
 }
