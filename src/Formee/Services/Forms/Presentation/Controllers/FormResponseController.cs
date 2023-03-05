@@ -1,6 +1,7 @@
 ﻿using Application.FormResponse.Query.GetAllByFormId;
 using Application.FieldsWarehouse.Commands.CreateWarehouse;
 using Application.FormResponse.Commands.DeleteFormResponse;
+using Application.FormResponse.Query.GetFormResponseById;
 
 namespace Presentation.Controllers;
 
@@ -26,7 +27,20 @@ public class FormResponseController : ControllerBase
             "{datetime}", DateTime.Now);
 
         var result = await _mediator.Send(new
-            GetAllResponsesByFormIdQuery(id));
+            GetFormResponseByIdQuery(id));
+
+        return Ok(result);
+    }
+
+    [HttpGet("all/{formId:int}")]
+    public async Task<IActionResult> GetAllFormResponseByFormId(int formId)
+    {
+        _logger.LogInformation(
+            "GET: request to route /api/forms/responses at " +
+            "{datetime}", DateTime.Now);
+
+        var result = await _mediator.Send(new
+            GetAllResponsesByFormIdQuery(formId));
 
         return Ok(result);
     }
@@ -36,7 +50,7 @@ public class FormResponseController : ControllerBase
         FormResponseEntity form)
     {
         _logger.LogInformation(
-            "PUT: request to route /api/fields at " +
+            "POST: request to route /api/fields at " +
             "{datetime}", DateTime.Now);
 
         var result = await _mediator.Send(new
