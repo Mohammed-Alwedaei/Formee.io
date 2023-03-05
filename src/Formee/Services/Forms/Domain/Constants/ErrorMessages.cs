@@ -5,5 +5,5 @@ public static class ErrorMessages
 
     public const string Unauthorized = "You are not authorized to the requested operation";
 
-    public const string BadRequest = "Something went, the request is invalid";
+    public const string BadRequest = "Something went wrong, the request is invalid";
 }

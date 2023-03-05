@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Presentation.Middlewares;
 
-namespace Presentation.Extensions;
+namespace Presentation;
 
 /// <summary>
 /// DependencyInjection class registers all presentation layer dependencies 
@@ -32,10 +32,10 @@ public static class DependencyInjection
     {
         services.AddAuthentication(options =>
             {
-                options.DefaultAuthenticateScheme = 
+                options.DefaultAuthenticateScheme =
                     JwtBearerDefaults.AuthenticationScheme;
 
-                options.DefaultChallengeScheme = 
+                options.DefaultChallengeScheme =
                     JwtBearerDefaults.AuthenticationScheme;
             })
             .AddJwtBearer(options =>

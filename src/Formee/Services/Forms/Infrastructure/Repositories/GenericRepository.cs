@@ -70,6 +70,14 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity>
     }
 
     /// <inheritdoc />
+    public async Task BulkCreateAsync(IReadOnlyList<TEntity> entities)
+    {
+        await _context
+            .Set<TEntity>()
+            .AddRangeAsync(entities);
+    }
+
+    /// <inheritdoc />
     public TEntity UpdateAsync(TEntity entity)
     {
         var entry = _context.Set<TEntity>().Update(entity);
@@ -78,7 +86,7 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity>
     }
 
     /// <inheritdoc />
-    public TEntity DeleteByIdAsync(TEntity entity, Expression<Func<TEntity, bool>> filter)
+    public TEntity DeleteByIdAsync(TEntity entity)
     {
         _context.Attach(entity);
         var entry = _context.Entry(entity);

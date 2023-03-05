@@ -1,4 +1,5 @@
 using Infrastructure;
+using Presentation;
 using Presentation.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,7 +10,8 @@ builder.Services.AddTransient<GlobalExceptionHandler>();
 builder.Services
     .AddInfrastructure(builder.Configuration)
     .AddOpenApi()
-    .AddIdentityManagement(builder.Configuration);
+    .AddIdentityManagement(builder.Configuration)
+    .AddControllers();
 
 var app = builder.Build();
 
@@ -29,8 +31,6 @@ app.UseHttpsRedirection();
 
 app.UseIdentityManagement();
 
-app.UseFormsEndpoints()
-    .UseFieldsEndpoints()
-    .UseErrorEndpoints();
+app.MapControllers();
 
 app.Run();

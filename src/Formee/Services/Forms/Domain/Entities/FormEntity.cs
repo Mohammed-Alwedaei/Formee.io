@@ -18,6 +18,4 @@ public class FormEntity : Entity
     public DetailsEntity? Details { get; set; }
 
     public virtual List<FieldEntity>? Fields { get; set; }
-
-    
 }

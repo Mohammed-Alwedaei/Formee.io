@@ -1,1 +1,3 @@
-﻿global using Presentation.Extensions;
+﻿global using MediatR;
+global using Domain.Entities;
+global using Microsoft.AspNetCore.Mvc;

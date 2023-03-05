@@ -38,7 +38,7 @@ public class DeleteByIdHandler : IRequestHandler<DeleteByIdCommand,
             throw new NotFoundException(ErrorMessages.NotFound);
 
         var result = _genericRepository
-            .DeleteByIdAsync(entityFromDb, x => x.IsDeleted);
+            .DeleteByIdAsync(entityFromDb);
 
         await _unitOfWork.SaveChangesAsync();
 

@@ -8,8 +8,6 @@
 
   <ItemGroup>
     <Folder Include="Behaviors\" />
-    <Folder Include="FieldsWarehouse\Commands\" />
-    <Folder Include="FieldsWarehouse\Query\" />
   </ItemGroup>
 
   <ItemGroup>

@@ -14,11 +14,13 @@ public class ApplicationDbContext : DbContext
 
     }
 
-    public DbSet<FormEntity> Forms { get; set; }
+    public DbSet<FormEntity> Form { get; set; }
 
-    public DbSet<DetailsEntity> Details { get; set; }
+    public DbSet<DetailsEntity> Detail { get; set; }
 
-    public DbSet<FieldEntity> Fields { get; set; }
+    public DbSet<FieldEntity> Field { get; set; }
 
-    public DbSet<FieldsWarehouseEntity> FieldsWarehouse { get; set; }
+    public DbSet<FormResponseEntity> FormResponse { get; set; }
+
+    public DbSet<FormResponseFieldsEntity> FieldsResponseField { get; set; }
 }

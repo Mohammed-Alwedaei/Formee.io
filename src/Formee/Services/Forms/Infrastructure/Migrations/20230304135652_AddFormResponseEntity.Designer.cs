@@ -4,6 +4,7 @@ using Infrastructure.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230304135652_AddFormResponseEntity")]
+    partial class AddFormResponseEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -132,15 +135,6 @@ namespace Infrastructure.Migrations
                     b.Property<int>("FormId")
                         .HasColumnType("int");
 
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsModified")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastModified")
-                        .HasColumnType("datetime2");
-
                     b.HasKey("Id");
 
                     b.ToTable("FormResponse");
@@ -160,7 +154,7 @@ namespace Infrastructure.Migrations
                     b.Property<int>("FieldId")
                         .HasColumnType("int");
 
-                    b.Property<int>("FormResponseId")
+                    b.Property<int?>("FormResponseEntityId")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsDeleted")
@@ -173,7 +167,7 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FormResponseId");
+                    b.HasIndex("FormResponseEntityId");
 
                     b.ToTable("FieldsResponseField");
                 });
@@ -202,13 +196,9 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.FormResponseFieldsEntity", b =>
                 {
-                    b.HasOne("Domain.Entities.FormResponseEntity", "FormResponse")
+                    b.HasOne("Domain.Entities.FormResponseEntity", null)
                         .WithMany("Warehouse")
-                        .HasForeignKey("FormResponseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("FormResponse");
+                        .HasForeignKey("FormResponseEntityId");
                 });
 
             modelBuilder.Entity("Domain.Entities.FormEntity", b =>

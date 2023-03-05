@@ -31,18 +31,17 @@ public class DeleteFieldByIdHandler
             throw new NotFoundException("could not find the entity");
         }
 
-        var toDeleteField = fieldFromDb;
+        fieldFromDb.IsDeleted = true;
+        fieldFromDb.IsModified = true;
+        fieldFromDb.LastModified = DateTime.Now;
 
-        toDeleteField.IsDeleted = true;
-        toDeleteField.IsModified = true;
-
-        _genericRepository.DeleteByIdAsync(toDeleteField, x => x.IsDeleted);
+        _genericRepository.DeleteByIdAsync(fieldFromDb);
 
         await _unitOfWork.SaveChangesAsync();
 
         return new ResponseEntity
         {
-            Results = toDeleteField
+            Results = fieldFromDb
         };
     }
 }

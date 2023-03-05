@@ -34,6 +34,13 @@ public interface IGenericRepository<TEntity> where TEntity : class
     Task<TEntity> CreateAsync(TEntity entity);
 
     /// <summary>
+    /// Bulk create an entity in the database table
+    /// </summary>
+    /// <param name="entities"></param>
+    /// <returns></returns>
+    Task BulkCreateAsync(IReadOnlyList<TEntity> entities);
+
+    /// <summary>
     /// Update an entity in the database table
     /// </summary>
     /// <param name="entity"></param>
@@ -45,5 +52,5 @@ public interface IGenericRepository<TEntity> where TEntity : class
     /// </summary>
     /// <param name="entity"></param>
     /// <returns></returns>
-    TEntity DeleteByIdAsync(TEntity entity, Expression<Func<TEntity, bool>> filter);
+    TEntity DeleteByIdAsync(TEntity entity);
 }
