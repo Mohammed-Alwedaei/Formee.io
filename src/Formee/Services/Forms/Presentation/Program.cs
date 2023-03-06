@@ -22,11 +22,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/error");
-}
-
 app.UseHttpsRedirection();
 
 app.UseIdentityManagement();

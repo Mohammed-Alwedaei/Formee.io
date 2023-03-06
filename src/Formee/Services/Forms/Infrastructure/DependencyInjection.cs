@@ -31,6 +31,9 @@ public static class DependencyInjection
         services.AddScoped<IGenericRepository<FormResponseEntity>,
             GenericRepository<FormResponseEntity>>();
 
+        services.AddScoped<IGenericRepository<ContainerEntity>,
+            GenericRepository<ContainerEntity>>();
+
         return services;
     }
 }
