@@ -2,7 +2,7 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 
-namespace Links.DataAccess.Contexts;
+namespace Links.BusinessLogic.Contexts;
 
 public class DbContext
 {

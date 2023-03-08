@@ -1,10 +1,10 @@
 ﻿using System.Data;
 using Dapper;
-using Links.DataAccess.Contexts;
+using Links.BusinessLogic.Contexts;
 using Links.Utilities.Entities;
 using Microsoft.AspNetCore.WebUtilities;
 
-namespace Links.DataAccess.Repositories;
+namespace Links.BusinessLogic.Repositories;
 
 public class LinkRepository : ILinkRepository
 {
@@ -25,6 +25,21 @@ public class LinkRepository : ILinkRepository
                 commandType: CommandType.StoredProcedure);
 
         return linkFromDb.FirstOrDefault();
+    }
+
+    public async Task<RedirectLinkEntity> GetRedirectLinkAsync(string targetUrl)
+    {
+        using var connection = _db.Connect();
+
+        var redirectLinkFromDb = await connection.QueryAsync
+            <RedirectLinkEntity>("sp_Redirect_GetByTargetUrl",
+                new
+                {
+                    TargetUrl = targetUrl
+                },
+                commandType: CommandType.StoredProcedure);
+
+        return redirectLinkFromDb.FirstOrDefault();
     }
 
     /// <inheritdoc />

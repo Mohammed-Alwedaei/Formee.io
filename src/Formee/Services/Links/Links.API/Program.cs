@@ -1,7 +1,7 @@
 using Links.API.Extensions;
 using Links.API.Middlewares;
-using Links.DataAccess.Contexts;
-using Links.DataAccess.Repositories;
+using Links.BusinessLogic.Contexts;
+using Links.BusinessLogic.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +27,7 @@ app.UseHttpsRedirection();
 
 app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
 
-app.UseLinksEndpoints();
+app.UseLinksEndpoints()
+    .UseRedirectLinksEndpoints();
 
 app.Run();

@@ -1,5 +1,5 @@
 ﻿using Domain.Constants;
-using Links.DataAccess.Repositories;
+using Links.BusinessLogic.Repositories;
 using Links.Utilities.Entities;
 using Links.Utilities.Exceptions;
 
@@ -141,6 +141,45 @@ public static class LinksEndpoints
             if (results.Count is not 0)
             {
                 return results;
+            }
+
+            throw new NotFoundException(ErrorMessages.NotFound);
+        });
+
+        return app;
+    }
+
+    public static WebApplication UseRedirectLinksEndpoints
+        (this WebApplication app)
+    {
+        var redirectLinks = app
+            .MapGroup("/api/links/redirect/");
+
+        var logger = app.Logger;
+
+        /*
+         * ROUTE: /api/links/redirect/targetUrl
+         * DESC : Redirect the user to a the original URL
+         * AUTH : Anonymous
+         */
+        redirectLinks.MapGet("/{targetUrl}", async 
+            (ILinkRepository linkRepository, string targetUrl) =>
+        {
+            logger.LogInformation("GET: request to /api/links/all/{targetId} at {datetime}",
+                targetUrl,
+                DateTime.Now);
+
+            if (string.IsNullOrEmpty(targetUrl))
+            {
+                throw new BadRequestException(ErrorMessages.BadRequest);
+            }
+
+            var result = await linkRepository
+                .GetRedirectLinkAsync(targetUrl);
+
+            if (result is not null)
+            {
+                return Results.Redirect(result.OriginalUrl, true);
             }
 
             throw new NotFoundException(ErrorMessages.NotFound);
