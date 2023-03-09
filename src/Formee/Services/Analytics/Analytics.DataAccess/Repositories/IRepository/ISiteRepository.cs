@@ -1,7 +1,4 @@
-﻿using Analytics.Utilities.Dtos.Site;
-using Analytics.Utilities.Entities;
-
-namespace Analytics.BusinessLogic.Repositories.IRepository;
+﻿namespace Analytics.BusinessLogic.Repositories.IRepository;
 
 public interface ISiteRepository
 {

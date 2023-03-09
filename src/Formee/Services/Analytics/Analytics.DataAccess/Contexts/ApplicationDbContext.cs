@@ -1,7 +1,4 @@
-﻿using Analytics.Utilities.Entities;
-using Microsoft.EntityFrameworkCore;
-
-namespace Analytics.BusinessLogic.Contexts;
+﻿namespace Analytics.BusinessLogic.Contexts;
 
 public class ApplicationDbContext : DbContext
 {
@@ -15,7 +12,7 @@ public class ApplicationDbContext : DbContext
 
     public DbSet<PageHitEntity> PageHit { get; set; }
 
-    public DbSet<CategoryEntity?> Category { get; set; }
+    public DbSet<CategoryEntity> Category { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

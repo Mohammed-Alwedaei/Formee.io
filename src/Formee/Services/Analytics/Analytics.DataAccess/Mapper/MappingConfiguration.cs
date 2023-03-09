@@ -1,7 +1,4 @@
-﻿using Analytics.Utilities.Dtos.Category;
-using Analytics.Utilities.Dtos.Site;
-using Analytics.Utilities.Entities;
-using AutoMapper;
+﻿using Analytics.Utilities.Dtos.PageHit;
 
 namespace Analytics.BusinessLogic.Mapper;
 
@@ -18,5 +15,8 @@ public class MappingConfiguration : Profile
         CreateMap<CategoryEntity, CreateCategoryDto>().ReverseMap();
         CreateMap<CategoryEntity, UpdateCategoryDto>().ReverseMap();
         CreateMap<CategoryEntity, DeleteCategoryDto>().ReverseMap();
+
+        //Hit entities mapping
+        CreateMap<PageHitEntity, CreatePageHitDto>().ReverseMap();
     }
 }

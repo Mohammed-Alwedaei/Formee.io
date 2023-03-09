@@ -1,6 +1,4 @@
-﻿using Analytics.BusinessLogic.Repositories.IRepository;
-using Analytics.Utilities.Dtos.Category;
-using Microsoft.AspNetCore.Mvc;
+﻿using Analytics.Utilities.Dtos.Category;
 
 namespace Analytics.API.Controllers;
 

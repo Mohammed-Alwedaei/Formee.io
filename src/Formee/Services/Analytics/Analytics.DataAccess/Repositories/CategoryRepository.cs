@@ -1,11 +1,4 @@
-﻿using Analytics.BusinessLogic.Contexts;
-using Analytics.BusinessLogic.Repositories.IRepository;
-using Analytics.Utilities.Dtos.Category;
-using Analytics.Utilities.Entities;
-using AutoMapper;
-using Microsoft.EntityFrameworkCore;
-
-namespace Analytics.BusinessLogic.Repositories;
+﻿namespace Analytics.BusinessLogic.Repositories;
 
 public class CategoryRepository : ICategoryRepository
 {

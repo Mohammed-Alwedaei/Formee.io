@@ -2,7 +2,6 @@ using Microsoft.EntityFrameworkCore;
 using Analytics.BusinessLogic.Mapper;
 using Analytics.BusinessLogic.Contexts;
 using Analytics.BusinessLogic.Repositories;
-using Analytics.BusinessLogic.Repositories.IRepository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +18,7 @@ builder.Services.AddAutoMapper(typeof(MappingConfiguration));
 
 builder.Services.AddScoped<ISiteRepository, SiteRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<IPageHitRepository, PageHitRepository>();
 
 var app = builder.Build();
 
