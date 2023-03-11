@@ -24,9 +24,6 @@ public static class ServicesConfiguration
         services.Configure<BlobStorageConfiguration>(
             configuration.GetSection("AzureStorage"));
 
-        services.Configure<QueueStorageConfiguration>(
-            configuration.GetSection("AzureStorage"));
-
         services.AddHttpClient<IdentityManager>(options =>
             options.BaseAddress = new
                 Uri(configuration.GetValue<string>("Identity:APIUrl")));
