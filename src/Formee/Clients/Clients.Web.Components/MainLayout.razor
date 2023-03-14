@@ -1,0 +1,45 @@
+﻿@inherits LayoutComponentBase
+
+<SfSidebar @bind-IsOpen="_sidebarToggle"
+           Type="SidebarType.Push"
+           Position="SidebarPosition.Left"
+           EnableGestures="false" Width="300px">
+    <ChildContent>
+        <p>Side bar content</p>
+    </ChildContent>
+</SfSidebar>
+
+<div class="maincontent">
+    <SfAppBar ColorMode="AppBarColor.Light">
+        <div class="app-bar__wrapper">
+            <div>
+                <SfButton CssClass="e-inherit" IconCss="e-icons e-menu" OnClick="Toggle"></SfButton>
+                <p>@_currentTime</p>
+            </div>
+
+            <AppBarSpacer></AppBarSpacer>
+
+            <div class="app-bar-actions">
+                <div class="d-flex flex-row justify-content-between align-items-center">
+                    <div>
+                        <SfButton IconCss="fa-solid fa-bell" />
+                    </div>
+
+                    <div>
+                        <img style="width: 40px; border-radius: 100%;"
+                             src="https://www.w3schools.com/howto/img_avatar.png"
+                             alt="Profile image" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </SfAppBar>
+
+    <FmSpacer />
+
+    <main class="main-content__wrapper">
+        @Body
+    </main>
+</div>
+
+<FmSpacer />

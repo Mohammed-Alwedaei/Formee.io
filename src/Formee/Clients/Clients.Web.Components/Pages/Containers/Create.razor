@@ -1,0 +1,177 @@
+﻿@page "/containers/create"
+@using Syncfusion.Blazor.RichTextEditor
+
+<FmPageIntro Heading="New Container">
+    <Breadcrumbs>
+        <BreadcrumbItem IconCss="fa-solid fa-house"
+                        Text="Dashboard"
+                        Url="/" />
+
+        <BreadcrumbItem IconCss="fa-solid fa-table"
+                        Text="Containers"
+                        Url="/containers" />
+
+        <BreadcrumbItem IconCss="fa-solid fa-plus-circle"
+                        Text="New"
+                        Url="/Create" />
+    </Breadcrumbs>
+</FmPageIntro>
+
+<FmSpacer />
+
+<section>
+    <Grid Gap="@GridGap.Large">
+        <Items>
+            <GridItem ColumnSize="@GridSize.GridIteLarge">
+                <Child>
+                    <EditForm Model="_container" OnValidSubmit="HandleValidFormSubmit">
+                        <Grid Gap="@GridGap.Large">
+                            <Items>
+                                <GridItem ColumnSize="@GridSize.GridItemXLarge">
+                                    <Child>
+                                        <FmCard Style="p-2" IsHoverable="false">
+                                            <FmHeader>
+                                                <FmTypography Type="@Typography.LevelTwo"
+                                                              Text="Basic Info"
+                                                              TextAlign="left"
+                                                              Icon="fa-solid fa-plus-circle"
+                                                              IconSize="1.5rem" />
+                                            </FmHeader>
+                                            <FmBody>
+                                                <Grid Gap="@GridGap.Large">
+                                                    <Items>
+                                                        <GridItem ColumnSize="@GridSize.GridItemMedium">
+                                                            <Child>
+                                                                <label for="@nameof(_container.Name)">
+                                                                    First Name
+                                                                </label>
+
+                                                                <SfTextBox ID="@nameof(_container.Name)"
+                                                                           @bind-Value="_container.Name" />
+                                                            </Child>
+                                                        </GridItem>
+
+                                                        <GridItem ColumnSize="@GridSize.GridItemMedium">
+                                                            <Child>
+                                                                <label for="@nameof(_container.Description)">
+                                                                    First Name
+                                                                </label>
+
+                                                                <SfTextBox ID="@nameof(_container.Description)"
+                                                                           @bind-Value="_container.Description" />
+                                                            </Child>
+                                                        </GridItem>
+                                                    </Items>
+                                                </Grid>
+                                            </FmBody>
+                                        </FmCard>
+                                    </Child>
+                                </GridItem>
+
+                                <GridItem ColumnSize="@GridSize.GridItemXLarge">
+                                    <Child>
+                                        <FmCard Style="p-2"
+                                                IsHoverable="false">
+                                            <FmHeader>
+                                                <FmTypography Type="@Typography.LevelTwo"
+                                                              Text="Markdown Description"
+                                                              TextAlign="left"
+                                                              Icon="fa-solid fa-plus-circle"
+                                                              IconSize="1.5rem" />
+                                            </FmHeader>
+                                            <FmBody>
+                                                <Grid Gap="@GridGap.Large">
+                                                    <Items>
+                                                        <GridItem ColumnSize="@GridSize.GridItemXLarge">
+                                                            <Child>
+                                                                <label for="@nameof(_container.Description)">
+                                                                    Description
+                                                                </label>
+
+                                                                <SfRichTextEditor @bind-Value="@_container.Description"
+                                                                                  EditorMode="@EditorMode.Markdown" />
+                                                            </Child>
+                                                        </GridItem>
+                                                    </Items>
+                                                </Grid>
+                                            </FmBody>
+                                        </FmCard>
+                                    </Child>
+                                </GridItem>
+
+                                <GridItem ColumnSize="@GridSize.GridItemXLarge">
+                                    <Child>
+                                        <FmCard Style="p-2"
+                                                IsHoverable="false">
+                                            <FmHeader>
+                                                <FmTypography Type="@Typography.LevelTwo"
+                                                              Text="Submit"
+                                                              TextAlign="left"
+                                                              Icon="fa-solid fa-plus-circle"
+                                                              IconSize="1.5rem" />
+                                            </FmHeader>
+                                            <FmBody>
+                                                <div>
+                                                    <SfButton CssClass="e-primary"
+                                                              IsPrimary="true">
+                                                        Submit
+                                                    </SfButton>
+                                                </div>
+                                            </FmBody>
+                                        </FmCard>
+                                    </Child>
+                                </GridItem>
+
+                                <GridItem ColumnSize="@GridSize.GridItemXLarge">
+                                    <Child>
+                                        <FmCard Style="p-2"
+                                                IsHoverable="false">
+                                            <FmHeader>
+                                                <FmTypography Type="@Typography.LevelTwo"
+                                                              Text="Form Validation"
+                                                              TextAlign="left"
+                                                              Icon="fa-solid fa-check"
+                                                              IconSize="1.5rem" />
+                                            </FmHeader>
+                                            <FmBody>
+                                                <ValidationSummary />
+                                            </FmBody>
+                                        </FmCard>
+                                    </Child>
+                                </GridItem>
+                            </Items>
+                        </Grid>
+                    </EditForm>
+                </Child>
+            </GridItem>
+
+            <GridItem ColumnSize="@GridSize.GridItemSmall">
+                <Child>
+                    <FmCard Style="p-2"
+                            IsHoverable="false">
+                        <FmHeader>
+                            <FmTypography Type="@Typography.LevelTwo"
+                                          Text="Preview"
+                                          TextAlign="left"
+                                          Icon="fa-solid fa-check"
+                                          IconSize="1.5rem" />
+                        </FmHeader>
+                        <FmBody>
+                            
+                        </FmBody>
+                    </FmCard>
+                </Child>
+            </GridItem>
+        </Items>
+    </Grid>
+</section>
+
+
+@code {
+    private ContainerDto _container = new();
+
+    private async Task HandleValidFormSubmit()
+    {
+
+    }
+}

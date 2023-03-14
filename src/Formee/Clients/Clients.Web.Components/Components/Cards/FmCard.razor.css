@@ -1,0 +1,37 @@
+::deep .e-card {
+    border: 0 !important;
+}
+
+::deep .fm-card__danger {
+    background-color: rgb(253, 198, 198);
+    color: rgb(186, 0, 0);
+}
+
+::deep .fm-card__warning {
+    background-color: rgb(248, 255, 186);
+    color: rgb(224, 183, 8);
+}
+
+::deep .fm-card__success {
+    background-color: rgb(198, 253, 198);
+    color: rgb(36, 125, 36);
+}
+
+::deep .fm-card__chill {
+    background-color: rgb(198, 201, 253);
+    color: rgb(23, 24, 153);
+}
+
+::deep .fm-card__interaction-hover {
+    transition: all 1s ease;
+    cursor: pointer;
+}
+
+::deep .fm-card__interaction-hover:hover {
+    box-shadow: 0 10px 10px rgba(128, 128, 128, 0.1);
+    transform: translateY(-30px);
+}
+
+::deep .fm-card__border-dashed {
+    border: 5px dashed rgba(128, 128, 128, 0.25) !important;
+}

@@ -1,0 +1,224 @@
+﻿@page "/"
+
+<FmPageIntro Heading="Dashboard">
+    <Breadcrumbs>
+        <BreadcrumbItem IconCss="fa-solid fa-house"
+                        Text="Dashboard"
+                        Url="/" />
+    </Breadcrumbs>
+</FmPageIntro>
+
+<FmSpacer />
+
+<section>
+    <SfDashboardLayout Columns="4"
+                       CellSpacing="@(new double[]{ 40 ,40 })"
+                       AllowResizing="false"
+                       AllowDragging="false"
+                       AllowFloating="false">
+        <DashboardLayoutPanels>
+            <DashboardLayoutPanel Column="0" Row="0" SizeX="3" SizeY="1">
+                <Header>
+                    <FmTypography Text="General Statistics"
+                                  Type="@Typography.LevelTwo" />
+                </Header>
+                <ContentTemplate>
+                    <Grid Gap="@GridGap.Large">
+                        <Items>
+                            <GridItem ColumnSize="@GridSize.GridItemSmall">
+                                <Child>
+                                    <FmCard Style="@Card.Success">
+                                        <FmHeader>
+                                            <FmTypography Text="Containers"
+                                                          Type="@Typography.LevelTwo" />
+                                        </FmHeader>
+
+                                        <FmBody>
+
+                                            <FmTypography Text="Placeholder"
+                                                          Type="@Typography.LevelThree" />
+
+                                            <SfIcon IconCss="fa-solid fa-money-bill" />
+
+                                            <FmTypography Text="Hello world this is something great" />
+                                        </FmBody>
+
+                                    </FmCard>
+                                </Child>
+                            </GridItem>
+
+                            <GridItem ColumnSize="@GridSize.GridItemSmall">
+                                <Child>
+                                    <FmCard Style="@Card.Danger">
+                                        <FmHeader>
+                                            <FmTypography Text="Sites"
+                                                          Type="@Typography.LevelTwo" />
+                                        </FmHeader>
+
+                                        <FmBody>
+
+                                            <FmTypography Text="Placeholder"
+                                                          Type="@Typography.LevelThree" />
+
+                                            <SfIcon IconCss="fa-solid fa-money-bill" />
+
+                                            <FmTypography Text="Hello world this is something great" />
+                                        </FmBody>
+
+                                    </FmCard>
+                                </Child>
+                            </GridItem>
+
+                            <GridItem ColumnSize="@GridSize.GridItemSmall">
+                                <Child>
+                                    <FmCard Style="@Card.Warning">
+                                        <FmHeader>
+                                            <FmTypography Text="Hits"
+                                                          Type="@Typography.LevelTwo" />
+                                        </FmHeader>
+
+                                        <FmBody>
+
+                                            <FmTypography Text="Placeholder"
+                                                          Type="@Typography.LevelThree" />
+
+                                            <SfIcon IconCss="fa-solid fa-money-bill" />
+
+                                            <FmTypography Text="Hello world this is something great" />
+                                        </FmBody>
+
+                                    </FmCard>
+                                </Child>
+                            </GridItem>
+
+                            <GridItem ColumnSize="@GridSize.GridItemSmall">
+                                <Child>
+                                    <FmCard Style="@Card.Chill">
+                                        <FmHeader>
+                                            <FmTypography Text="Forms"
+                                                          Type="@Typography.LevelTwo" />
+                                        </FmHeader>
+
+                                        <FmBody>
+
+                                            <FmTypography Text="Placeholder"
+                                                          Type="@Typography.LevelThree" />
+
+                                            <SfIcon IconCss="fa-solid fa-money-bill" />
+
+                                            <FmTypography Text="Hello world this is something great" />
+                                        </FmBody>
+
+                                    </FmCard>
+                                </Child>
+                            </GridItem>
+                        </Items>
+                    </Grid>
+                </ContentTemplate>
+            </DashboardLayoutPanel>
+
+            <DashboardLayoutPanel Column="4" SizeX="1" SizeY="1">
+                <Header>
+                    <FmTypography Text="Hits By Countries"
+                                  Type="@Typography.LevelTwo" />
+                </Header>
+
+                <ContentTemplate>
+                    <FmCard>
+                        <FmHeader>
+                            <FmTypography Text="Placeholder"
+                                          Type="@Typography.LevelThree" />
+                        </FmHeader>
+                        <FmBody>
+                            <FmTypography Text="Placeholder"
+                                          Type="@Typography.LevelThree" />
+
+                            <SfIcon IconCss="fa-solid fa-money-bill" />
+
+                            <FmTypography Text="Hello world this is something great" />
+                        </FmBody>
+                    </FmCard>
+                </ContentTemplate>
+            </DashboardLayoutPanel>
+
+            <DashboardLayoutPanel Column="0" Row="1" SizeX="2" SizeY="1">
+                <Header>
+                    <FmTypography Text="Hits in this month"
+                                  Type="@Typography.LevelTwo" />
+                </Header>
+
+                <ContentTemplate>
+
+                    <SfChart Width="100%" Title="Number of hits">
+                        <ChartPrimaryXAxis ValueType="Syncfusion.Blazor.Charts.ValueType.DateTime" />
+
+                        <ChartSeriesCollection>
+                            <ChartSeries DataSource="@_pageHitsDisplay"
+                                         XName="X"
+                                         YName="Y"
+                                         Type="ChartSeriesType.Line" />
+                        </ChartSeriesCollection>
+                    </SfChart>
+
+                </ContentTemplate>
+            </DashboardLayoutPanel>
+
+            <DashboardLayoutPanel Column="3" Row="1" SizeX="2" SizeY="1">
+                <Header>
+                    <FmTypography Text="General Statistics"
+                                  Type="@Typography.LevelTwo" />
+                </Header>
+                <ContentTemplate>
+                    <FmCard>
+                        <FmHeader>
+                            <FmTypography Text="Placeholder"
+                                          Type="@Typography.LevelThree" />
+                        </FmHeader>
+                        <FmBody>
+                            <FmTypography Text="Placeholder"
+                                          Type="@Typography.LevelThree" />
+
+                            <SfIcon IconCss="fa-solid fa-money-bill" />
+
+                            <FmTypography Text="Hello world this is something great" />
+                        </FmBody>
+                    </FmCard>
+                </ContentTemplate>
+            </DashboardLayoutPanel>
+        </DashboardLayoutPanels>
+    </SfDashboardLayout>
+</section>
+
+<FmSpacer />
+
+@code {
+
+    // private List<PageHitModel> _pageHits = new()
+    // {
+    //     new PageHitModel
+    //     {
+    //
+    //     }
+    // };
+
+    private List<ChartModel> _pageHitsDisplay = new()
+    {
+        new ChartModel { X = new DateTime(2019, 01, 01) , Y = 10 },
+        new ChartModel { X = new DateTime(2019, 01, 02) , Y = 30 },
+        new ChartModel { X = new DateTime(2019, 01, 03) , Y = 21 },
+        new ChartModel { X = new DateTime(2019, 01, 04) , Y = 93 },
+        new ChartModel { X = new DateTime(2019, 01, 05) , Y = 53 },
+        new ChartModel { X = new DateTime(2019, 01, 06) , Y = 26 },
+        new ChartModel { X = new DateTime(2019, 01, 07) , Y = 66 },
+        new ChartModel { X = new DateTime(2019, 01, 08) , Y = 75 },
+        new ChartModel { X = new DateTime(2019, 01, 09) , Y = 63 },
+        new ChartModel { X = new DateTime(2019, 01, 10) , Y = 43 },
+        new ChartModel { X = new DateTime(2019, 01, 11) , Y = 10 },
+        new ChartModel { X = new DateTime(2019, 01, 12) , Y = 95 },
+        new ChartModel { X = new DateTime(2019, 01, 13) , Y = 34 },
+        new ChartModel { X = new DateTime(2019, 01, 14) , Y = 56 },
+        new ChartModel { X = new DateTime(2019, 01, 15) , Y = 61 },
+        new ChartModel { X = new DateTime(2019, 01, 16) , Y = 62 },
+    };
+
+}

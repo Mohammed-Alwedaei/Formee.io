@@ -1,0 +1,132 @@
+﻿@page "/containers"
+@using Client.Web.Utilities.Services
+
+@inject NavigationManager NavigationManager
+@inject ContainersService ContainersService
+
+<FmPageIntro Heading="Containers Page">
+    <Breadcrumbs>
+        <BreadcrumbItem IconCss="fa-solid fa-house"
+                        Text="Dashboard"
+                        Url="/" />
+
+        <BreadcrumbItem IconCss="fa-solid fa-table"
+                        Text="Containers"
+                        Url="/containers" />
+    </Breadcrumbs>
+</FmPageIntro>
+
+<FmSpacer />
+
+
+<FmLoader FetchingState="_isFetching">
+    <Content>
+        <Grid Gap="@GridGap.Large">
+            <Items>
+                @if (_containers.Any())
+                {
+                    foreach (var container in _containers)
+                    {
+                        <GridItem ColumnSize="@GridSize.GridItemXLarge">
+                            <Child>
+                                <FmCard Style="py-4">
+                                    <FmHeader>
+                                        <FmTypography Type="@Typography.LevelTwo"
+                                                      Text="@container.Name"
+                                                      TextAlign="center"/>
+
+                                        <SfIcon IconCss="@container.Icon"/>
+
+                                        <SfDropDownButton Content="Config"
+                                                          IconCss="fa-solid fa-wrench">
+                                            <DropDownButtonEvents ItemSelected="ItemSelected" />
+
+                                            <DropDownMenuItems>
+                                                <DropDownMenuItem Text="Edit" 
+                                                                  Id="@container.Id" 
+                                                                  IconCss="fa-solid fa-edit" />
+                                                <DropDownMenuItem Text="Delete"
+                                                          Id="@container.Id"
+                                                          IconCss="fa-solid fa-trash"/>
+                                            </DropDownMenuItems>
+                                        </SfDropDownButton>
+                                    </FmHeader>
+
+                                    <FmBody>
+                                        <FmTypography Text="@container.Description"
+                                                      TextAlign="left" />
+                                    </FmBody>
+                                </FmCard>
+                            </Child>
+                        </GridItem>
+                    }
+                }
+                else
+                {
+                    <GridItem ColumnSize="@GridSize.GridItemXLarge">
+                        <Child>
+                            <FmCard Style="py-4">
+                                <FmBody>
+                                    <FmTypography Type="@Typography.LevelTwo"
+                                              Text="Currently there are not containers, please create new containers"
+                                              TextAlign="center" />
+                                </FmBody>
+                            </FmCard>
+                        </Child>
+                    </GridItem>
+                }
+
+                <GridItem ColumnSize="@GridSize.GridItemXLarge">
+                    <Child>
+                        <FmCard Style="py-4 fm-card__border-dashed"
+                                IsHoverable="true" OnClick="NavigateToNewContainer">
+                            <FmBody>
+                                <div class="d-flex align-items-center justify-content-center">
+                                    <FmTypography Type="@Typography.LevelTwo"
+                                                  Text="Create new Container"
+                                                  TextAlign="center"
+                                                  Icon="fa-solid fa-plus-circle"
+                                                  IconSize="1.5rem" />
+                                </div>
+                            </FmBody>
+                        </FmCard>
+                    </Child>
+                </GridItem>
+            </Items>
+        </Grid>
+    </Content>
+</FmLoader>
+
+
+@code {
+    private List<ContainerDto> _containers;
+    private bool _isFetching;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _isFetching = true;
+
+        var userId = new Guid("3fa85f64-5717-4562-b3fc-2c963f66afa6");
+
+        _containers = await ContainersService.GetAllByUserIdAsync(userId);
+
+        _isFetching = false;
+    }
+
+    public void NavigateToNewContainer()
+    {
+        NavigationManager.NavigateTo("/containers/create");
+    }
+
+    private void ItemSelected(MenuEventArgs args)
+    {
+        if (args.Item.Text == "Edit")
+        {
+            NavigationManager.NavigateTo($"/containers/upsert?id={args.Item.Id}");
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/containers/delete");
+        }
+    }
+}

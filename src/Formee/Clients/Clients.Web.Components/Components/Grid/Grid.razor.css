@@ -1,0 +1,18 @@
+.fm-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--grid-gap);
+}
+
+.fm-grid__gap-lg {
+    --grid-gap: 3rem;
+}
+
+.fm-grid__gap-md {
+    --grid-gap: 2rem;
+}
+
+.fm-grid__gap-sm {
+    --grid-gap: 1rem;
+}

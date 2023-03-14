@@ -1,3 +1,17 @@
+:root {
+    --grid-gap: 1rem;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #fafbfd;
+}
+
 h1:focus {
     outline: none;
 }
@@ -30,3 +44,35 @@ h1:focus {
     .blazor-error-boundary::after {
         content: "An error has occurred."
     }
+
+.d-flex {
+    display: flex;
+}
+
+.justify-content-between {
+    justify-content: space-between;
+}
+
+.justify-content-center {
+    justify-content: center;
+}
+
+.align-items-center {
+    align-items: center;
+}
+
+.py-4 {
+    padding-block: 4rem;
+}
+
+.ps-2 {
+    padding-left: 2rem;
+}
+
+.p-2 {
+    padding: 2rem;
+}
+
+.h-100 {
+    height: 100%;
+}

@@ -1,0 +1,11 @@
+﻿<div class="fm-grid @Gap">
+    @Items
+</div>
+
+@code {
+    [Parameter]
+    public string Gap { get; set; }
+
+    [Parameter]
+    public RenderFragment Items { get; set; }
+}

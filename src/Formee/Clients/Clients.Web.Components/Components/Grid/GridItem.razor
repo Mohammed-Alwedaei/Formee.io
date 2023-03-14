@@ -1,0 +1,12 @@
+﻿<div class="@ColumnSize">
+    @Child
+</div>
+
+@code {
+
+    [Parameter]
+    public string ColumnSize { get; set; }
+
+    [Parameter]
+    public RenderFragment Child { get; set; }
+}

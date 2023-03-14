@@ -1,0 +1,15 @@
+.fm-grid__item-xlg {
+    width: 100%;
+}
+
+.fm-grid .fm-grid__item-lg {
+    width: calc(75% - var(--grid-gap));
+}
+
+.fm-grid .fm-grid__item-md {
+    width: calc(50% - var(--grid-gap));
+}
+
+.fm-grid .fm-grid__item-sm {
+    width: calc(25% - var(--grid-gap));
+}

@@ -1,0 +1,22 @@
+﻿@if (FetchingState is false)
+{
+    <section>
+        @Content
+    </section>
+}
+
+else
+{
+    <section>
+        <SfSpinner />
+    </section>
+}
+
+
+@code {
+    [Parameter]
+    public bool FetchingState { get; set; }
+
+    [Parameter]
+    public RenderFragment Content { get; set; }
+}

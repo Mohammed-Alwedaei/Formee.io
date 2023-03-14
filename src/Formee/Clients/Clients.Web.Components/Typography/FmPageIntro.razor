@@ -1,0 +1,23 @@
+﻿<section>
+    <SfBreadcrumb>
+        <BreadcrumbItems>
+            @Breadcrumbs
+        </BreadcrumbItems>
+    </SfBreadcrumb>
+
+
+    <FmSpacer />
+
+    <FmTypography Text="@Heading"
+                  Type="@Typography.LevelTwo" />
+</section>
+
+
+@code {
+
+    [Parameter]
+    public string Heading { get; set; }
+
+    [Parameter]
+    public RenderFragment Breadcrumbs { get; set; }
+}

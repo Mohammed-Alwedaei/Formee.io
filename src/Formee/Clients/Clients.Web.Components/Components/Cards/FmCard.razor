@@ -1,0 +1,43 @@
+﻿<div onclick="@(async () => await HandleClickEvent())">
+    <SfCard CssClass="@_finalStyle">
+        @if (FmHeader is not null)
+        {
+            <CardHeader>
+                @FmHeader
+            </CardHeader>
+        }
+
+        <CardContent>
+            @FmBody
+        </CardContent>
+    </SfCard>
+
+</div>
+@code {
+    [Parameter]
+    public string Style { get; set; }
+
+    [Parameter]
+    public RenderFragment FmHeader { get; set; }
+
+    [Parameter]
+    public RenderFragment FmBody { get; set; }
+
+    [Parameter]
+    public bool IsHoverable { get; set; }
+
+    [Parameter]
+    public EventCallback OnClick { get; set; }
+
+    private string _finalStyle;
+
+    protected override void OnInitialized()
+    {
+        _finalStyle = IsHoverable ? $"{Style} fm-card__interaction-hover" : Style;
+    }
+
+    public async Task HandleClickEvent()
+    {
+        await OnClick.InvokeAsync();
+    }
+}

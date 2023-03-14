@@ -1,0 +1,29 @@
+.app-bar-actions {
+    width: 25%;
+}
+
+.main-content__wrapper {
+    padding-inline: 3rem;
+}
+
+.app-bar__wrapper {
+    padding-inline: 3rem;
+}
+
+::deep .e-dashboardlayout.e-control .e-panel {
+    background-color: white;
+    border: 0;
+    box-shadow: none;
+}
+
+::deep .e-dashboardlayout.e-control .e-panel .e-panel-container .e-panel-content {
+    padding: 2rem;
+}
+
+::deep .e-dashboardlayout.e-control .e-panel .e-panel-container .e-panel-header {
+    color: black;
+    background-color: #ffffff;
+    border: none;
+    text-align: left;
+    padding: 2rem 2rem 0 2rem;
+}

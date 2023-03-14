@@ -14,7 +14,7 @@ public static class Endpoints
          * DESC : Get a single container that match the id
          * Auth : Users
          */
-        app.MapGet("/api/containers/{id}",
+        containers.MapGet("/{id}",
             async (ContainersService containersService, string id) =>
             {
                 if (await containersService.GetContainerById(id)
@@ -31,7 +31,7 @@ public static class Endpoints
          * DESC : Get all containers that are not deleted and match the user id
          * Auth : Users
          */
-        app.MapGet("/api/containers/all/{userId}",
+        containers.MapGet("/all/{userId}",
             async (ContainersService containersService, Guid userId) =>
             {
                 if (await containersService.GetAllContainerByUserIdAsync(userId)

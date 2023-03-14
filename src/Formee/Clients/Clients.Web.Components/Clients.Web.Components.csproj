@@ -13,11 +13,15 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.3" />
+    <PackageReference Include="Syncfusion.Blazor" Version="20.4.0.53" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Components\" />
-    <Folder Include="Pages\" />
+    <Folder Include="Pages\Identity\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Client.Web.Utilities\Client.Web.Utilities.csproj" />
   </ItemGroup>
 
 </Project>
