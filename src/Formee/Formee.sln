@@ -74,7 +74,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Client.Web", "Clients\Clien
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Clients.Web.Components", "Clients\Clients.Web.Components\Clients.Web.Components.csproj", "{1B00A405-AD10-484E-8F9C-B4A7C61E8E38}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client.Web.Utilities", "Clients\Client.Web.Utilities\Client.Web.Utilities.csproj", "{0B4835C0-D441-4BB4-B276-6F0F2B9388AF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Client.Web.Utilities", "Clients\Client.Web.Utilities\Client.Web.Utilities.csproj", "{0B4835C0-D441-4BB4-B276-6F0F2B9388AF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

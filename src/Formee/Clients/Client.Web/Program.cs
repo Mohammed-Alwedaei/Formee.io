@@ -20,6 +20,13 @@ builder.Services.AddScoped(sp => new HttpClient
         .GetValue<string>("GatewayUrl")!)
 });
 
+builder.Services.AddOidcAuthentication(options =>
+{
+    builder.Configuration.Bind("Auth0", options.ProviderOptions);
+    options.ProviderOptions.ResponseType = "code";
+});
+
 builder.Services.AddScoped<ContainersService>();
+builder.Services.AddScoped<IdentityService>();
 
 await builder.Build().RunAsync();

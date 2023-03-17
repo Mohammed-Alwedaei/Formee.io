@@ -40,6 +40,23 @@ public class IdentityManager : IIdentityManager
         return false;
     }
 
+    public async Task<UserEntity> CreateAsync(UserEntity user)
+    {
+        var hasRegistered = await _db.User
+            .FirstOrDefaultAsync(u => u.AuthId == user.AuthId);
+
+        if (hasRegistered is not null)
+        {
+            throw new BadRequestException("User already created");
+        }
+
+        var createdUser = await _db.User.AddAsync(user);
+
+        await _db.SaveChangesAsync();
+
+        return createdUser.Entity;
+    }
+
     public async Task<AvatarEntity> UploadUserAvatar(IFormFile file, Guid userId)
     {
         var fileName = file.FileName;

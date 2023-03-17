@@ -1,27 +1,25 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
 
-  <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+	</PropertyGroup>
 
 
-  <ItemGroup>
-    <SupportedPlatform Include="browser" />
-  </ItemGroup>
+	<ItemGroup>
+		<SupportedPlatform Include="browser" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.3" />
-    <PackageReference Include="Syncfusion.Blazor" Version="20.4.0.53" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Markdig" Version="0.31.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.4" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="7.0.4" />
+		<PackageReference Include="Syncfusion.Blazor" Version="20.4.0.53" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Pages\Identity\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Client.Web.Utilities\Client.Web.Utilities.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Client.Web.Utilities\Client.Web.Utilities.csproj" />
+	</ItemGroup>
 
 </Project>

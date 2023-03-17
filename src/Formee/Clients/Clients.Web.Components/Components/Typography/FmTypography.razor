@@ -1,0 +1,65 @@
+﻿@switch (Type)
+{
+    case Typography.LevelOne:
+        <h1 style="text-align: @TextAlign;" class="@Classes">@Text</h1>
+        break;
+
+    case Typography.LevelTwo:
+        <h2 style="text-align: @TextAlign;" class="@Classes">@Text</h2>
+        break;
+
+    case Typography.LevelThree:
+        <h3 style="text-align: @TextAlign;" class="@Classes">@Text</h3>
+        break;
+
+    case Typography.LevelFour:
+        <h4 style="text-align: @TextAlign;" class="@Classes">@Text</h4>
+        break;
+
+    case Typography.LevelFive:
+        <h5 style="text-align: @TextAlign;" class="@Classes">@Text</h5>
+        break;
+
+    case Typography.LevelSix:
+        <h6 style="text-align: @TextAlign;" class="@Classes">@Text</h6>
+        break;
+
+    default:
+        <p style="text-align: @TextAlign;" class="@Classes">@Text</p>
+        break;
+}
+
+@if (!string.IsNullOrEmpty(Icon))
+{
+    <p class="@Classes" style="font-size: @IconSize;">
+        <SfIcon IconCss="@Icon"
+                HtmlAttributes="_htmlAttributes" />
+    </p>
+}
+
+@code {
+
+    [Parameter]
+    public string Type { get; set; }
+
+    [Parameter]
+    public string Text { get; set; }
+
+    [Parameter]
+    public string TextAlign { get; set; } = "left";
+
+    [Parameter]
+    public string Icon { get; set; }
+
+    [Parameter]
+    public string IconSize { get; set; }
+
+    [Parameter]
+    public string Classes { get; set; }
+
+    private Dictionary<string, object> _htmlAttributes = new()
+    {
+        { "class", "ps-1" }
+    };
+
+}

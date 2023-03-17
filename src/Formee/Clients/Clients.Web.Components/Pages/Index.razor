@@ -34,15 +34,13 @@
                                         </FmHeader>
 
                                         <FmBody>
-
-                                            <FmTypography Text="Placeholder"
+                                            <FmTypography Text="@_containers.Count.ToString()"
                                                           Type="@Typography.LevelThree" />
 
                                             <SfIcon IconCss="fa-solid fa-money-bill" />
 
                                             <FmTypography Text="Hello world this is something great" />
                                         </FmBody>
-
                                     </FmCard>
                                 </Child>
                             </GridItem>
@@ -119,23 +117,25 @@
 
             <DashboardLayoutPanel Column="4" SizeX="1" SizeY="1">
                 <Header>
-                    <FmTypography Text="Hits By Countries"
-                                  Type="@Typography.LevelTwo" />
+                    <div class="d-flex justify-content-between align-items-center">
+                        <FmTypography Text="Active Containers"
+                                      Type="@Typography.LevelTwo" />
+                    
+                        <FmTypography Text="@_containers.Count.ToString()"
+                                      Type="@Typography.LevelThree" />
+                    </div>
                 </Header>
 
                 <ContentTemplate>
                     <FmCard>
-                        <FmHeader>
-                            <FmTypography Text="Placeholder"
-                                          Type="@Typography.LevelThree" />
-                        </FmHeader>
                         <FmBody>
-                            <FmTypography Text="Placeholder"
-                                          Type="@Typography.LevelThree" />
+                            @foreach (var container in _containers)
+                            {
+                                <FmTypography Text="@container.Name"
+                                              Type="@Typography.LevelThree" />
 
-                            <SfIcon IconCss="fa-solid fa-money-bill" />
-
-                            <FmTypography Text="Hello world this is something great" />
+                                <SfIcon IconCss="@container.Icon" />
+                            }
                         </FmBody>
                     </FmCard>
                 </ContentTemplate>

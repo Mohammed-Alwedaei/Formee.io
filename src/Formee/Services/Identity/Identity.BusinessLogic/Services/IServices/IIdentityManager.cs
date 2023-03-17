@@ -10,5 +10,7 @@ public interface IIdentityManager
 
     //Task<bool> RemoveRoleFromUser(AddRoleToUserModel users, string roleId);
 
+    Task<UserEntity> CreateAsync(UserEntity user);
+
     Task<AvatarEntity> UploadUserAvatar(IFormFile file, Guid userId);
 }

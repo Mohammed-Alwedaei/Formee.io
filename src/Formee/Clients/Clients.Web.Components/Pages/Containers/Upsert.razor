@@ -1,4 +1,5 @@
-﻿@page "/containers/create"
+﻿@page "/containers/upsert"
+
 @using Syncfusion.Blazor.RichTextEditor
 
 <FmPageIntro Heading="New Container">
@@ -11,9 +12,26 @@
                         Text="Containers"
                         Url="/containers" />
 
-        <BreadcrumbItem IconCss="fa-solid fa-plus-circle"
-                        Text="New"
-                        Url="/Create" />
+        @if (UpsertType == "update")
+        {
+            <BreadcrumbItem IconCss="fa-solid fa-edit"
+                        Text="Update"
+                        Url="/upsert" />
+        }
+        else if (IsDeleteOperation && UpsertType == "delete")
+        {
+            <BreadcrumbItem IconCss="fa-solid fa-trash"
+                        Text="Delete"
+                        Url="/upsert" />
+        }
+        else
+        {
+
+            <BreadcrumbItem IconCss="fa-solid fa-plus-circle"
+                        Text="Create"
+                        Url="/upsert" />
+
+        }
     </Breadcrumbs>
 </FmPageIntro>
 
@@ -43,22 +61,24 @@
                                                         <GridItem ColumnSize="@GridSize.GridItemMedium">
                                                             <Child>
                                                                 <label for="@nameof(_container.Name)">
-                                                                    First Name
+                                                                    Name
                                                                 </label>
 
                                                                 <SfTextBox ID="@nameof(_container.Name)"
-                                                                           @bind-Value="_container.Name" />
+                                                                           @bind-Value="_container.Name"
+                                                                           Readonly="IsDeleteOperation" />
                                                             </Child>
                                                         </GridItem>
-
+                                                        
                                                         <GridItem ColumnSize="@GridSize.GridItemMedium">
                                                             <Child>
-                                                                <label for="@nameof(_container.Description)">
-                                                                    First Name
+                                                                <label for="@nameof(_container.Icon)">
+                                                                    Icon
                                                                 </label>
 
-                                                                <SfTextBox ID="@nameof(_container.Description)"
-                                                                           @bind-Value="_container.Description" />
+                                                                <SfTextBox ID="@nameof(_container.Icon)"
+                                                                           @bind-Value="_container.Icon"
+                                                                           Readonly="IsDeleteOperation" />
                                                             </Child>
                                                         </GridItem>
                                                     </Items>
@@ -89,7 +109,10 @@
                                                                 </label>
 
                                                                 <SfRichTextEditor @bind-Value="@_container.Description"
-                                                                                  EditorMode="@EditorMode.Markdown" />
+                                                                                  EditorMode="@EditorMode.Markdown"
+                                                                                  Readonly="IsDeleteOperation">
+                                                                    <RichTextEditorEvents ValueChange="HandleContainerDescriptionChange" />
+                                                                </SfRichTextEditor>
                                                             </Child>
                                                         </GridItem>
                                                     </Items>
@@ -112,10 +135,37 @@
                                             </FmHeader>
                                             <FmBody>
                                                 <div>
-                                                    <SfButton CssClass="e-primary"
-                                                              IsPrimary="true">
-                                                        Submit
-                                                    </SfButton>
+                                                    @if (UpsertType == "update")
+                                                    {
+                                                        <SfButton CssClass="e-primary"
+                                                                  IconCss="fa-solid fa-trash"
+                                                                  IconPosition="IconPosition.Right"
+                                                                  style="padding: 0.5rem 1rem;"
+                                                                  IsPrimary="true">
+                                                            @UpsertType.ToUpper()
+                                                        </SfButton>
+                                                    }
+                                                    else if (IsDeleteOperation && UpsertType == "delete")
+                                                    {
+                                                        <SfButton CssClass="e-primary"
+                                                                  IconCss="fa-solid fa-trash"
+                                                                  IconPosition="IconPosition.Right"
+                                                                  style="padding: 0.5rem 1rem;"
+                                                                  IsPrimary="true">
+                                                            @UpsertType.ToUpper()
+                                                        </SfButton>
+                                                    }
+                                                    else
+                                                    {
+
+                                                        <SfButton CssClass="e-primary"
+                                                                  IconCss="fa-solid fa-trash"
+                                                                  IconPosition="IconPosition.Right"
+                                                                  style="padding: 0.5rem 1rem;"
+                                                                  IsPrimary="true">
+                                                            @UpsertType.ToUpper()
+                                                        </SfButton>
+                                                    }
                                                 </div>
                                             </FmBody>
                                         </FmCard>
@@ -134,6 +184,7 @@
                                                               IconSize="1.5rem" />
                                             </FmHeader>
                                             <FmBody>
+                                                <DataAnnotationsValidator />
                                                 <ValidationSummary />
                                             </FmBody>
                                         </FmCard>
@@ -157,7 +208,8 @@
                                           IconSize="1.5rem" />
                         </FmHeader>
                         <FmBody>
-                            
+                            <h2>@_container.Name</h2>
+                            <p>@((MarkupString)_containerPreview.Description)</p>
                         </FmBody>
                     </FmCard>
                 </Child>
@@ -166,12 +218,25 @@
     </Grid>
 </section>
 
+<SfDialog Width="600px"
+          @bind-Visible="IsVisibleModal"
+          AllowPrerender="true"
+          IsModal="true">
+    <DialogAnimationSettings Effect="DialogEffect.SlideBottom" Duration=400 />
+    <DialogTemplates>
+        <Header>You are about to @UpsertType this container?</Header>
+        <Content> You are just about to @UpsertType this container, this action is not reversable once approved </Content>
+    </DialogTemplates>
+    <DialogButtons>
+        <DialogButton Content="@UpsertType"
+                      IconCss="fa-solid fa-trash"
+                      IsPrimary="true"
+                      IconPosition="IconPosition.Right"
+                      OnClick="HandleActionApprove" />
 
-@code {
-    private ContainerDto _container = new();
-
-    private async Task HandleValidFormSubmit()
-    {
-
-    }
-}
+        <DialogButton Content="Cancel"
+                      IconCss="fa-solid fa-xmark"
+                      IconPosition="IconPosition.Right"
+                      OnClick="HandleActionReject" />
+    </DialogButtons>
+</SfDialog>

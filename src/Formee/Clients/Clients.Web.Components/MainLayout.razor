@@ -3,9 +3,84 @@
 <SfSidebar @bind-IsOpen="_sidebarToggle"
            Type="SidebarType.Push"
            Position="SidebarPosition.Left"
-           EnableGestures="false" Width="300px">
+           EnableGestures="false"
+           Width="300px">
     <ChildContent>
-        <p>Side bar content</p>
+        <div class="py-4">
+            <div class="d-flex justify-content-center">
+                <SfButton IconCss="fa-solid fa-plus"
+                          IconPosition="IconPosition.Right"
+                          OnClick="HandleNewContainerClick"
+                          IsPrimary="true">
+                    Create Container
+                </SfButton>
+            </div>
+
+            <FmSpacer />
+
+            <SfAccordion>
+                <AccordionItems>
+                    <AccordionItem Header="Dashboard"
+                                   IconCss="fa-solid fa-home"
+                                   Expanded="true">
+                        <ContentTemplate>
+                            <FmLink Route="/dashboard"
+                                    Text="Home"
+                                    Classes="fm-link d-flex justify-content-start"
+                                    Icon="fa-solid fa-home" />
+
+                            <FmSeperator />
+
+                            <FmLink Route="/dashboard/containers"
+                                    Text="Containers"
+                                    Classes="fm-link d-flex justify-content-start mb-1"
+                                    Icon="fa-solid fa-columns" />
+
+                            <div class="ps-2">
+                                <FmLoader FetchingState="_isFetching">
+                                    <Content>
+                                        @if (_containers is not null)
+                                        {
+                                            var lastContainer = _containers.Last();
+                                            @foreach (var container in _containers)
+                                            {
+                                                <FmLink Route="/dashboard/containers"
+                                                        Text="@container.Name"
+                                                        Classes="fm-link d-flex justify-content-start mb-1"
+                                                        Icon="fa-solid fa-columns" />
+
+                                                <FmLink Route="@($"dashboard/containers/view?id={container.Id}")"
+                                                        Text="View"
+                                                        Classes="fm-link d-flex justify-content-start mb-1"
+                                                        Icon="fa-solid fa-eye" />
+
+                                                @if (_containers.Count != 1 && !container.Equals(lastContainer))
+                                                {
+                                                    <FmSeperator />
+                                                }
+                                            }
+                                        }
+                                    </Content>
+                                </FmLoader>
+                            </div>
+                        </ContentTemplate>
+                    </AccordionItem>
+
+                    <AccordionItem Expanded="true">
+                        <HeaderTemplate>
+                            <FmTypography Text="Identity"
+                                          Icon="fa-solid fa-user" />
+                        </HeaderTemplate>
+
+                        <ContentTemplate>
+                            <NavLink href="/dashboard/containers">
+                                Containers
+                            </NavLink>
+                        </ContentTemplate>
+                    </AccordionItem>
+                </AccordionItems>
+            </SfAccordion>
+        </div>
     </ChildContent>
 </SfSidebar>
 
@@ -20,15 +95,13 @@
             <AppBarSpacer></AppBarSpacer>
 
             <div class="app-bar-actions">
-                <div class="d-flex flex-row justify-content-between align-items-center">
+                <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <SfButton IconCss="fa-solid fa-bell" />
                     </div>
 
                     <div>
-                        <img style="width: 40px; border-radius: 100%;"
-                             src="https://www.w3schools.com/howto/img_avatar.png"
-                             alt="Profile image" />
+                        <AppBarAccessControl />
                     </div>
                 </div>
             </div>

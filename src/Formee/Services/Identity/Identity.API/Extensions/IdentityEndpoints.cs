@@ -1,4 +1,5 @@
-﻿using Identity.BusinessLogic.Models;
+﻿using Identity.BusinessLogic.Entities;
+using Identity.BusinessLogic.Models;
 using Identity.BusinessLogic.Services;
 
 namespace Identity.API.Extensions;
@@ -17,6 +18,13 @@ public static class IdentityEndpoints
 
             return Results.Ok(result);
         }).WithTags("Admins");
+
+        identity.MapPost("/users", async
+            (IdentityManager identityService, UserEntity user) =>
+        {
+            return Results.Ok(await identityService
+                .CreateAsync(user));
+        }).WithTags("Users");
 
         identity.MapPost("/users/avatar/{userId:Guid}", async
             (IdentityManager identityService, IFormFile file, Guid userId) =>

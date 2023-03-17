@@ -1,0 +1,57 @@
+﻿@page "/dashboard/containers/view"
+
+<FmPageIntro Heading="My Containers">
+    <Breadcrumbs>
+        <BreadcrumbItem IconCss="fa-solid fa-house"
+                        Text="Dashboard"
+                        Url="/" />
+
+        <BreadcrumbItem IconCss="fa-solid fa-table"
+                        Text="Containers"
+                        Url="/containers" />
+
+        <BreadcrumbItem IconCss="@Container.Icon"
+                                Disabled
+                        Text="@Container.Name" />
+    </Breadcrumbs>
+</FmPageIntro>
+
+<FmSpacer />
+
+<section>
+    <SfDashboardLayout Columns="4"
+                   CellSpacing="@(new double[]{ 40 ,40 })"
+                   AllowResizing="false"
+                   AllowDragging="false"
+                   AllowFloating="false">
+        <DashboardLayoutPanels>
+            <DashboardLayoutPanel Column="0"
+                                  Row="0"
+                                  SizeX="3"
+                                  SizeY="1">
+                <FmTypography Text="Hello" />
+            </DashboardLayoutPanel>
+            <DashboardLayoutPanel Column="4"
+                                  Row="0"
+                                  SizeX="1"
+                                  SizeY="1">
+                <ContentTemplate>
+                    <SfAccumulationChart Title="Mobile Browser Statistics" EnableBorderOnMouseMove="false">
+                        <AccumulationChartLegendSettings Visible="true"/>
+                        <AccumulationChartTooltipSettings Enable="true" />
+                        <AccumulationDataLabelSettings Visible="true"
+                                                       Position="AccumulationLabelPosition.Outside" />
+
+                        <AccumulationChartSeriesCollection>
+                            <AccumulationChartSeries DataSource="_pageHitsDisplay"
+                                                     XName="X"
+                                                     YName="Y"
+                                                     Name="Browser">
+                            </AccumulationChartSeries>
+                        </AccumulationChartSeriesCollection>
+                    </SfAccumulationChart>
+                </ContentTemplate>
+            </DashboardLayoutPanel>
+        </DashboardLayoutPanels>
+    </SfDashboardLayout>
+</section>

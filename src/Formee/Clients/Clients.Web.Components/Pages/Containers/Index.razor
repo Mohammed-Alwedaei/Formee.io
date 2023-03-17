@@ -1,16 +1,17 @@
-﻿@page "/containers"
+﻿@page "/dashboard/containers"
 @using Client.Web.Utilities.Services
 
 @inject NavigationManager NavigationManager
 @inject ContainersService ContainersService
 
-<FmPageIntro Heading="Containers Page">
+<FmPageIntro Heading="My Containers">
     <Breadcrumbs>
         <BreadcrumbItem IconCss="fa-solid fa-house"
                         Text="Dashboard"
                         Url="/" />
 
         <BreadcrumbItem IconCss="fa-solid fa-table"
+                        Disabled
                         Text="Containers"
                         Url="/containers" />
     </Breadcrumbs>
@@ -18,8 +19,7 @@
 
 <FmSpacer />
 
-
-<FmLoader FetchingState="_isFetching">
+<FmLoader FetchingState="IsFetching">
     <Content>
         <Grid Gap="@GridGap.Large">
             <Items>
@@ -31,25 +31,30 @@
                             <Child>
                                 <FmCard Style="py-4">
                                     <FmHeader>
-                                        <FmTypography Type="@Typography.LevelTwo"
-                                                      Text="@container.Name"
-                                                      TextAlign="center"/>
+                                        <div class="d-flex justify-content-between w-100">
+                                            <div onclick="() => HandleContainerClick(container.Id)">
+                                                <FmTypography Type="@Typography.LevelTwo"
+                                                              Text="@container.Name"
+                                                              TextAlign="center"/>
 
-                                        <SfIcon IconCss="@container.Icon"/>
+                                                <SfIcon IconCss="@container.Icon"/>
+                                            </div>
 
-                                        <SfDropDownButton Content="Config"
-                                                          IconCss="fa-solid fa-wrench">
-                                            <DropDownButtonEvents ItemSelected="ItemSelected" />
+                                            <SfDropDownButton Content="Config"
+                                                              IconCss="fa-solid fa-wrench">
+                                                <DropDownButtonEvents ItemSelected="ItemSelected" />
 
-                                            <DropDownMenuItems>
-                                                <DropDownMenuItem Text="Edit" 
-                                                                  Id="@container.Id" 
-                                                                  IconCss="fa-solid fa-edit" />
-                                                <DropDownMenuItem Text="Delete"
-                                                          Id="@container.Id"
-                                                          IconCss="fa-solid fa-trash"/>
-                                            </DropDownMenuItems>
-                                        </SfDropDownButton>
+                                                <DropDownMenuItems>
+                                                    <DropDownMenuItem Text="Edit" 
+                                                                      Id="@container.Id" 
+                                                                      IconCss="fa-solid fa-edit" />
+
+                                                    <DropDownMenuItem Text="Delete"
+                                                                      Id="@container.Id"
+                                                                      IconCss="fa-solid fa-trash"/>
+                                                </DropDownMenuItems>
+                                            </SfDropDownButton>
+                                        </div>
                                     </FmHeader>
 
                                     <FmBody>
@@ -99,34 +104,42 @@
 
 
 @code {
-    private List<ContainerDto> _containers;
-    private bool _isFetching;
+    [CascadingParameter]
+    protected List<ContainerDto> _containers { get; set; }
 
-    protected override async Task OnParametersSetAsync()
-    {
-        _isFetching = true;
+    [CascadingParameter]
+    protected bool IsFetching { get; set; }
 
-        var userId = new Guid("3fa85f64-5717-4562-b3fc-2c963f66afa6");
-
-        _containers = await ContainersService.GetAllByUserIdAsync(userId);
-
-        _isFetching = false;
-    }
+    // protected override async Task OnParametersSetAsync()
+    // {
+    //     _isFetching = true;
+    //
+    //     var userId = new Guid("3fa85f64-5717-4562-b3fc-2c963f66afa6");
+    //
+    //     _containers = await ContainersService.GetAllByUserIdAsync(userId);
+    //
+    //     _isFetching = false;
+    // }
 
     public void NavigateToNewContainer()
     {
-        NavigationManager.NavigateTo("/containers/create");
+        NavigationManager.NavigateTo("/containers/upsert?type=create");
+    }
+
+    public void HandleContainerClick(string containerId)
+    {
+        NavigationManager.NavigateTo($"/containers/view?id={containerId}");
     }
 
     private void ItemSelected(MenuEventArgs args)
     {
         if (args.Item.Text == "Edit")
         {
-            NavigationManager.NavigateTo($"/containers/upsert?id={args.Item.Id}");
+            NavigationManager.NavigateTo($"/containers/upsert?type=update&containerId={args.Item.Id}");
         }
         else
         {
-            NavigationManager.NavigateTo("/containers/delete");
+            NavigationManager.NavigateTo($"/containers/upsert?type=delete&containerId={args.Item.Id}");
         }
     }
 }

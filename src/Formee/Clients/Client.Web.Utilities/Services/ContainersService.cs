@@ -8,7 +8,7 @@ public class ContainersService
 {
     private readonly HttpClient _httpClient;
     private readonly IConfiguration _configuration;
-    public ContainersService(HttpClient httpClient, 
+    public ContainersService(HttpClient httpClient,
         IConfiguration configuration)
     {
         _httpClient = httpClient;
@@ -21,14 +21,74 @@ public class ContainersService
     {
         var url = $"/api/containers/all/{userId}";
 
-       var response = await _httpClient
-           .GetFromJsonAsync<List<ContainerDto>>(url);
+        var response = await _httpClient
+            .GetFromJsonAsync<List<ContainerDto>>(url);
 
-       if (response.Any())
-       {
-           return response;
-       }
+        if (response.Any())
+        {
+            return response;
+        }
 
-       return new List<ContainerDto>();
+        return new List<ContainerDto>();
+    }
+
+    public async Task<ContainerDto> GetByIdAsync(string containerId)
+    {
+        var url = $"/api/containers/{containerId}";
+
+        var response = await _httpClient
+            .GetFromJsonAsync<ContainerDto>(url);
+
+        if (response is not null)
+        {
+            return response;
+        }
+
+        return new ContainerDto();
+    }
+
+    public async Task<bool> CreateAsync(ContainerDto container)
+    {
+        var url = $"/api/containers";
+
+        var response = await _httpClient
+            .PostAsJsonAsync(url, container);
+
+        if (response.IsSuccessStatusCode)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    public async Task<bool> UpdateAsync(ContainerDto container)
+    {
+        var url = $"/api/containers/";
+
+        var response = await _httpClient
+            .PutAsJsonAsync(url, container);
+
+        if (response.IsSuccessStatusCode)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    public async Task<bool> DeleteByIdAsync(string containerId)
+    {
+        var url = $"/api/containers/{containerId}";
+
+        var response = await _httpClient
+            .DeleteAsync(url);
+
+        if (response.IsSuccessStatusCode)
+        {
+            return true;
+        }
+
+        return false;
     }
 }
