@@ -2,7 +2,7 @@
 using Application.Forms.Commands.Create;
 using Application.Forms.Commands.DeleteById;
 using Application.Forms.Commands.UpdateById;
-using Application.Forms.Queries.GetAllByFormId;
+using Application.Forms.Queries.GetAllBySiteId;
 
 namespace Presentation.Controllers;
 
@@ -43,15 +43,15 @@ public class FormsController : ControllerBase
      * Desc : get all entities for a user
      * Auth : Users
      */
-    [HttpGet]
-    public async Task<IActionResult> GetAllFormsByUserId(Guid userId)
+    [HttpGet("all/{siteId:int}")]
+    public async Task<IActionResult> GetAllFormsByUserId(int siteId)
     {
         _logger.LogInformation(
-            "GET: request to route /api/forms/{userId} at " +
-            "{datetime}", userId, DateTime.Now);
+            "GET: request to route /api/forms/all/{siteId} at " +
+            "{datetime}", siteId, DateTime.Now);
 
         var result = await _mediator
-            .Send(new GetAllByUserIdQuery(userId));
+            .Send(new GetAllBySiteIdQuery(siteId));
 
         return Ok(result);
     }

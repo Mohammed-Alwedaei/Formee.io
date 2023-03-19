@@ -1,5 +1,7 @@
 ﻿<NavLink href="@Route" 
-         class="@Classes">
+         class="@Classes"
+         ActiveClass="@ActiveClass"
+         Match="@MatchRoute">
     <FmTypography Text="@Text" 
                   Icon="@Icon"  />
 </NavLink>
@@ -16,4 +18,10 @@
 
     [Parameter]
     public string Icon { get; set; }
+
+    [Parameter]
+    public NavLinkMatch MatchRoute { get; set; } = NavLinkMatch.All;
+
+    [Parameter]
+    public string ActiveClass { get; set; }
 }

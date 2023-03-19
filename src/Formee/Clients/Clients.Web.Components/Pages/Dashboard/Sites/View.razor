@@ -1,0 +1,144 @@
+﻿<FmLoader FetchingState="IsFetching">
+    <Content>
+        <FmPageIntro Heading="@_site.Name">
+            <Breadcrumbs>
+                <BreadcrumbItem IconCss="fa-solid fa-house"
+                                Text="Dashboard"
+                                Url="/" />
+
+                <BreadcrumbItem IconCss="fa-solid fa-table"
+                                Text="Containers"
+                                Url="/containers" />
+
+                <BreadcrumbItem IconCss="@_site.Icon"
+                                Disabled="true"
+                                Text="@_site.Name" />
+            </Breadcrumbs>
+        </FmPageIntro>
+
+        <FmSpacer />
+
+        <SfDashboardLayout Columns="4"
+                           CellSpacing="@(new double[]{ 40 ,40 })"
+                           AllowResizing="false"
+                           AllowDragging="false"
+                           AllowFloating="false">
+            <DashboardLayoutPanels>
+                <DashboardLayoutPanel Column="0"
+                                      Row="0"
+                                      SizeX="2"
+                                      SizeY="1">
+                    <ContentTemplate>
+                        <div class="fm-markdown__display">
+                            @((MarkupString)Markdown.ToHtml(_site.Description))
+                        </div>
+                    </ContentTemplate>
+                </DashboardLayoutPanel>
+                <DashboardLayoutPanel Column="3"
+                                      Row="0"
+                                      SizeX="2"
+                                      SizeY="1">
+                    <ContentTemplate>
+                        <Grid Gap="@GridGap.Large">
+                            <Items>
+                                <GridItem ColumnSize="@GridSize.GridItemSmall">
+                                    <Child>
+                                        <FmCard Classes="@Card.Success">
+                                            <FmHeader>
+                                                <SfIcon IconCss="fa-brands fa-wpforms" />
+
+                                                @if (_forms is not null)
+                                                {
+                                                    <FmTypography Text="@_forms.Count.ToString()"
+                                                              Type="@Typography.LevelThree" />
+                                                }
+                                            </FmHeader>
+
+                                            <FmBody>
+                                                <div>
+                                                    <FmTypography Text="Active Forms"
+                                                                  Type="@Typography.LevelTwo" />
+                                                </div>
+                                            </FmBody>
+                                        </FmCard>
+
+
+                                    </Child>
+                                </GridItem>
+
+                                <GridItem ColumnSize="@GridSize.GridItemSmall">
+                                    <Child>
+                                        <FmCard Classes="@Card.Danger">
+                                            <FmHeader>
+                                                <SfIcon IconCss="fa-solid fa-share-from-square" />
+
+                                                @if (_forms is not null)
+                                                {
+                                                    <FmTypography Text="123"
+                                                              Type="@Typography.LevelThree" />
+                                                }
+                                            </FmHeader>
+
+                                            <FmBody>
+                                                <div>
+                                                    <FmTypography Text="Sent Forms"
+                                                                  Type="@Typography.LevelTwo" />
+                                                </div>
+                                            </FmBody>
+                                        </FmCard>
+                                    </Child>
+                                </GridItem>
+
+                                <GridItem ColumnSize="@GridSize.GridItemSmall">
+                                    <Child>
+                                        <FmCard Classes="@Card.Warning">
+                                            <FmHeader>
+                                                <SfIcon IconCss="fa-solid fa-location-crosshairs" />
+
+                                                @if (_forms is not null)
+                                                {
+                                                    <FmTypography Text="1070"
+                                                              Type="@Typography.LevelThree" />
+                                                }
+                                            </FmHeader>
+
+                                            <FmBody>
+                                                <div>
+                                                    <FmTypography Text="Total Hits"
+                                                                  Type="@Typography.LevelTwo" />
+                                                </div>
+                                            </FmBody>
+                                        </FmCard>
+                                    </Child>
+                                </GridItem>
+
+                                <GridItem ColumnSize="@GridSize.GridItemSmall">
+                                    <Child>
+                                        <FmCard Classes="@Card.Chill">
+                                            <FmHeader>
+                                                <SfIcon IconCss="fa-solid fa-globe" />
+
+                                                @if (_forms is not null)
+                                                {
+                                                    <FmTypography Text="30"
+                                                              Type="@Typography.LevelThree" />
+                                                }
+                                            </FmHeader>
+
+                                            <FmBody>
+                                                <div>
+                                                    <FmTypography Text="Country"
+                                                                  Type="@Typography.LevelTwo" />
+                                                </div>
+                                            </FmBody>
+                                        </FmCard>
+                                    </Child>
+                                </GridItem>
+                            </Items>
+                        </Grid>
+                    </ContentTemplate>
+                </DashboardLayoutPanel>
+            </DashboardLayoutPanels>
+        </SfDashboardLayout>
+    </Content>
+</FmLoader>

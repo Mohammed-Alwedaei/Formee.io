@@ -28,5 +28,7 @@ builder.Services.AddOidcAuthentication(options =>
 
 builder.Services.AddScoped<ContainersService>();
 builder.Services.AddScoped<IdentityService>();
+builder.Services.AddScoped<AnalyticsService>();
+builder.Services.AddScoped<FormsService>();
 
 await builder.Build().RunAsync();

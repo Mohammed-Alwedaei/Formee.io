@@ -1,85 +1,63 @@
 ﻿@inherits LayoutComponentBase
 
+
 <SfSidebar @bind-IsOpen="_sidebarToggle"
            Type="SidebarType.Push"
            Position="SidebarPosition.Left"
            EnableGestures="false"
-           Width="300px">
+           Width="300px"
+           DockSize="80px"
+           EnableDock="true">
     <ChildContent>
         <div class="py-4">
-            <div class="d-flex justify-content-center">
-                <SfButton IconCss="fa-solid fa-plus"
-                          IconPosition="IconPosition.Right"
-                          OnClick="HandleNewContainerClick"
-                          IsPrimary="true">
-                    Create Container
-                </SfButton>
-            </div>
+            <FmTypography Text="Formee" 
+                          Type="@Typography.LevelOne"
+                          TextAlign="center"
+                          Classes="fm-motto mb-3"/>
 
-            <FmSpacer />
+            <FmLink Route="/"
+                    ActiveClass="fm-link__active"
+                    Text="Home"
+                    Classes="fm-link d-flex justify-content-center mb-3"
+                    Icon="fa-solid fa-home"/>
 
-            <SfAccordion>
-                <AccordionItems>
-                    <AccordionItem Header="Dashboard"
-                                   IconCss="fa-solid fa-home"
-                                   Expanded="true">
-                        <ContentTemplate>
-                            <FmLink Route="/dashboard"
-                                    Text="Home"
-                                    Classes="fm-link d-flex justify-content-start"
-                                    Icon="fa-solid fa-home" />
+            <FmLink Route="/dashboard/containers"
+                    ActiveClass="fm-link__active"
+                    MatchRoute="NavLinkMatch.Prefix"
+                    Text="Containers"
+                    Classes="fm-link d-flex justify-content-center mb-3"
+                    Icon="fa-solid fa-boxes-stacked"/>
 
-                            <FmSeperator />
+            <FmLink Route="/dashboard/sites"
+                    ActiveClass="fm-link__active"
+                    MatchRoute="NavLinkMatch.Prefix"
+                    Text="Sites"
+                    Classes="fm-link d-flex justify-content-center mb-3"
+                    Icon="fa-solid fa-window-restore"/>
 
-                            <FmLink Route="/dashboard/containers"
-                                    Text="Containers"
-                                    Classes="fm-link d-flex justify-content-start mb-1"
-                                    Icon="fa-solid fa-columns" />
+            <FmLink Route="/dashboard/chat"
+                    ActiveClass="fm-link__active"
+                    Text="Live Chat"
+                    Classes="fm-link d-flex justify-content-center mb-3"
+                    Icon="fa-solid fa-headset"/>
 
-                            <div class="ps-2">
-                                <FmLoader FetchingState="_isFetching">
-                                    <Content>
-                                        @if (_containers is not null)
-                                        {
-                                            var lastContainer = _containers.Last();
-                                            @foreach (var container in _containers)
-                                            {
-                                                <FmLink Route="/dashboard/containers"
-                                                        Text="@container.Name"
-                                                        Classes="fm-link d-flex justify-content-start mb-1"
-                                                        Icon="fa-solid fa-columns" />
+            <FmLink Route="/identity"
+                    ActiveClass="fm-link__active"
+                    Text="Identity Management"
+                    Classes="fm-link d-flex justify-content-center mb-3"
+                    Icon="fa-solid fa-user"/>
 
-                                                <FmLink Route="@($"dashboard/containers/view?id={container.Id}")"
-                                                        Text="View"
-                                                        Classes="fm-link d-flex justify-content-start mb-1"
-                                                        Icon="fa-solid fa-eye" />
-
-                                                @if (_containers.Count != 1 && !container.Equals(lastContainer))
-                                                {
-                                                    <FmSeperator />
-                                                }
-                                            }
-                                        }
-                                    </Content>
-                                </FmLoader>
-                            </div>
-                        </ContentTemplate>
-                    </AccordionItem>
-
-                    <AccordionItem Expanded="true">
-                        <HeaderTemplate>
-                            <FmTypography Text="Identity"
-                                          Icon="fa-solid fa-user" />
-                        </HeaderTemplate>
-
-                        <ContentTemplate>
-                            <NavLink href="/dashboard/containers">
-                                Containers
-                            </NavLink>
-                        </ContentTemplate>
-                    </AccordionItem>
-                </AccordionItems>
-            </SfAccordion>
+            <FmLink Route="/subscription"
+                    ActiveClass="fm-link__active"
+                    Text="Subscription"
+                    Classes="fm-link d-flex justify-content-center mb-3"
+                    Icon="fa-solid fa-credit-card"/>
+            
+            <FmLink Route="/history"
+                    ActiveClass="fm-link__active"
+                    Text="History"
+                    Classes="fm-link d-flex justify-content-center mb-3"
+                    Icon="fa-solid fa-clock-rotate-left" />
         </div>
     </ChildContent>
 </SfSidebar>
@@ -87,7 +65,7 @@
 <div class="maincontent">
     <SfAppBar ColorMode="AppBarColor.Light">
         <div class="app-bar__wrapper">
-            <div>
+            <div class="d-flex justify-content-center align-items-center">
                 <SfButton CssClass="e-inherit" IconCss="e-icons e-menu" OnClick="Toggle"></SfButton>
                 <p>@_currentTime</p>
             </div>

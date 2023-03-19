@@ -7,7 +7,9 @@
 /// </summary>
 public class FormEntity : Entity
 {
-    
+    [Required]
+    public int SiteId { get; set; }
+
     [Required]
     public Guid UserId { get; set; }
 

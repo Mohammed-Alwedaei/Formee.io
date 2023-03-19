@@ -7,30 +7,79 @@
     color: rgb(186, 0, 0);
 }
 
+    ::deep .fm-card__danger span {
+        background-color: rgb(186, 0, 0);
+        color: var(--color-white);
+    }
+
 ::deep .fm-card__warning {
     background-color: rgb(248, 255, 186);
     color: rgb(224, 183, 8);
 }
+
+    ::deep .fm-card__warning span {
+        background-color: rgb(224, 183, 8);
+        color: var(--color-white);
+    }
 
 ::deep .fm-card__success {
     background-color: rgb(198, 253, 198);
     color: rgb(36, 125, 36);
 }
 
+    ::deep .fm-card__success span {
+        background-color: rgb(36, 125, 36);
+        color: var(--color-white);
+    }
+
 ::deep .fm-card__chill {
     background-color: rgb(198, 201, 253);
     color: rgb(23, 24, 153);
 }
+
+    ::deep .fm-card__chill span {
+        background-color: rgb(23, 24, 153);
+        color: var(--color-white);
+    }
+
+    ::deep .fm-card__danger .e-card-header,
+    ::deep .fm-card__warning .e-card-header,
+    ::deep .fm-card__success .e-card-header,
+    ::deep .fm-card__chill .e-card-header {
+        display: flex;
+        justify-content: flex-start;
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 0.5rem;
+        font-size: 2rem;
+    }
+
+    ::deep .fm-card__danger span,
+    ::deep .fm-card__warning span,
+    ::deep .fm-card__success span,
+    ::deep .fm-card__chill span {
+        padding: 0.75rem;
+        border-radius: 100%;
+        font-size: 1.5rem;
+    }
+
+    ::deep .fm-card__danger .e-card-body,
+    ::deep .fm-card__warning .e-card-body,
+    ::deep .fm-card__success .e-card-body,
+    ::deep .fm-card__chill .e-card-body {
+        color: var(--color-text);
+    }
+
 
 ::deep .fm-card__interaction-hover {
     transition: all 1s ease;
     cursor: pointer;
 }
 
-::deep .fm-card__interaction-hover:hover {
-    box-shadow: 0 10px 10px rgba(128, 128, 128, 0.1);
-    transform: translateY(-30px);
-}
+    ::deep .fm-card__interaction-hover:hover {
+        box-shadow: 0 10px 10px rgba(128, 128, 128, 0.1);
+        transform: translateY(-30px);
+    }
 
 ::deep .fm-card__border-dashed {
     border: 5px dashed rgba(128, 128, 128, 0.25) !important;

@@ -1,15 +1,17 @@
-﻿using Client.Web.Utilities.Dtos;
+﻿using Client.Web.Utilities.Constants;
+using Client.Web.Utilities.Dtos;
 using Client.Web.Utilities.Services;
 using Markdig;
 using Microsoft.AspNetCore.Components;
 
-namespace Clients.Web.Components.Pages.Containers;
+namespace Clients.Web.Components.Pages.Dashboard.Containers;
 
+[Route(Routes.UpsertContainer)]
 public partial class Upsert
 {
     [Inject]
     public ContainersService ContainersService { get; set; }
-    
+
     [Inject]
     public NavigationManager NavigationManager { get; set; }
 
@@ -21,9 +23,9 @@ public partial class Upsert
     [SupplyParameterFromQuery(Name = "type")]
     public string UpsertType { get; set; }
 
-    private ContainerDto _container = new ();
+    private ContainerDto _container = new();
 
-    private ContainerDto _containerPreview = new ();
+    private ContainerDto _containerPreview = new();
 
     private bool IsDeleteOperation { get; set; }
 
@@ -37,8 +39,8 @@ public partial class Upsert
         {
             _container = new ContainerDto();
         }
-        else if(!string.IsNullOrEmpty(ContainerId) 
-                && UpsertType == "update" 
+        else if (!string.IsNullOrEmpty(ContainerId)
+                && UpsertType == "update"
                 || UpsertType == "delete")
         {
             _container = await ContainersService.GetByIdAsync(ContainerId);
@@ -80,7 +82,7 @@ public partial class Upsert
             response = await ContainersService
                 .CreateAsync(_container);
         }
-        
+
 
         if (response)
         {

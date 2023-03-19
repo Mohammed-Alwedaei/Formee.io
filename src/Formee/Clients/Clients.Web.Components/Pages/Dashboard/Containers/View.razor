@@ -1,4 +1,4 @@
-﻿@page "/dashboard/containers/view"
+﻿@using Markdig
 
 <FmPageIntro Heading="My Containers">
     <Breadcrumbs>
@@ -10,9 +10,12 @@
                         Text="Containers"
                         Url="/containers" />
 
-        <BreadcrumbItem IconCss="@Container.Icon"
-                                Disabled
-                        Text="@Container.Name" />
+        @if (Container is not null)
+        {
+            <BreadcrumbItem IconCss="@Container.Icon"
+                            Disabled
+                            Text="@Container.Name" />
+        }
     </Breadcrumbs>
 </FmPageIntro>
 
@@ -29,7 +32,14 @@
                                   Row="0"
                                   SizeX="3"
                                   SizeY="1">
-                <FmTypography Text="Hello" />
+                <ContentTemplate>
+                    <div class="fm-markdown__display">
+                        @if (!string.IsNullOrEmpty(Container.Description))
+                        {
+                            @((MarkupString) Markdown.ToHtml(Container.Description))
+                        }
+                    </div>
+                </ContentTemplate>
             </DashboardLayoutPanel>
             <DashboardLayoutPanel Column="4"
                                   Row="0"
@@ -37,17 +47,15 @@
                                   SizeY="1">
                 <ContentTemplate>
                     <SfAccumulationChart Title="Mobile Browser Statistics" EnableBorderOnMouseMove="false">
-                        <AccumulationChartLegendSettings Visible="true"/>
+                        <AccumulationChartLegendSettings Visible="true" />
                         <AccumulationChartTooltipSettings Enable="true" />
-                        <AccumulationDataLabelSettings Visible="true"
-                                                       Position="AccumulationLabelPosition.Outside" />
 
                         <AccumulationChartSeriesCollection>
                             <AccumulationChartSeries DataSource="_pageHitsDisplay"
                                                      XName="X"
                                                      YName="Y"
-                                                     Name="Browser">
-                            </AccumulationChartSeries>
+                                                     Name="Browser" />
+                            
                         </AccumulationChartSeriesCollection>
                     </SfAccumulationChart>
                 </ContentTemplate>

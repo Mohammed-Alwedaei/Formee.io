@@ -27,19 +27,20 @@
                         <Items>
                             <GridItem ColumnSize="@GridSize.GridItemSmall">
                                 <Child>
-                                    <FmCard Style="@Card.Success">
+                                    <FmCard Classes="@Card.Success">
                                         <FmHeader>
                                             <FmTypography Text="Containers"
                                                           Type="@Typography.LevelTwo" />
                                         </FmHeader>
 
                                         <FmBody>
-                                            <FmTypography Text="@_containers.Count.ToString()"
-                                                          Type="@Typography.LevelThree" />
+                                            <div>
+                                                <FmTypography Text="@_containers.Count.ToString()"
+                                                              Classes=""
+                                                              Type="@Typography.LevelThree" />
 
-                                            <SfIcon IconCss="fa-solid fa-money-bill" />
-
-                                            <FmTypography Text="Hello world this is something great" />
+                                                <SfIcon IconCss="fa-solid fa-money-bill" />
+                                            </div>
                                         </FmBody>
                                     </FmCard>
                                 </Child>
@@ -47,7 +48,7 @@
 
                             <GridItem ColumnSize="@GridSize.GridItemSmall">
                                 <Child>
-                                    <FmCard Style="@Card.Danger">
+                                    <FmCard Classes="@Card.Danger">
                                         <FmHeader>
                                             <FmTypography Text="Sites"
                                                           Type="@Typography.LevelTwo" />
@@ -69,7 +70,7 @@
 
                             <GridItem ColumnSize="@GridSize.GridItemSmall">
                                 <Child>
-                                    <FmCard Style="@Card.Warning">
+                                    <FmCard Classes="@Card.Warning">
                                         <FmHeader>
                                             <FmTypography Text="Hits"
                                                           Type="@Typography.LevelTwo" />
@@ -91,7 +92,7 @@
 
                             <GridItem ColumnSize="@GridSize.GridItemSmall">
                                 <Child>
-                                    <FmCard Style="@Card.Chill">
+                                    <FmCard Classes="@Card.Chill">
                                         <FmHeader>
                                             <FmTypography Text="Forms"
                                                           Type="@Typography.LevelTwo" />

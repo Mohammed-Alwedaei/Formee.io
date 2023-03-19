@@ -1,5 +1,5 @@
 ﻿<div onclick="@(async () => await HandleClickEvent())">
-    <SfCard CssClass="@_finalStyle">
+    <SfCard CssClass="@_allClasses">
         @if (FmHeader is not null)
         {
             <CardHeader>
@@ -15,7 +15,7 @@
 </div>
 @code {
     [Parameter]
-    public string Style { get; set; }
+    public string Classes { get; set; }
 
     [Parameter]
     public RenderFragment FmHeader { get; set; }
@@ -29,11 +29,11 @@
     [Parameter]
     public EventCallback OnClick { get; set; }
 
-    private string _finalStyle;
+    private string _allClasses;
 
     protected override void OnInitialized()
     {
-        _finalStyle = IsHoverable ? $"{Style} fm-card__interaction-hover" : Style;
+        _allClasses = IsHoverable ? $"{Classes} fm-card__interaction-hover" : Classes;
     }
 
     public async Task HandleClickEvent()

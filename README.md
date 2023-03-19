@@ -28,18 +28,20 @@ Microservices architecture is the architectural style of the software, where it 
 
 #### Server-side Services Technologies
 
-| No  | Service     | Technologies                                                                            | Design Patterns                                          |
-| --- | ----------- | --------------------------------------------------------------------------------------- | -------------------------------------------------------- |
-| 1   | Form        | <ol><li>ASP.NET 7 (C# 11)</li> <li>SQL Server</li> <li>Docker</li></ol>                 | <ol><li>Clean Architecture<li>MediatR and CQRS</li></ol> |
-| 2   | Live Chat   | <ol><li>ASP.NET 7 (C# 11)</li> <li>SignalR</li> <li>CosmosDB</li> <li>Docker</li></ol>  | Not Implemented Yet                                      |
-| 3   | Containers  | <ol><li>ASP.NET 7 (C# 11)</li> <li>SignalR</li> <li>MongoDb</li> <li>Docker</li></ol>   | Not Implemented Yet                                      |
-| 4   | Payments    | <ol><li>ASP.NET 7 (C# 11)</li> <li>SQL Server</li> <li>Docker</li> <li>Stripe</li></ol> | Not Implemented Yet                                      |
-| 5   | History     | <ol><li>ASP.NET 7 (C# 11)</li> <li>SQL Server</li> <li>Docker</li></ol>                 | Not Implemented Yet                                      |
-| 6   | Identity    | <ol><li>ASP.NET 7 (C# 11)</li> <li>SQL Server</li> <li>Docker</li><li>Auth0</li></ol>   | Not Implemented Yet                                      |
-| 7   | Links       | <ol><li>ASP.NET 7 (C# 11)</li> <li>SQL Server</li> <li>Docker</li></ol>                 | Not Implemented Yet                                      |
-| 8   | Analytics   | <ol><li>ASP.NET 7 (C# 11)</li> <li>SQL Server</li> <li>Docker</li></ol>                 | Not Implemented Yet                                      |
-| 9   | Emails      | <ol><li>ASP.NET 7 (C# 11)</li> <li>SQL Server</li> <li>Azure Functions</li></ol>        | Not Implemented Yet                                      |
-| 10  | API Gateway | <ol><li>ASP.NET 7 (C# 11)</li> <li>Ocelot Library</li></ol>                             | None                                                     |
+| No  | Service     | Technologies                                                                            | Design Patterns                                              |
+| --- | ----------- | --------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| 1   | Form        | <ol><li>ASP.NET 7 (C# 11)</li> <li>SQL Server</li> <li>Docker</li></ol>                 | <ol><li>Clean Architecture<li>MediatR and CQRS</li></ol>     |
+| 2   | Live Chat   | <ol><li>ASP.NET 7 (C# 11)</li> <li>SignalR</li> <li>CosmosDB</li> <li>Docker</li></ol>  | <ol><li>Clean Architecture<li>Publisher/Subscriber</li></ol> |
+| 3   | Containers  | <ol><li>ASP.NET 7 (C# 11)</li> <li>SignalR</li> <li>MongoDb</li> <li>Docker</li></ol>   | <ol><li>Publisher/Subscriber</li> </ol>                      |
+| 4   | Payments    | <ol><li>ASP.NET 7 (C# 11)</li> <li>SQL Server</li> <li>Docker</li> <li>Stripe</li></ol> | <ol><li>Publisher/Subscriber</li> </ol>                      |
+| 5   | History     | <ol><li>ASP.NET 7 (C# 11)</li> <li>SQL Server</li> <li>Docker</li></ol>                 | <ol><li>Publisher/Subscriber</li> </ol>                      |
+| 6   | Identity    | <ol><li>ASP.NET 7 (C# 11)</li> <li>SQL Server</li> <li>Docker</li><li>Auth0</li></ol>   | <ol><li>Publisher/Subscriber</li> </ol>                      |
+| 7   | Links       | <ol><li>ASP.NET 7 (C# 11)</li> <li>SQL Server</li> <li>Docker</li></ol>                 | <ol><li>Publisher/Subscriber</li> </ol>                      |
+| 8   | Analytics   | <ol><li>ASP.NET 7 (C# 11)</li> <li>SQL Server</li> <li>Docker</li></ol>                 | <ol><li>Publisher/Subscriber</li> </ol>                      |
+| 9   | Emails      | <ol><li>ASP.NET 7 (C# 11)</li> <li>SQL Server</li> <li>Azure Functions</li></ol>        | <ol><li>Publisher/Subscriber</li> </ol>                      |
+| 10  | API Gateway | <ol><li>ASP.NET 7 (C# 11)</li> <li>Ocelot Library</li></ol>                             | None                                                         |
+
+All publisher/subscriber design patterns are implemented with Azure Service Bus
 
 #### Client-side Technologies
 

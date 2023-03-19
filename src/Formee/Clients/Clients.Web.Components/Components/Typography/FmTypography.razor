@@ -1,31 +1,31 @@
 ﻿@switch (Type)
 {
     case Typography.LevelOne:
-        <h1 style="text-align: @TextAlign;" class="@Classes">@Text</h1>
+        <h1 style="text-align: @TextAlign;" class="@textClasses">@Text</h1>
         break;
 
     case Typography.LevelTwo:
-        <h2 style="text-align: @TextAlign;" class="@Classes">@Text</h2>
+        <h2 style="text-align: @TextAlign;" class="@textClasses">@Text</h2>
         break;
 
     case Typography.LevelThree:
-        <h3 style="text-align: @TextAlign;" class="@Classes">@Text</h3>
+        <h3 style="text-align: @TextAlign;" class="@textClasses">@Text</h3>
         break;
 
     case Typography.LevelFour:
-        <h4 style="text-align: @TextAlign;" class="@Classes">@Text</h4>
+        <h4 style="text-align: @TextAlign;" class="@textClasses">@Text</h4>
         break;
 
     case Typography.LevelFive:
-        <h5 style="text-align: @TextAlign;" class="@Classes">@Text</h5>
+        <h5 style="text-align: @TextAlign;" class="@textClasses">@Text</h5>
         break;
 
     case Typography.LevelSix:
-        <h6 style="text-align: @TextAlign;" class="@Classes">@Text</h6>
+        <h6 style="text-align: @TextAlign;" class="@textClasses">@Text</h6>
         break;
 
     default:
-        <p style="text-align: @TextAlign;" class="@Classes">@Text</p>
+        <p style="text-align: @TextAlign;" class="@textClasses">@Text</p>
         break;
 }
 
@@ -57,9 +57,15 @@
     [Parameter]
     public string Classes { get; set; }
 
+    private string textClasses { get; set; }
+
     private Dictionary<string, object> _htmlAttributes = new()
     {
-        { "class", "ps-1" }
+        { "class", "ps-1 fm-icon" }
     };
 
+    protected override void OnParametersSet()
+    {
+        textClasses = $"{Classes} fm-text";
+    }
 }

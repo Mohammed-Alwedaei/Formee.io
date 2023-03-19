@@ -1,0 +1,258 @@
+﻿<FmPageIntro Heading="New Site">
+    <Breadcrumbs>
+        <BreadcrumbItem IconCss="fa-solid fa-house"
+                        Text="Dashboard"
+                        Url="/" />
+
+        <BreadcrumbItem IconCss="fa-solid fa-table"
+                        Text="Containers"
+                        Url="/containers" />
+
+        @if (UpsertType == "update")
+        {
+            <BreadcrumbItem IconCss="fa-solid fa-edit"
+                        Text="Update"
+                        Url="/upsert" />
+        }
+        else if (IsDeleteUpsert && UpsertType == "delete")
+        {
+            <BreadcrumbItem IconCss="fa-solid fa-trash"
+                        Text="Delete"
+                        Url="/upsert" />
+        }
+        else
+        {
+            <BreadcrumbItem IconCss="fa-solid fa-plus-circle"
+                        Text="Create"
+                        Url="/upsert" />
+        }
+    </Breadcrumbs>
+</FmPageIntro>
+
+<FmSpacer />
+
+<EditForm Model="Site" OnValidSubmit="HandleValidFormSubmit">
+    <Grid Gap="@GridGap.Large">
+        <Items>
+            <GridItem ColumnSize="@GridSize.GridIteLarge">
+                <Child>
+                    <Grid Gap="@GridGap.Large">
+                        <Items>
+                            <GridItem ColumnSize="@GridSize.GridItemXLarge">
+                                <Child>
+                                    <FmCard Classes="p-2" IsHoverable="false">
+                                        <FmHeader>
+                                            <FmTypography Type="@Typography.LevelTwo"
+                                                          Text="Basic Info"
+                                                          TextAlign="left"
+                                                          Icon="fa-solid fa-plus-circle"
+                                                          IconSize="1.5rem" />
+                                        </FmHeader>
+                                        <FmBody>
+                                            <Grid Gap="@GridGap.Large">
+                                                <Items>
+                                                    <GridItem ColumnSize="@GridSize.GridItemMedium">
+                                                        <Child>
+                                                            <label for="@nameof(Site.Name)">
+                                                                Name
+                                                            </label>
+
+                                                            <SfTextBox ID="@nameof(Site.Name)"
+                                                                       @bind-Value="Site.Name"
+                                                                       OnInput="HandleSiteNamePreviewChange"
+                                                                       Readonly="IsDeleteUpsert" />
+
+                                                            <ValidationMessage For="() => Site.Name" />
+                                                        </Child>
+                                                    </GridItem>
+
+                                                    <GridItem ColumnSize="@GridSize.GridItemMedium">
+                                                        <Child>
+                                                            <label for="@nameof(Site.Icon)">
+                                                                Icon
+                                                            </label>
+
+                                                            <SfDropDownList TValue="string"
+                                                                            TItem="IconModel"
+                                                                            Placeholder="Select an Icon"
+                                                                            @bind-Value="Site.Icon"
+                                                                            OnInput="HandleSiteIconPreviewChange"
+                                                                            Readonly="IsDeleteUpsert"
+                                                                            DataSource="@IconsList">
+                                                                <DropDownListFieldSettings Value="Id"
+                                                                                           Text="Text" />
+
+                                                            </SfDropDownList>
+
+                                                            <ValidationMessage For="() => Site.Icon" />
+                                                        </Child>
+                                                    </GridItem>
+                                                </Items>
+                                            </Grid>
+                                        </FmBody>
+                                    </FmCard>
+                                </Child>
+                            </GridItem>
+
+                            <GridItem ColumnSize="@GridSize.GridItemXLarge">
+                                <Child>
+                                    <FmCard Classes="p-2"
+                                            IsHoverable="false">
+                                        <FmHeader>
+                                            <FmTypography Type="@Typography.LevelTwo"
+                                                          Text="Markdown Description"
+                                                          TextAlign="left"
+                                                          Icon="fa-solid fa-plus-circle"
+                                                          IconSize="1.5rem" />
+                                        </FmHeader>
+                                        <FmBody>
+                                            <Grid Gap="@GridGap.Large">
+                                                <Items>
+                                                    <GridItem ColumnSize="@GridSize.GridItemXLarge">
+                                                        <Child>
+                                                            <label for="@nameof(SitePreview.Description)">
+                                                                Description
+                                                            </label>
+                                                            <SfRichTextEditor @bind-Value="@SitePreview.Description"
+                                                                              EditorMode="@EditorMode.Markdown"
+                                                                              SaveInterval="1"
+                                                                              Readonly="IsDeleteUpsert">
+                                                                <RichTextEditorEvents ValueChange="HandleSiteDescriptionPreviewChange" />
+                                                            </SfRichTextEditor>
+
+                                                            <ValidationMessage For="() => Site.Description" />
+                                                        </Child>
+                                                    </GridItem>
+                                                </Items>
+                                            </Grid>
+                                        </FmBody>
+                                    </FmCard>
+                                </Child>
+                            </GridItem>
+
+                            <GridItem ColumnSize="@GridSize.GridItemXLarge">
+                                <Child>
+                                    <FmCard Classes="p-2"
+                                            IsHoverable="false">
+                                        <FmHeader>
+                                            <FmTypography Type="@Typography.LevelTwo"
+                                                          Text="Submit"
+                                                          TextAlign="left"
+                                                          Icon="fa-solid fa-plus-circle"
+                                                          IconSize="1.5rem" />
+                                        </FmHeader>
+                                        <FmBody>
+                                            <div>
+                                                @if (UpsertType == "update")
+                                                {
+                                                    <SfButton CssClass="e-primary"
+                                                          IconCss="fa-solid fa-trash"
+                                                          IconPosition="IconPosition.Right"
+                                                              style="padding: 0.5rem 1rem;"
+                                                          IsPrimary="true">
+                                                        @UpsertType.ToUpper()
+                                                    </SfButton>
+                                                }
+                                                else if (IsDeleteUpsert && UpsertType == "delete")
+                                                {
+                                                    <SfButton CssClass="e-primary"
+                                                          IconCss="fa-solid fa-trash"
+                                                          IconPosition="IconPosition.Right"
+                                                              style="padding: 0.5rem 1rem;"
+                                                          IsPrimary="true">
+                                                        @UpsertType.ToUpper()
+                                                    </SfButton>
+                                                }
+                                                else
+                                                {
+
+                                                    <SfButton CssClass="e-primary"
+                                                          IconCss="fa-solid fa-trash"
+                                                          IconPosition="IconPosition.Right"
+                                                              style="padding: 0.5rem 1rem;"
+                                                          IsPrimary="true">
+                                                        @UpsertType.ToUpper()
+                                                    </SfButton>
+                                                }
+                                            </div>
+                                        </FmBody>
+                                    </FmCard>
+                                </Child>
+                            </GridItem>
+                        </Items>
+                    </Grid>
+                </Child>
+            </GridItem>
+
+            <GridItem ColumnSize="@GridSize.GridItemSmall">
+                <Child>
+                    <div>
+                        <FmCard Classes="p-2 mb-3"
+                                IsHoverable="false">
+                            <FmHeader>
+                                <FmTypography Type="@Typography.LevelTwo"
+                                              Text="Preview"
+                                              TextAlign="left"
+                                              Icon="fa-solid fa-check"
+                                              IconSize="1.5rem" />
+                            </FmHeader>
+                            <FmBody>
+                                <h2>
+                                    @Site.Name &nbsp;
+                                    <i class="@Site.Icon"></i>
+                                </h2>
+
+                                <p>
+                                    @if (Site.Description != null)
+                                    {
+                                        @((MarkupString)Markdown.ToHtml(Site.Description))
+                                    }
+                                </p>
+                            </FmBody>
+                        </FmCard>
+
+                        <FmCard Classes="p-2"
+                                IsHoverable="false">
+                            <FmHeader>
+                                <FmTypography Type="@Typography.LevelTwo"
+                                              Text="Form Validation"
+                                              TextAlign="left"
+                                              Icon="fa-solid fa-check"
+                                              IconSize="1.5rem" />
+                            </FmHeader>
+                            <FmBody>
+                                <DataAnnotationsValidator />
+                                <ValidationSummary />
+                            </FmBody>
+                        </FmCard>
+                    </div>
+                </Child>
+            </GridItem>
+
+
+        </Items>
+    </Grid>
+</EditForm>
+
+<SfDialog Width="600px"
+          @bind-Visible="IsVisibleModal"
+          AllowPrerender="true"
+          IsModal="true">
+    <DialogAnimationSettings Effect="DialogEffect.SlideBottom" Duration=400 />
+    <DialogTemplates>
+        <Header>You are about to @UpsertType this container?</Header>
+        <Content> You are just about to @UpsertType this container, this action is not reversable once approved </Content>
+    </DialogTemplates>
+    <DialogButtons>
+        <DialogButton Content="@UpsertType"
+                      IconCss="fa-solid fa-trash"
+                      IsPrimary="true"
+                      IconPosition="IconPosition.Right"
+                      OnClick="HandleActionApprove" />
+
+        <DialogButton Content="Cancel"
+                      IconCss="fa-solid fa-xmark"
+                      IconPosition="IconPosition.Right"
+                      OnClick="HandleActionReject" />
+    </DialogButtons>
+</SfDialog>

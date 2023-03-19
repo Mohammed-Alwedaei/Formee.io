@@ -1,23 +1,21 @@
-﻿using Application.Forms.Queries.GetAllByFormId;
+﻿namespace Application.Forms.Queries.GetAllBySiteId;
 
-namespace Application.Forms.Queries.GetAllByUserId;
-
-public class GetAllByUserIdHandler : IRequestHandler
-    <GetAllByUserIdQuery, ResponseEntity>
+public class GetAllBySiteIdHandler : IRequestHandler
+    <GetAllBySiteIdQuery, ResponseEntity>
 {
     private readonly IGenericRepository<FormEntity> _genericRepository;
 
-    public GetAllByUserIdHandler(IGenericRepository<FormEntity> genericRepository)
+    public GetAllBySiteIdHandler(IGenericRepository<FormEntity> genericRepository)
     {
         _genericRepository = genericRepository;
     }
 
-    public async Task<ResponseEntity> Handle(GetAllByUserIdQuery request, 
+    public async Task<ResponseEntity> Handle(GetAllBySiteIdQuery request,
         CancellationToken cancellationToken)
     {
         var formsFromDb = await _genericRepository
             .GetAllByConditionAsync(
-                f => f.UserId == request.UserId, new[]
+                f => f.SiteId == request.SiteId, new[]
             {
                 "Fields",
                 "Details"
