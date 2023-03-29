@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Live chat</title>
+
+    <link rel="stylesheet" href="./styles.css" />
+
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.4/signalr.min.js"
+      integrity="sha512-ulHhwQdGlX96gNSRsakG06STFdaQBUTbCX4KqLcYI428blEsttMkg2C3n2KtiYNDwnETBHXDg9ZAtvkfMHTYOQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+
+    <script defer src="./app.js"></script>
+  </head>
+  <body>
+    <div class="fm-livechat__wrapper">
+      <div class="fm-livechat__connected">
+        <div class="fm-livechat__agent-info">
+          <div class="fm-livechat__agent-img">
+            <img
+              src="https://images.pexels.com/photos/1615776/pexels-photo-1615776.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+              alt=""
+            />
+          </div>
+          <div class="fm-livechat__agent-details">
+            <p>Lorem, ipsum.</p>
+            <p>Agent</p>
+          </div>
+        </div>
+
+        <div class="fm-livechat__message-field"></div>
+      </div>
+      <div class="fm-livechat__register">
+        <div>
+          <div class="fm-livechat__input-field">
+            <label for="fullname">Full Name</label>
+            <input
+              id="fullname"
+              type="text"
+              name="fullname"
+              placeholder="Please type your username..."
+            />
+          </div>
+
+          <div class="fm-livechat__input-field">
+            <label for="email">Email</label>
+            <input id="email" type="email" name="email" placeholder="Please type your email..." />
+          </div>
+        </div>
+
+        <button class="fm-livechat__register-button">Start</button>
+      </div>
+    </div>
+
+    <div class="fm-livechat__popup-button-wrapper">
+      <button class="fm-livechat__popup-button">Click Me!</button>
+    </div>
+  </body>
+</html>

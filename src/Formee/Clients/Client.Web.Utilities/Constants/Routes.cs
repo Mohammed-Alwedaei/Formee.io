@@ -13,4 +13,6 @@ public static class Routes
     public const string Sites = "/dashboard/sites";
     public const string ViewSites = "/dashboard/sites/view";
     public const string UpsertSites = "/dashboard/sites/upsert";
+
+    public const string LiveChat = "/dashboard/livechat";
 }

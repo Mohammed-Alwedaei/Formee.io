@@ -33,7 +33,7 @@ public class HitsController : ControllerBase
         return Ok(result);
     }
 
-    [HttpGet("all/{siteId:int}/{startDate}/{endDate}")]
+    [HttpGet("all/{siteId:int}/{startDate:DateTime}/{endDate:DateTime}")]
     public async Task<IActionResult> GetAllInTimePeriod
         (int siteId, DateTime startDate, DateTime endDate)
     {

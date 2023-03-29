@@ -1,5 +1,4 @@
 ﻿using Client.Web.Utilities.Models;
-using Microsoft.AspNetCore.Components.Web;
 
 namespace Clients.Web.Components.Pages.Dashboard.Sites;
 
@@ -74,6 +73,7 @@ public partial class Upsert
     private void HandleSiteIconPreviewChange(ChangeEventArgs args)
         => Site.Icon = args.Value?.ToString();
     
-    private void HandleSiteDescriptionPreviewChange(Syncfusion.Blazor.RichTextEditor.ChangeEventArgs args)
+    private void HandleSiteDescriptionPreviewChange
+        (Syncfusion.Blazor.RichTextEditor.ChangeEventArgs args)
         => Site.Description = args.Value;
 }

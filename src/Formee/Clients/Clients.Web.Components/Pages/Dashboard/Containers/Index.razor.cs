@@ -60,11 +60,11 @@ public partial class Index
     {
         if (args.Item.Text == "Edit")
         {
-            NavigationManager.NavigateTo($"/containers/upsert?type=update&containerId={args.Item.Id}");
+            NavigationManager.NavigateTo($"{Routes.UpsertContainer}?type=update&containerId={args.Item.Id}");
         }
         else
         {
-            NavigationManager.NavigateTo($"/containers/upsert?type=delete&containerId={args.Item.Id}");
+            NavigationManager.NavigateTo($"{Routes.UpsertContainer}?type=delete&containerId={args.Item.Id}");
         }
     }
 }

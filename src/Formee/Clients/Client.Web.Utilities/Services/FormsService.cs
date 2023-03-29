@@ -1,7 +1,5 @@
 ﻿using Client.Web.Utilities.Dtos.Forms;
 using Client.Web.Utilities.Models;
-using Newtonsoft.Json;
-using System.Collections.Generic;
 using System.Net.Http.Json;
 
 
@@ -24,5 +22,16 @@ public class FormsService
             .GetFromJsonAsync<ResponseModel<List<FormDto>>>(url);
 
         return response is null ? new List<FormDto>() : response.Results;
+    }
+
+    public async Task<List<FormResponseDto>> GetAllResponsesByFormIdAsync
+        (int formId)
+    {
+        var url = $"/api/formresponse/all/{formId}";
+
+        var response = await _httpClient
+            .GetFromJsonAsync<ResponseModel<List<FormResponseDto>>>(url);
+
+        return response is null ? new List<FormResponseDto>() : response.Results;
     }
 }

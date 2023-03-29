@@ -1,0 +1,79 @@
+.fm-livechat__wrapper {
+  height: 40vh;
+  width: 10vw;
+  display: none;
+  box-shadow: 0 10px 40px rgba(31, 31, 31, 0.2);
+  padding: 2rem;
+  border-radius: 1rem;
+}
+
+.fm-livechat__wrapper.reveal {
+  display: block;
+  position: absolute;
+  bottom: 3rem;
+  right: 3rem;
+}
+
+.fm-livechat__connected {
+  display: none;
+}
+
+.fm-livechat__agent-info {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  border-bottom: 1px solid rgba(31, 31, 31, 0.2);
+  margin-bottom: 1rem;
+}
+
+.fm-livechat__agent-img {
+  width: 3rem;
+  height: 3rem;
+  margin-right: 2rem;
+}
+
+.fm-livechat__agent-img img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+
+.fm-livechat__popup-button-wrapper {
+  position: absolute;
+  bottom: 3rem;
+  right: 3rem;
+}
+
+.fm-livechat__popup-button {
+  background-color: white;
+  color: #9e8ddf;
+  border: 10px solid #9e8ddf;
+  cursor: pointer;
+  width: 5rem;
+  height: 5rem;
+  border-radius: 50%;
+}
+
+.fm-livechat__input-field {
+  margin: 1rem 0 0 0;
+  width: 100%;
+}
+
+.fm-livechat__input-field input {
+  margin-top: 1rem;
+  width: 100%;
+  border: none;
+  height: 2rem;
+  outline: 0;
+  border-bottom: 2px solid #9e8ddf;
+}
+
+.fm-livechat__register-button {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background-color: #9e8ddf;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+}

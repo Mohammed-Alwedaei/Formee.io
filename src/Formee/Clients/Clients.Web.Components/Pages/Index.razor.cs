@@ -1,6 +1,5 @@
 ﻿using Client.Web.Utilities.Dtos;
 using Client.Web.Utilities.Services;
-using Microsoft.AspNetCore.Components;
 
 namespace Clients.Web.Components.Pages;
 public partial class Index

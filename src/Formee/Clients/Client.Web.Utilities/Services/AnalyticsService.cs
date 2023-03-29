@@ -34,11 +34,17 @@ public class AnalyticsService
         var response = await _httpClient
             .GetFromJsonAsync<List<SiteDto>>(url);
 
-        if (response is not null)
-        {
-            return response;
-        }
+        return response ?? new List<SiteDto>();
+    }
 
-        return new List<SiteDto>();
+    public async Task<List<PageHitDto>> GetAllHitsInTimePeriodAsync
+        (int siteId, DateTime startDate, DateTime endDate)
+    {
+        var url = $"/api/hits/all/{siteId}/{startDate.ToString("yyyy-MM-dd")}/{endDate.ToString("yyyy-MM-dd")}";
+
+        var response = await _httpClient
+            .GetFromJsonAsync<List<PageHitDto>>(url);
+
+        return response ?? new List<PageHitDto>();
     }
 }

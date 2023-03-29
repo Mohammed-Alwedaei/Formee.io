@@ -20,15 +20,27 @@ public partial class View
 
     private List<FormDto> _forms { get; set; }
 
+    private List<FormResponseDto> _formResponses { get; set; }
+
+    private List<PageHitDto> _pageHits { get; set; }
+
     private bool IsFetching { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         IsFetching = true;
 
-        _site = await AnalyticsService.GetSiteByIdAsync(Id);
+        //_site = await AnalyticsService.GetSiteByIdAsync(Id);
 
-        _forms = await FormsService.GetAllBySiteIdAsync(_site.Id);
+        //_forms = await FormsService.GetAllBySiteIdAsync(_site.Id);
+
+        //_formResponses = await FormsService.GetAllResponsesByFormIdAsync(1);
+
+        //var startDate = DateTime.Now.AddMonths(-1);
+        //var endDate = DateTime.Now;
+
+        //_pageHits = await AnalyticsService
+        //    .GetAllHitsInTimePeriodAsync(Id, startDate, endDate);
 
         IsFetching = false;
     }

@@ -13,7 +13,6 @@ builder.Services.AddCors(options =>
     });
 });
 
-
 builder.Services.AddOcelot();
 
 var app = builder.Build();
