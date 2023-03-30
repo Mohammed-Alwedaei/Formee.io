@@ -6,8 +6,9 @@ const History = new Schema({
   id: ObjectId,
   title: String,
   action: String,
-  userName: String,
   userId: String,
+  service: String,
+  requestDate: Date,
   createdDate: { type: Date, default: Date.now },
 });
 

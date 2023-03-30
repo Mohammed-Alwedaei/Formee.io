@@ -11,6 +11,20 @@ router.get("/all", async (req, res) => {
   }
 });
 
+router.get("/all/:service", async (req, res) => {
+  try {
+    var service = req.params.service;
+
+    console.log(service.charAt(0).toUpperCase());
+
+    res.send(
+      await History.find({ service: { $regex: service, $options: "i" } })
+    );
+  } catch (e) {
+    console.error(e);
+  }
+});
+
 router.post("/", async (req, res) => {
   const historyModel = new History({
     title: req.body.title,

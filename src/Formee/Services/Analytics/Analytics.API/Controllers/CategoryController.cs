@@ -1,4 +1,6 @@
 ﻿using Analytics.Utilities.Dtos.Category;
+using ServiceBus.Models;
+using ServiceBus.ServiceBus;
 
 namespace Analytics.API.Controllers;
 
@@ -8,11 +10,14 @@ public class CategoryController : ControllerBase
 {
     private readonly ICategoryRepository _categoryRepository;
     private readonly ILogger<CategoryController> _logger;
+    private readonly IAzureServiceBus _serviceBus;
     public CategoryController(ICategoryRepository categoryRepository, 
-        ILogger<CategoryController> logger)
+        ILogger<CategoryController> logger,
+        IAzureServiceBus serviceBus)
     {
         _categoryRepository = categoryRepository;
         _logger = logger;
+        _serviceBus = serviceBus;
     }
 
     [HttpGet("{id:int}")]
@@ -62,6 +67,18 @@ public class CategoryController : ControllerBase
             return BadRequest();
         }
 
+        var history = new HistoryModel
+        {
+            Title = "A new category is created",
+            Action = "Create",
+            UserId = category.UserId,
+        };
+
+        await _serviceBus.SendMessage(new CustomServiceBusMessage
+        {
+            History = history
+        });
+
         return Ok(result);
     }
 
@@ -80,6 +97,18 @@ public class CategoryController : ControllerBase
             return NotFound();
         }
 
+        var history = new HistoryModel
+        {
+            Title = "A category is updated",
+            Action = "Update",
+            UserId = category.UserId,
+        };
+
+        await _serviceBus.SendMessage(new CustomServiceBusMessage
+        {
+            History = history
+        });
+
         return Ok(result);
     }
 
@@ -92,10 +121,22 @@ public class CategoryController : ControllerBase
         var result = await _categoryRepository
             .DeleteAsync(id);
 
-        if (result is null)
+        if (result.Id is 0)
         {
             return NotFound();
         }
+
+        var history = new HistoryModel
+        {
+            Title = "A category is deleted",
+            Action = "Delete",
+            UserId = result.UserId,
+        };
+
+        await _serviceBus.SendMessage(new CustomServiceBusMessage
+        {
+            History = history
+        });
 
         return Ok(result);
     }

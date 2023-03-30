@@ -22,10 +22,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Folder Include="Middlewares\" />
-	</ItemGroup>
-
-	<ItemGroup>
+		<ProjectReference Include="..\..\..\Shared\ServiceBus\ServiceBus.csproj" />
 		<ProjectReference Include="..\Analytics.DataAccess\Analytics.BusinessLogic.csproj" />
 	</ItemGroup>
 </Project>
