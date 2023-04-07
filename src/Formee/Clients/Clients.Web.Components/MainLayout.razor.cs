@@ -9,6 +9,9 @@ public partial class MainLayout : IDisposable
 {
     [Inject]
     public ContainersService ContainersService { get; set; }
+    
+    [Inject]
+    public NotificationsService NotificationsService { get; set; }
 
     [Inject]
     public NavigationManager NavigationManager { get; set; }
@@ -24,6 +27,8 @@ public partial class MainLayout : IDisposable
 
     private bool _isFetching;
 
+    private IReadOnlyList<NotificationDto> Notifications { get; set; } = new List<NotificationDto>();
+
     protected override async Task OnParametersSetAsync()
     {
         _isFetching = true;
@@ -31,6 +36,8 @@ public partial class MainLayout : IDisposable
         var userId = new Guid("3fa85f64-5717-4562-b3fc-2c963f66afa6");
 
         _containers = await ContainersService.GetAllByUserIdAsync(userId);
+
+        Notifications = await NotificationsService.GetAllByUserIdAsync(userId, 4); ;
 
         _isFetching = false;
     }

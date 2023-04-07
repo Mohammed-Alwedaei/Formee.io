@@ -18,7 +18,7 @@ public class UserRepository : IUserRepository
     public async Task<List<UsersModel>> GetAllSubscribedAsync()
     {
         return await _context.Users
-            .Where(u => u.SubscriptionId != 0)
+            //.Where(u => u.SubscriptionId != 0)
             .ToListAsync();
     }
 
@@ -26,7 +26,7 @@ public class UserRepository : IUserRepository
         (int subscriptionId)
     {
         return await _context.Users
-            .Where(u => u.SubscriptionId == subscriptionId)
+           // .Where(u => u.SubscriptionId == subscriptionId)
             .ToListAsync();
     }
 

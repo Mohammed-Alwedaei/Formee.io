@@ -1,34 +1,37 @@
 ﻿using Azure.Messaging.ServiceBus;
-using Microsoft.Extensions.Configuration;
 using System.Text;
 using Newtonsoft.Json;
+using System.Diagnostics;
 
 namespace ServiceBus.ServiceBus;
 
-public class AzureServiceBus : IAzureServiceBus
+public abstract class AzureServiceBus<TImplementation> 
+    : IAzureServiceBus<TImplementation> where TImplementation : class
 {
-    private readonly IConfiguration _configuration;
-    protected ServiceBusClient ServiceBusClient;
-    protected ServiceBusSender ServiceBusSender;
+    private readonly ServiceBusClient _serviceBusClient;
+    private readonly ServiceBusSender _serviceBusSender;
+    private readonly ServiceBusProcessor _processor;
 
-    public AzureServiceBus(IConfiguration configuration)
+    protected AzureServiceBus(string connectionString, 
+        string topic,   
+        string subscription)    
     {
-        _configuration = configuration;
-
-        var connectionString = _configuration
-            .GetConnectionString("ServiceBus");
-
         var clientOptions = new ServiceBusClientOptions
         {
             TransportType = ServiceBusTransportType.AmqpWebSockets
         };
 
-        ServiceBusClient = new ServiceBusClient(
+        _serviceBusClient = new ServiceBusClient(
             connectionString,
             clientOptions);
 
-        ServiceBusSender = ServiceBusClient
-            .CreateSender("topic-history");
+        _serviceBusSender = _serviceBusClient
+        .CreateSender(topic);
+
+        _processor = _serviceBusClient.CreateProcessor(
+            topic, 
+            subscription, 
+            new ServiceBusProcessorOptions());
     }
 
     public async Task SendMessage<TBody>(TBody body)
@@ -40,12 +43,34 @@ public class AzureServiceBus : IAzureServiceBus
 
         try
         {
-            await ServiceBusSender.SendMessageAsync(messageToSend);
+            await _serviceBusSender.SendMessageAsync(messageToSend);
         }
         finally
         {
-            await ServiceBusClient.DisposeAsync();
-            await ServiceBusSender.DisposeAsync();
+            await _serviceBusClient.DisposeAsync();
+            await _serviceBusSender.DisposeAsync();
         }
+    }
+
+    protected abstract Task ProcessMessage(ProcessMessageEventArgs args);
+
+    private Task ErrorHandler(ProcessErrorEventArgs args)
+    {
+        Console.WriteLine(args.Exception.ToString());
+        return Task.CompletedTask;
+    }
+
+    public async Task StartProcessing()
+    {
+        _processor.ProcessMessageAsync += ProcessMessage;
+
+        _processor.ProcessErrorAsync += ErrorHandler;
+
+        await _processor.StartProcessingAsync();
+    }
+
+    public async Task StopProcessing()
+    {
+        await _processor.StopProcessingAsync();
     }
 }

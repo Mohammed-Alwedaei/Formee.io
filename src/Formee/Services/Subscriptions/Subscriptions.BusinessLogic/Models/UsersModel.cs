@@ -1,7 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using Subscriptions.BusinessLogic.Dtos;
-
-namespace Subscriptions.BusinessLogic.Models;
+﻿namespace Subscriptions.BusinessLogic.Models;
 
 public class UsersModel : BaseModel
 {
@@ -12,11 +9,6 @@ public class UsersModel : BaseModel
     public string Email { get; set; } = null!;
 
     public string Role { get; set; } = null!;
-
-    public int? SubscriptionId { get; set; }
-
-    [ForeignKey(nameof(SubscriptionId))]
-    public SubscriptionsModel? Subscription { get; set; }
 
     public static implicit operator UserDto(UsersModel user)
     {

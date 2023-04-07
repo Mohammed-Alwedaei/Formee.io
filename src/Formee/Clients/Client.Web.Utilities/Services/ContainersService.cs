@@ -44,7 +44,7 @@ public class ContainersService
 
     public async Task<bool> CreateAsync(ContainerDto container)
     {
-        var url = $"/api/containers";
+        var url = "/api/containers";
 
         var response = await _httpClient
             .PostAsJsonAsync(url, container);
@@ -59,7 +59,7 @@ public class ContainersService
 
     public async Task<bool> UpdateAsync(ContainerDto container)
     {
-        var url = $"/api/containers/";
+        var url = "/api/containers/";
 
         var response = await _httpClient
             .PutAsJsonAsync(url, container);

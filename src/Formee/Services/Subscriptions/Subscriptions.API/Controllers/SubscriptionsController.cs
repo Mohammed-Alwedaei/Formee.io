@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Subscriptions.BusinessLogic.Dtos;
-using Subscriptions.BusinessLogic.Repositories;
 using Subscriptions.BusinessLogic.Repositories.IRepository;
 
 namespace Subscriptions.API.Controllers;
@@ -30,6 +29,24 @@ public class SubscriptionsController : ControllerBase
         var result = await _subscriptionRepository.GetOneById(id);
 
         if (result.Id is 0)
+        {
+            return NotFound();
+        }
+
+        return Ok(result);
+    }
+
+    [HttpGet("aggregate/{userId:Guid}")]
+    public async Task<IActionResult> GetSubscriptionById(Guid userId)
+    {
+        _logger.LogInformation("GET: request at /api/subscriptions at {datetime}",
+            
+            DateTime.Now);
+
+        var result = await _subscriptionRepository
+            .AggregateUserSubscriptionByUserId(userId);
+
+        if (result is null)
         {
             return NotFound();
         }
@@ -109,7 +126,7 @@ public class SubscriptionsController : ControllerBase
     }
 
     [HttpPut("users/{userId:int}/{subscriptionId:int}")]
-    public async Task<IActionResult> AddSubscriptionToUser
+    public async Task<IActionResult> UpsertUserSubscription
         (int userId, int subscriptionId)
     {
         _logger.LogInformation("PUT: request at /api/subscriptions/users/{userId}/{subscriptionId} at {datetime}",
@@ -118,7 +135,7 @@ public class SubscriptionsController : ControllerBase
             DateTime.Now);
 
         var result = await _subscriptionRepository
-            .AddSubscriptionToUserAsync(userId, subscriptionId);
+            .UpsertSubscriptionToUserAsync(userId, subscriptionId);
 
         if (result.Id is 0)
         {

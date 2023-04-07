@@ -1,0 +1,31 @@
+﻿@TranslatedDate
+
+@code {
+
+    [Parameter]
+    public DateTime Date { get; set; }
+
+    private string TranslatedDate { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        var currentDate = DateTime.Now;
+
+        if (Date.Day == currentDate.Day)
+        {
+            TranslatedDate = "Today";
+        }
+        else if (Date.Day == currentDate.Day - 1)
+        {
+            TranslatedDate = "Yesterday";
+        }
+        else if (Date.Month == currentDate.Month)
+        {
+            TranslatedDate = "This Month";
+        }
+        else
+        {
+            TranslatedDate = "Fairly Old";
+        }
+    }
+}

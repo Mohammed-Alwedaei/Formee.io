@@ -1,4 +1,5 @@
 ﻿using Analytics.Utilities.Dtos.Category;
+using ServiceBus.Constants;
 using ServiceBus.Models;
 using ServiceBus.ServiceBus;
 
@@ -70,8 +71,9 @@ public class CategoryController : ControllerBase
         var history = new HistoryModel
         {
             Title = "A new category is created",
-            Action = "Create",
+            Action = ActionType.Create,
             UserId = category.UserId,
+            Service = SystemServices.Analytics
         };
 
         await _serviceBus.SendMessage(new CustomServiceBusMessage
@@ -100,8 +102,9 @@ public class CategoryController : ControllerBase
         var history = new HistoryModel
         {
             Title = "A category is updated",
-            Action = "Update",
+            Action = ActionType.Update,
             UserId = category.UserId,
+            Service = SystemServices.Analytics
         };
 
         await _serviceBus.SendMessage(new CustomServiceBusMessage
@@ -129,8 +132,9 @@ public class CategoryController : ControllerBase
         var history = new HistoryModel
         {
             Title = "A category is deleted",
-            Action = "Delete",
+            Action = ActionType.Delete,
             UserId = result.UserId,
+            Service = SystemServices.Analytics
         };
 
         await _serviceBus.SendMessage(new CustomServiceBusMessage

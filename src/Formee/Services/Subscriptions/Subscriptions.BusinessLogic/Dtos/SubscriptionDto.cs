@@ -1,4 +1,6 @@
-﻿namespace Subscriptions.BusinessLogic.Dtos;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace Subscriptions.BusinessLogic.Dtos;
 
 public class SubscriptionDto : BaseDto
 {
@@ -12,7 +14,9 @@ public class SubscriptionDto : BaseDto
 
     public decimal AnnualPrice { get; set; }
 
-    public int UserId { get; set; }
+    public int SubscriptionFeaturesId { get; set; }
+
+    public SubscriptionFeatureDto SubscriptionFeatures { get; set; }
 
     public bool IsDeleted { get; set; }
 
@@ -21,13 +25,16 @@ public class SubscriptionDto : BaseDto
     {
         var subscriptionDto = new SubscriptionDto
         {
+            Id = subscription.Id,
             AdminId = subscription.AdminId,
-            Name = subscription.Name, 
+            Name = subscription.Name,
             Description = subscription.Description,
             Price = subscription.Price,
             AnnualPrice = subscription.AnnualPrice,
-            UserId = subscription.UserId,
-            IsDeleted = subscription.IsDeleted
+            IsDeleted = subscription.IsDeleted,
+            SubscriptionFeaturesId = subscription.SubscriptionFeaturesId,
+            SubscriptionFeatures = subscription.SubscriptionFeatures,
+            CreatedDate = subscription.CreatedDate
         };
 
         return subscriptionDto;

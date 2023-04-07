@@ -12,23 +12,28 @@ public class SubscriptionsModel : BaseModel
 
     public decimal AnnualPrice { get; set; }
 
-    public int UserId { get; set; }
-
-    [ForeignKey(nameof(UserId))]
-    public List<UsersModel> User { get; set; }
-
     public bool IsDeleted { get; set; }
+
+    public int SubscriptionFeaturesId { get; set; }
+
+    [ForeignKey(nameof(SubscriptionFeaturesId))]
+    public SubscriptionFeaturesModel SubscriptionFeatures { get; set; }
 
     public static implicit operator SubscriptionsModel
         (SubscriptionDto subscriptionDto)
     {
         var subscriptionModel = new SubscriptionsModel
         {
+            Id = subscriptionDto.Id,
+            AdminId = subscriptionDto.AdminId,
             Name = subscriptionDto.Name,
             Description = subscriptionDto.Description,
             Price = subscriptionDto.Price,
             AnnualPrice = subscriptionDto.AnnualPrice,
-            UserId = subscriptionDto.UserId
+            IsDeleted = subscriptionDto.IsDeleted,
+            SubscriptionFeaturesId = subscriptionDto.SubscriptionFeaturesId,
+            SubscriptionFeatures = subscriptionDto.SubscriptionFeatures,
+            CreatedDate = subscriptionDto.CreatedDate
         };
 
         return subscriptionModel;

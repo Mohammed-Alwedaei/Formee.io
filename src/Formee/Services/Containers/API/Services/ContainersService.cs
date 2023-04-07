@@ -60,7 +60,7 @@ public class ContainersService
         return result.IsAcknowledged;
     }
 
-    public async Task<bool> DeleteContainerAsync(
+    public async Task<ContainerEntity> DeleteContainerAsync(
         string id)
     {
         var containerFromDb = await GetContainerById(id);
@@ -72,6 +72,6 @@ public class ContainersService
         var container = await _containerDatabase
             .ReplaceOneAsync(c => c.Id == id, containerFromDb);
 
-        return container.IsAcknowledged;
+        return containerFromDb;
     }
 }

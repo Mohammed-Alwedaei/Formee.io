@@ -1,0 +1,39 @@
+.fm-notification__container {
+    position: relative;
+}
+
+.fm-notification__button {
+    z-index: 9999;
+}
+
+.fm-notification__modal {
+    position: absolute;
+    top: 120%;
+    left: 0;
+    width: 400px;
+    height: auto;
+    background-color: var(--color-white);
+    border-radius: 10px;
+    padding: 2rem;
+    box-shadow: 0 10px 16px var(--color-body);
+    z-index: 9998;
+    transition: all .4s ease;
+}
+
+.fm-notification__modal-hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.fm-notification__modal-show {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.fm-notification__view-all-button {
+    text-align: center;
+}
+
+    .fm-notification__view-all-button span {
+        color: var(--color-dimmed);
+    }

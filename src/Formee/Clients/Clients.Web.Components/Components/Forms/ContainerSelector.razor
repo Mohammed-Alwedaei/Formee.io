@@ -1,0 +1,36 @@
+﻿@*
+    This component will fetch the active components in a user account and will return an 
+    event when the container selection is changed.
+*@
+
+<section>
+    <Grid>
+        <Items>
+            @foreach (var container in DataSource)
+            {
+                <GridItem ColumnSize="@GridSize.GridItemMedium">
+                    <Child>
+                        <FmCard OnClick="() => HandleContainerSelectionChange(container.Id)">
+                            <FmBody>
+                                <p>@container.Name</p>
+                            </FmBody>
+                        </FmCard>
+                    </Child>
+                </GridItem>
+            }
+        </Items>
+    </Grid>
+</section>
+
+@code {
+    [Parameter]
+    public List<ContainerDto> DataSource { get; set; }
+
+    [Parameter]
+    public EventCallback<string> OnChange { get; set; }
+
+    private void HandleContainerSelectionChange(string id)
+    {
+        OnChange.InvokeAsync(id);
+    }
+}

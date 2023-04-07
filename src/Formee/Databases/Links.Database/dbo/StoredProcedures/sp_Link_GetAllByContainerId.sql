@@ -3,7 +3,7 @@
 AS
 
 BEGIN
-	SELECT [Id], [ContainerId], [OriginalUrl], [TargetUrl], [IsDeleted], 
+	SELECT [Id], [Name], [ContainerId], [OriginalUrl], [TargetUrl], [IsDeleted], 
 	[CreatedDate] FROM dbo.[Link]
 	WHERE ContainerId = @ContainerId AND IsDeleted != 1;
 END

@@ -30,5 +30,8 @@ builder.Services.AddScoped<ContainersService>();
 builder.Services.AddScoped<IdentityService>();
 builder.Services.AddScoped<AnalyticsService>();
 builder.Services.AddScoped<FormsService>();
+builder.Services.AddScoped<HistoryService>();
+builder.Services.AddScoped<LinksService>();
+builder.Services.AddScoped<NotificationsService>();
 
 await builder.Build().RunAsync();

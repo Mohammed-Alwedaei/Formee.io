@@ -19,6 +19,7 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<ICouponRepository, CouponRepository>();
 builder.Services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
+builder.Services.AddScoped<ISubscriptionFeatureRepository, SubscriptionFeatureRepository>();
   
 var app = builder.Build();
 
@@ -34,5 +35,16 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+using var scope = app.Services.CreateScope();
+
+var services = scope.ServiceProvider;
+
+var context = services.GetRequiredService<ApplicationDbContext>();
+
+if (context.Database.GetPendingMigrations().Any())
+{
+    context.Database.Migrate();
+}
 
 app.Run();

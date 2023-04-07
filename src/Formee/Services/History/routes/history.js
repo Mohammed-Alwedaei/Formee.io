@@ -3,9 +3,11 @@ const History = require("../models/History");
 
 const router = express.Router();
 
-router.get("/all", async (req, res) => {
+router.get("/all/:userId", async (req, res) => {
   try {
-    res.send(await History.find());
+    const userId = req.params.userId;
+
+    res.send(await History.find({ userId }));
   } catch (e) {
     console.error(e);
   }

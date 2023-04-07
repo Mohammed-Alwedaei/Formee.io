@@ -1,6 +1,7 @@
 using API.Entities;
 using API.Extensions;
 using API.Services;
+using ServiceBus.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,11 +15,18 @@ builder.Services.AddSingleton<ContainersService>();
 
 builder.Services.AddAutoMapper(typeof(Program));
 
+builder.Services
+    .AddConfiguration(builder.Configuration)
+    .AddNotificationServiceBus()
+    .AddHistoryServiceBus()
+    .AddBackgroundProcessingTask();
+
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("cors", policy =>
     {
-        policy.WithOrigins("https://localhost:7133")
+        policy.AllowAnyOrigin()
             .AllowAnyHeader()
             .AllowAnyMethod();
     });

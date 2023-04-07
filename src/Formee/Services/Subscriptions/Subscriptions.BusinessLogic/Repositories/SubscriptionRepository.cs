@@ -61,43 +61,80 @@ public class SubscriptionRepository : ISubscriptionRepository
         return updatedSubscription.Entity;
     }
 
-    public async Task<UsersModel> AddSubscriptionToUserAsync
+    public async Task<UserSubscriptionModel> UpsertSubscriptionToUserAsync
         (int userId, int subscriptionId)
     {
-        var userFromDb = await _context.Users
+        var userSubscriptionFromDb = await _context.UserSubscriptions
             .FirstOrDefaultAsync(u => u.Id == userId);
 
-        if (userFromDb is null)
+        //If true add a new record 
+        if (userSubscriptionFromDb is null)
         {
-            return new UsersModel();
-        }
 
-        userFromDb.SubscriptionId = subscriptionId;
+            var userSubscriptionToCreate = new UserSubscriptionModel
+            {
+                UserId = userId,
+                SubscriptionId = subscriptionId
+            };
 
-        _context.Users.Update(userFromDb);
+            await _context.UserSubscriptions.AddAsync(userSubscriptionToCreate);
+            await _context.SaveChangesAsync();
+
+            return userSubscriptionToCreate;
+
+        } 
+        //if false modify the record
+        userSubscriptionFromDb.SubscriptionId = subscriptionId;
+
+        _context.UserSubscriptions.Update(userSubscriptionFromDb);
 
         await _context.SaveChangesAsync();
 
-        return userFromDb;
+        return userSubscriptionFromDb;
     }
 
-    public async Task<UsersModel> RemoveSubscriptionFromUserAsync(int userId)
+    public async Task<UserSubscriptionModel> RemoveSubscriptionFromUserAsync(int userId)
     {
-        var userFromDb = await _context.Users
+        var userSubscriptionFromDb = await _context.UserSubscriptions
             .FirstOrDefaultAsync(u => u.Id == userId);
 
-        if (userFromDb is null)
+        if (userSubscriptionFromDb is null)
         {
-            return new UsersModel();
+            return new UserSubscriptionModel();
         }
 
-        userFromDb.SubscriptionId = null;
-
-        _context.Users.Update(userFromDb);
+        _context.UserSubscriptions.Remove(userSubscriptionFromDb);
 
         await _context.SaveChangesAsync();
 
-        return userFromDb;
+        return userSubscriptionFromDb;
+    }
+
+    public async Task<UserSubscriptionAggregate> AggregateUserSubscriptionByUserId(Guid id)
+    {
+        var userFromDb = await _context.Users
+            .FirstOrDefaultAsync(u => u.GlobalUserId == id);
+
+        if(userFromDb is null) return new UserSubscriptionAggregate();
+
+        var userSubscriptionAggregate = new UserSubscriptionAggregate();
+
+        var userSubscriptionRelationship = await _context.UserSubscriptions
+            .FirstOrDefaultAsync(u => u.UserId == userFromDb.Id);
+
+        var userSubscription = await _context.Subscriptions
+            .Include(s => s.SubscriptionFeatures)
+            .FirstOrDefaultAsync(s => s.Id == userSubscriptionRelationship.SubscriptionId);
+
+        if (userSubscription == null)
+        {
+            return userSubscriptionAggregate;
+        }
+
+        userSubscriptionAggregate.Subscription = userSubscription;
+        userSubscriptionAggregate.SubscriptionFeatures = userSubscription.SubscriptionFeatures;
+
+        return userSubscriptionAggregate;
     }
 
     public async Task<SubscriptionDto> DeleteAsync

@@ -1,0 +1,20 @@
+﻿<FmPageIntro Heading="History">
+    <Breadcrumbs>
+        <BreadcrumbItem IconCss="fa-solid fa-house"
+                        Text="Dashboard"
+                        Url="@Routes.Home" />
+
+        <BreadcrumbItem IconCss="fa-solid fa-clock-rotate-left"
+                        Disabled="true"
+                        Text="History"
+                        Url="@Routes.History" />
+    </Breadcrumbs>
+</FmPageIntro>
+
+<FmSpacer />
+
+<FmLoader FetchingState="IsFetching">
+    <Content>
+        <SfGrid DataSource="History" />
+    </Content>
+</FmLoader>

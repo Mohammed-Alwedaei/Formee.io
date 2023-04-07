@@ -58,7 +58,7 @@ namespace Subscriptions.BusinessLogic.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Coupons");
+                    b.ToTable("Coupons", (string)null);
                 });
 
             modelBuilder.Entity("Subscriptions.BusinessLogic.Models.OrderDetailsModel", b =>
@@ -87,7 +87,7 @@ namespace Subscriptions.BusinessLogic.Migrations
 
                     b.HasIndex("SubscriptionId");
 
-                    b.ToTable("OrderDetails");
+                    b.ToTable("OrderDetails", (string)null);
                 });
 
             modelBuilder.Entity("Subscriptions.BusinessLogic.Models.OrderHeaderModel", b =>
@@ -125,7 +125,49 @@ namespace Subscriptions.BusinessLogic.Migrations
 
                     b.HasIndex("SubscribedUserId");
 
-                    b.ToTable("OrderHeaders");
+                    b.ToTable("OrderHeaders", (string)null);
+                });
+
+            modelBuilder.Entity("Subscriptions.BusinessLogic.Models.SubscriptionFeaturesModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DeletedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("HasLiveChatAccess")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<int>("NumberOfContainers")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NumberOfForms")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NumberOfLinks")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SubscriptionFeatures", (string)null);
                 });
 
             modelBuilder.Entity("Subscriptions.BusinessLogic.Models.SubscriptionsModel", b =>
@@ -160,12 +202,40 @@ namespace Subscriptions.BusinessLogic.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<int>("SubscriptionFeaturesId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SubscriptionFeaturesId");
+
+                    b.ToTable("Subscriptions", (string)null);
+                });
+
+            modelBuilder.Entity("Subscriptions.BusinessLogic.Models.UserSubscriptionModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("SubscriptionId")
+                        .HasColumnType("int");
+
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Subscriptions");
+                    b.HasIndex("SubscriptionId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserSubscriptions", (string)null);
                 });
 
             modelBuilder.Entity("Subscriptions.BusinessLogic.Models.UsersModel", b =>
@@ -193,23 +263,13 @@ namespace Subscriptions.BusinessLogic.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("SubscriptionId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int");
-
                     b.Property<string>("UserName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("SubscriptionId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("Subscriptions.BusinessLogic.Models.OrderDetailsModel", b =>
@@ -250,21 +310,33 @@ namespace Subscriptions.BusinessLogic.Migrations
                     b.Navigation("SubscribedUser");
                 });
 
-            modelBuilder.Entity("Subscriptions.BusinessLogic.Models.UsersModel", b =>
-                {
-                    b.HasOne("Subscriptions.BusinessLogic.Models.SubscriptionsModel", "Subscription")
-                        .WithMany()
-                        .HasForeignKey("SubscriptionId");
-
-                    b.HasOne("Subscriptions.BusinessLogic.Models.SubscriptionsModel", null)
-                        .WithMany("User")
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("Subscription");
-                });
-
             modelBuilder.Entity("Subscriptions.BusinessLogic.Models.SubscriptionsModel", b =>
                 {
+                    b.HasOne("Subscriptions.BusinessLogic.Models.SubscriptionFeaturesModel", "SubscriptionFeatures")
+                        .WithMany()
+                        .HasForeignKey("SubscriptionFeaturesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("SubscriptionFeatures");
+                });
+
+            modelBuilder.Entity("Subscriptions.BusinessLogic.Models.UserSubscriptionModel", b =>
+                {
+                    b.HasOne("Subscriptions.BusinessLogic.Models.SubscriptionsModel", "SubscriptionsModel")
+                        .WithMany()
+                        .HasForeignKey("SubscriptionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Subscriptions.BusinessLogic.Models.UsersModel", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("SubscriptionsModel");
+
                     b.Navigation("User");
                 });
 #pragma warning restore 612, 618

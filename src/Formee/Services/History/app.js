@@ -21,7 +21,7 @@ app.get("/", (req, res) => {
 app.use("/api/history", historyRoutes);
 
 mongoose
-  .connect("mongodb://127.0.0.1:27017/history")
+  .connect(process.env.MONGO_DB_HISTORY)
   .then(() => console.log("Connected!"));
 
 ServiceBusConsumer.Main();

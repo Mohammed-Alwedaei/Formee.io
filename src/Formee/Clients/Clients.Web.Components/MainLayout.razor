@@ -1,6 +1,5 @@
 ﻿@inherits LayoutComponentBase
 
-
 <SfSidebar @bind-IsOpen="_sidebarToggle"
            Type="SidebarType.Push"
            Position="SidebarPosition.Left"
@@ -34,12 +33,18 @@
                     Text="Sites"
                     Classes="fm-link d-flex justify-content-center mb-3"
                     Icon="fa-solid fa-window-restore"/>
-
+            
             <FmLink Route="@Routes.LiveChat"
                     ActiveClass="fm-link__active"
                     Text="Live Chat"
                     Classes="fm-link d-flex justify-content-center mb-3"
-                    Icon="fa-solid fa-headset"/>
+                    Icon="fa-solid fa-headset" />
+
+            <FmLink Route="@Routes.Links"
+                    ActiveClass="fm-link__active"
+                    Text="Links"
+                    Classes="fm-link d-flex justify-content-center mb-3"
+                    Icon="fa-solid fa-arrow-up-right-from-square" />
 
             <FmLink Route="/identity"
                     ActiveClass="fm-link__active"
@@ -53,7 +58,7 @@
                     Classes="fm-link d-flex justify-content-center mb-3"
                     Icon="fa-solid fa-credit-card"/>
             
-            <FmLink Route="/history"
+            <FmLink Route="@Routes.History"
                     ActiveClass="fm-link__active"
                     Text="History"
                     Classes="fm-link d-flex justify-content-center mb-3"
@@ -66,17 +71,22 @@
     <SfAppBar ColorMode="AppBarColor.Light">
         <div class="app-bar__wrapper">
             <div class="d-flex justify-content-center align-items-center">
-                <SfButton CssClass="e-inherit" IconCss="e-icons e-menu" OnClick="Toggle"></SfButton>
+                <SfButton CssClass="e-inherit" 
+                          IconCss="e-icons e-menu"
+                          OnClick="Toggle"></SfButton>
                 <p>@_currentTime</p>
             </div>
 
-            <AppBarSpacer></AppBarSpacer>
+            <AppBarSpacer />
 
             <div class="app-bar-actions">
                 <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <SfButton IconCss="fa-solid fa-bell" />
-                    </div>
+                    <FmLoader FetchingState="_isFetching">
+                        <Content>
+                            <AppBarNotification 
+                                Notifications="Notifications.ToList()" />
+                        </Content>
+                    </FmLoader>
 
                     <div>
                         <AppBarAccessControl />

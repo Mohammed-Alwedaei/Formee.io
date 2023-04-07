@@ -1,5 +1,8 @@
 ﻿using API.Entities;
 using API.Services;
+using ServiceBus.Constants;
+using ServiceBus.Models;
+using ServiceBus.ServiceBus;
 
 namespace API.Extensions;
 
@@ -50,11 +53,26 @@ public static class Endpoints
          */
         containers.MapPost("/",
             async (ContainersService containersService,
-                 ContainerEntity container) =>
+                IAzureServiceBus<HistoryServiceBus> serviceBus,
+                ContainerEntity container) =>
             {
                 if (await containersService.CreateContainerAsync(container)
                     is ContainerEntity containerResult)
                 {
+                    var history = new HistoryModel
+                    {
+                        Title = "A new container is created",
+                        Action = ActionType.Create,
+                        UserId = container.UserId,
+                        Service = SystemServices.Containers
+                    };
+
+                    await serviceBus.SendMessage(
+                        new CustomServiceBusMessage<HistoryModel>
+                        {
+                            Entity = history
+                        });
+
                     return Results.Ok(containerResult);
                 }
 
@@ -68,9 +86,33 @@ public static class Endpoints
          */
         containers.MapPut("/",
             async (ContainersService containersService,
-                    ContainerEntity container) =>
-                Results.Ok(await containersService
-                    .UpdateContainerAsync(container)));
+                IAzureServiceBus<HistoryServiceBus> serviceBus,
+                ContainerEntity container) =>
+            {
+                if (await containersService
+                        .UpdateContainerAsync(container))
+                {
+                    var history = new HistoryModel
+                    {
+                        Title = "A container is updated",
+                        Action = ActionType.Update,
+                        UserId = container.UserId,
+                        Service = SystemServices.Containers
+                    };
+
+                    await serviceBus.SendMessage(
+                        new CustomServiceBusMessage<HistoryModel>
+                        {
+                            Entity = history
+                        });
+
+                    Results.Ok();
+                }
+                else
+                {
+                    Results.BadRequest();
+                }
+            });
 
         /*
          * Route: /api/container/id
@@ -78,12 +120,49 @@ public static class Endpoints
          * Auth : Users
          */
         containers.MapDelete("/{id:length(24)}",
-            async (ContainersService containersService, string id) =>
+            async (ContainersService containersService,
+                IAzureServiceBus<HistoryServiceBus> historyBus,
+                IAzureServiceBus<NotificationsServiceBus> notificationsBus,
+                string id) =>
             {
                 var results = await containersService
                     .DeleteContainerAsync(id);
 
-                return results ? Results.Ok(id) : Results.NotFound();
+                if (results is not null)
+                {
+                    var history = new HistoryModel
+                    {
+                        Title = "A new container is deleted",
+                        Action = ActionType.Delete,
+                        UserId = results.UserId,
+                        Service = SystemServices.Containers
+                    };
+
+                    var notification = new NotificationModel
+                    {
+                        GlobalUserId = results.UserId,
+                        Heading = "A container is Deleted",
+                        Message = "The container of name ... is deleted"
+                    };
+
+                    await historyBus.SendMessage(
+                        new CustomServiceBusMessage<HistoryModel>
+                        {
+                            Entity = history
+                        });
+
+                    await notificationsBus.SendMessage(
+                        new CustomServiceBusMessage<NotificationModel>
+                        {
+                            Entity = notification
+                        });
+
+                    Results.Ok(id);
+                }
+                else
+                {
+                    Results.NotFound();
+                }
             });
         return app;
     }

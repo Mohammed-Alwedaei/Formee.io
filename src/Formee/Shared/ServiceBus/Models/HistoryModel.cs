@@ -8,5 +8,5 @@ public class HistoryModel
 
     public Guid UserId { get; set; }
 
-    public string? Service { get; set; } = "Analytics";
+    public string? Service { get; set; }
 }

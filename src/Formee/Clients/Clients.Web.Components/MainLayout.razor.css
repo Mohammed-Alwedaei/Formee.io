@@ -10,6 +10,11 @@
     padding-inline: 3rem;
 }
 
+::deep .e-appbar {
+    overflow: visible;
+    padding-block: 2rem;
+}
+
 ::deep .e-dashboardlayout.e-control .e-panel {
     background-color: white;
     border: 0;

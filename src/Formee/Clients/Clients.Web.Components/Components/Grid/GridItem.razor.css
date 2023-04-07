@@ -10,6 +10,10 @@
     width: calc(50% - var(--grid-gap));
 }
 
+.fm-grid .fm-grid__item-nm {
+    width: calc(33.3% - var(--grid-gap));
+}
+
 .fm-grid .fm-grid__item-sm {
     width: calc(25% - var(--grid-gap));
 }

@@ -12,9 +12,12 @@ public interface ISubscriptionRepository
 
     Task<SubscriptionDto> UpdateAsync(SubscriptionDto subscription);
 
-    Task<UsersModel> AddSubscriptionToUserAsync(int userId, int subscriptionId);
+    Task<UserSubscriptionModel> UpsertSubscriptionToUserAsync(int userId, 
+        int subscriptionId);
 
-    Task<UsersModel> RemoveSubscriptionFromUserAsync(int userId);
+    Task<UserSubscriptionModel> RemoveSubscriptionFromUserAsync(int userId);
+
+    Task<UserSubscriptionAggregate> AggregateUserSubscriptionByUserId(Guid id);
 
     Task<SubscriptionDto> DeleteAsync(int subscriptionId);
 }

@@ -1,8 +1,8 @@
 ﻿namespace ServiceBus.Models;
 
-public class CustomServiceBusMessage
+public class CustomServiceBusMessage<TEntity> where TEntity : class
 {
-    public HistoryModel? History { get; set; }
+    public TEntity Entity { get; set; }
 
     public DateTime CreatedDate { get; set; } = DateTime.Now;
 }

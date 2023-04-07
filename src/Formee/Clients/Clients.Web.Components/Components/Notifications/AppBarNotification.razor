@@ -1,0 +1,114 @@
+﻿@implements IAsyncDisposable
+
+@using Microsoft.AspNetCore.SignalR.Client
+<div class="fm-notification__container">
+    <SfButton IconCss="fa-solid fa-bell"
+              CssClass="fm-notification__button"
+              OnClick="HandleButtonClick" />
+
+    <div class="fm-notification__modal @ModalVisibility">
+        <div class="d-flex justify-content-between align-items-center">
+            <p>My Notifications</p>
+
+            <SfButton IconCss="fa-solid fa-bell"
+                      CssClass="e-link"
+                      OnClick="HandleMarkAllAsRead">
+                Mark All as Read
+            </SfButton>
+        </div>
+
+        <FmSeperator />
+
+        <div class="fm-notification__list-view">
+            @if (Notifications is not null)
+            {
+                foreach (var notification in notificationsToDisplay)
+                {
+                    var last = notificationsToDisplay.LastOrDefault();
+
+                    <NotificationModalItem Notification="notification" />
+
+                    if (notification != last)
+                    {
+                        <FmSpacer />
+                    }
+                }
+            }
+            else
+            {
+                <p>There are no notifications yet!</p>
+            }
+        </div>
+
+        <FmSeperator />
+
+
+        <div class="fm-notification__view-all-button">
+            <SfButton IconCss="fa-solid fa-bell"
+                      CssClass="e-link"
+                      OnClick="HandleMarkAllAsRead">
+                View All
+            </SfButton>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public List<NotificationDto> Notifications { get; set; }
+
+    private Stack<NotificationDto> notificationsToDisplay;
+
+    private HubConnection? hubConnection;
+
+    private bool IsVisible { get; set; } = false;
+
+    private string ModalVisibility =>
+        IsVisible ? "fm-notification__modal-show" : "fm-notification__modal-hidden";
+
+    private
+        bool IsConnected =>
+        hubConnection?.State == HubConnectionState.Connected;
+
+    protected override async Task OnInitializedAsync()
+    {
+        hubConnection = new HubConnectionBuilder()
+            .WithUrl("http://localhost:5000/hubs/notifications")
+            .Build();
+
+        notificationsToDisplay = new Stack<NotificationDto>();
+
+        foreach (var notification in Notifications)
+        {
+            notificationsToDisplay.Push(notification);
+        }
+
+        hubConnection.On<NotificationDto>("ReceiveNotification", 
+            async (notification) =>
+            {
+                notificationsToDisplay.Push(notification);
+                await InvokeAsync(StateHasChanged);
+            });
+
+        await hubConnection.StartAsync();
+    }
+
+    private void HandleButtonClick()
+    {
+        IsVisible = !IsVisible;
+        StateHasChanged();
+    }
+
+    private async Task HandleMarkAllAsRead()
+    {
+
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.DisposeAsync();
+        }
+    }
+}
