@@ -1,6 +1,6 @@
 ﻿using Links.Utilities.Entities;
 
-namespace Links.BusinessLogic.Repositories;
+namespace Links.BusinessLogic.Repositories.IRepository;
 public interface ILinkRepository
 {
     /// <summary>
@@ -10,7 +10,7 @@ public interface ILinkRepository
     /// <returns>Link Entity</returns>
     Task<LinkEntity> GetLinkByIdAsync(int id);
 
-    Task<RedirectLinkEntity> GetRedirectLinkAsync(string targetUrl);
+    Task<RedirectEntity> GetRedirectLinkAsync(string targetUrl);
 
     /// <summary>
     /// Get a list of short links that match the containerId

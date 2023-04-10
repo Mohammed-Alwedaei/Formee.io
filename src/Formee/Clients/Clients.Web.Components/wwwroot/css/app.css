@@ -119,6 +119,10 @@ h1:focus {
     margin-left: 1rem;
 }
 
+.mt-0-5 {
+    margin-top: 0.5rem;
+}
+
 .fm-link {
     color: var(--color-white);
     text-decoration: none;

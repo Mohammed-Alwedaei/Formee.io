@@ -1,0 +1,6 @@
+﻿CREATE TABLE [dbo].[LinkHits]
+(
+	[Id] INT NOT NULL IDENTITY PRIMARY KEY,
+	[LinkId] INT NOT NULL REFERENCES [dbo].[Link](Id),
+	[CreatedDate] DATETIME2(7) NOT NULL 
+)

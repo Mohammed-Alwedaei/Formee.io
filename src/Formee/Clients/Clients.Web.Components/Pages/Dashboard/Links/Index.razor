@@ -21,62 +21,68 @@
             {
                 <FmTabItem Id="@container.Id">
                     <Header>
-                        <FmTypography Type="@Typography.LevelTwo" 
-                                      Icon="@container.Icon"
-                                      Text="@container.Name"
-                                      Classes="d-flex justify-content-center align-items-center"/>
+                        <FmTypography Type="@Typography.LevelTwo"
+                              Icon="@container.Icon"
+                              Text="@container.Name"
+                              Classes="d-flex justify-content-center align-items-center" />
                     </Header>
 
                     <Body>
                         <FmSpacer />
 
-                        <FmLoader FetchingState="IsFetching">
-                            <Content>
-                                <SfDashboardLayout Columns="4"
-                                           CellSpacing="@(new double[] {40, 40})"
-                                           AllowResizing="false"
-                                           AllowDragging="false"
-                                           AllowFloating="false">
-                                    <DashboardLayoutPanels>
-                                        <DashboardLayoutPanel Column="0" Row="0" SizeX="3" SizeY="1">
-                                            <Header>
-                                                <FmTypography Text="Analytics"
-                                                      Type="@Typography.LevelTwo" />
-                                            </Header>
+                        <SfDashboardLayout Columns="4"
+                                   CellSpacing="@(new double[] {40, 40})"
+                                   AllowResizing="false"
+                                   AllowDragging="false"
+                                   AllowFloating="false">
+                            <DashboardLayoutPanels>
+                                <DashboardLayoutPanel Column="0" Row="0" SizeX="3" SizeY="1">
+                                    <Header>
+                                        <FmTypography Text="Analytics"
+                                              Type="@Typography.LevelTwo" />
+                                    </Header>
 
-                                            <ContentTemplate>
+                                    <ContentTemplate>
 
-                                            </ContentTemplate>
-                                        </DashboardLayoutPanel>
+                                    </ContentTemplate>
+                                </DashboardLayoutPanel>
 
-                                        <DashboardLayoutPanel Column="4" Row="0" SizeX="1" SizeY="1">
-                                            <Header>
-                                                <FmTypography Text="Recent Links"
-                                                      Type="@Typography.LevelTwo" />
-                                            </Header>
+                                <DashboardLayoutPanel Column="4" Row="0" SizeX="1" SizeY="1">
+                                    <Header>
+                                        <FmTypography Text="Recent Links"
+                                              Type="@Typography.LevelTwo" />
+                                    </Header>
 
-                                            <ContentTemplate>
-                                                <FmNotFound IsFound="LinksService.IsSuccessFetch">
-                                                    <Content>
-                                                        @foreach (var link in LinksService.Links)
-                                                        {
-                                                            <FmTypography Text="@link.LinkDetails.Name"
-                                                              Type="@Typography.LevelTwo" />
+                                    <ContentTemplate>
+                                        @if (LinksService.IsSuccessFetch)
+                                        {
+                                            var lastItem = LinksService.Links.LastOrDefault();
 
-                                                            <FmTypography Text="@link.OriginalUrl"
-                                                              Classes="fm-link__small" />
-                                                        }
-                                                    </Content>
-                                                </FmNotFound>
-                                            </ContentTemplate>
-                                        </DashboardLayoutPanel>
-                                    </DashboardLayoutPanels>
-                                </SfDashboardLayout>
-                            </Content>
-                        </FmLoader>
+                                            foreach (var link in LinksService.Links)
+                                            {
+                                                <FmLinkItem Link="link" />
+
+                                                if (link != lastItem)
+                                                {
+                                                    <FmSpacer />
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <FmNotFound />
+                                        }
+                                    </ContentTemplate>
+                                </DashboardLayoutPanel>
+                            </DashboardLayoutPanels>
+                        </SfDashboardLayout>
                     </Body>
                 </FmTabItem>
             }
+        }
+        else
+        {
+            <SfSpinner Visible="true" /> 
         }
     </FmTabItems>
 </FmTab>

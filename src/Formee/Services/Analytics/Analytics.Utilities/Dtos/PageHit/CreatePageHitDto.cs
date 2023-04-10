@@ -12,5 +12,5 @@ public class CreatePageHitDto
 
     public int CategoryId { get; set; }
 
-    public DateTime CreatedDate { get; set; } = DateTime.Now;
+    public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
 }

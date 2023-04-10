@@ -2,6 +2,7 @@ using Links.API.Extensions;
 using Links.API.Middlewares;
 using Links.BusinessLogic.Contexts;
 using Links.BusinessLogic.Repositories;
+using Links.BusinessLogic.Repositories.IRepository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +14,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<DbContext>();
 
 builder.Services.AddScoped<ILinkRepository, LinkRepository>();
+builder.Services.AddScoped<ILinkHitRepository, LinkHitRepository>();
 
 var app = builder.Build();
 

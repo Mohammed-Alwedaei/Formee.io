@@ -1,5 +1,5 @@
 ﻿using Domain.Constants;
-using Links.BusinessLogic.Repositories;
+using Links.BusinessLogic.Repositories.IRepository;
 using Links.Utilities.Entities;
 using Links.Utilities.Exceptions;
 
@@ -162,8 +162,10 @@ public static class LinksEndpoints
          * DESC : Redirect the user to a the original URL
          * AUTH : Anonymous
          */
-        redirectLinks.MapGet("/{targetUrl}", async 
-            (ILinkRepository linkRepository, string targetUrl) =>
+        redirectLinks.MapGet("/{targetUrl}", async
+            (ILinkRepository linkRepository, 
+                ILinkHitRepository linkHitRepository,
+                string targetUrl) =>
         {
             logger.LogInformation("GET: request to /api/links/all/{targetId} at {datetime}",
                 targetUrl,
@@ -177,12 +179,47 @@ public static class LinksEndpoints
             var result = await linkRepository
                 .GetRedirectLinkAsync(targetUrl);
 
-            if (result is not null)
+            if (result is null)
             {
-                return Results.Redirect(result.OriginalUrl, true);
+                throw new NotFoundException(ErrorMessages.NotFound);
             }
 
-            throw new NotFoundException(ErrorMessages.NotFound);
+            var hit = new LinkHitEntity
+            {
+                LinkId = result.Id
+            };
+
+            await linkHitRepository.CreateAsync(hit);
+
+            return Results.Redirect(result.OriginalUrl, true);
+        });
+
+        /*
+         * ROUTE: /api/links/redirect/targetUrl
+         * DESC : Redirect the user to a the original URL
+         * AUTH : Anonymous
+         */
+        redirectLinks.MapGet("/{linkId:int}", async
+        (ILinkHitRepository linkHitRepository, int linkId) =>
+        {
+            logger.LogInformation("GET: request to /api/links/redirects/all/{linkId} at {datetime}",
+                linkId,
+                DateTime.Now);
+
+            if (linkId == 0)
+            {
+                throw new BadRequestException(ErrorMessages.BadRequest);
+            }
+
+            var result = await linkHitRepository
+                .GetAllByLinkIdAsync(linkId);
+
+            if (result is null)
+            {
+                throw new NotFoundException(ErrorMessages.NotFound);
+            }
+
+            return Results.Ok(result);
         });
 
         return app;

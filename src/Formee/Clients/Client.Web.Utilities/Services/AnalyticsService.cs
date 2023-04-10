@@ -52,7 +52,8 @@ public class AnalyticsService
         (int siteId, DateTime startDate, DateTime endDate)
     {
         var formattedStartDate = startDate.ToString("yyyy-MM-dd");
-        var formattedEndDate = endDate.ToString("yyyy-MM-dd");
+        var formattedEndDate = endDate.AddDays(1)
+            .ToString("yyyy-MM-dd");
 
         var url = $"/api/hits/all/{siteId}/{formattedStartDate}/{formattedEndDate}";
 
@@ -86,7 +87,7 @@ public class AnalyticsService
 
             if (isAvailableDate is not null)
             {
-                isAvailableDate.Count = counter;
+                isAvailableDate.Count++;
             }
             else
             {

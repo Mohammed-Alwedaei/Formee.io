@@ -3,6 +3,7 @@ using System.Data;
 using Links.Utilities.Entities;
 using Links.BusinessLogic.Contexts;
 using Microsoft.AspNetCore.WebUtilities;
+using Links.BusinessLogic.Repositories.IRepository;
 
 namespace Links.BusinessLogic.Repositories;
 
@@ -34,12 +35,12 @@ public class LinkRepository : ILinkRepository
         return linkFromDb.FirstOrDefault();
     }
 
-    public async Task<RedirectLinkEntity> GetRedirectLinkAsync(string targetUrl)
+    public async Task<RedirectEntity> GetRedirectLinkAsync(string targetUrl)
     {
         using var connection = _db.Connect();
 
         var redirectLinkFromDb = await connection.QueryAsync
-            <RedirectLinkEntity>("sp_Redirect_GetByTargetUrl",
+            <RedirectEntity>("sp_Redirect_GetByTargetUrl",
                 new
                 {
                     TargetUrl = targetUrl
@@ -74,11 +75,13 @@ public class LinkRepository : ILinkRepository
     {
         using var connection = _db.Connect();
 
+        var domain = new Uri(entity.OriginalUrl).Host;
+
         var linkToCreate = new
         {
             entity.ContainerId,
             entity.LinkDetails.Name,
-            entity.LinkDetails.Domain,
+            domain,
             entity.OriginalUrl,
             entity.IsDeleted,
             entity.CreatedDate
@@ -101,6 +104,7 @@ public class LinkRepository : ILinkRepository
 
         return updatedLink.FirstOrDefault();
     }
+
 
     /// <inheritdoc />
     public async Task<DeleteLinkDto> DeleteLinkAsync(int id)

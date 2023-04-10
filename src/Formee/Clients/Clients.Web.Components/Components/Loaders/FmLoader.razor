@@ -1,10 +1,7 @@
-﻿@if (FetchingState)
+﻿@if (!_isFetching)
 {
-    <section>
-        @Content
-    </section>
+    @Content
 }
-
 else
 {
     <SfSpinner Visible="true" />
@@ -13,8 +10,7 @@ else
 
 @code {
     [Parameter]
-    public bool FetchingState { get; set; }
-
-    [Parameter]
     public RenderFragment Content { get; set; }
+
+    private bool _isFetching = true;
 }

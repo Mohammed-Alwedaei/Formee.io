@@ -1,0 +1,27 @@
+﻿@using Client.Web.Utilities.Dtos.Links
+
+<Grid Gap="@GridGap.Large">
+    <Items>
+        <GridItem ColumnSize="@GridSize.GridItemMedium">
+            <Child>
+                <FmTypography Text="@Link.LinkDetails.Name"
+                              Type="@Typography.LevelTwo"/>
+            </Child>
+        </GridItem>
+        
+        <GridItem ColumnSize="@GridSize.GridItemSmall">
+            <Child>
+                <FmTypography Text="@Link.TargetUrl" />
+                
+            </Child>
+        </GridItem>
+    </Items>
+</Grid>
+
+<FmTypography Text="@Link.OriginalUrl"
+              Classes="fm-link__small mt-0-5"/>
+
+@code {
+    [Parameter]
+    public LinkDto Link { get; set; }
+}

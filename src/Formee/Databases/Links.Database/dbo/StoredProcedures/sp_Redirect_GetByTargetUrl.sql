@@ -3,7 +3,7 @@
 AS
 
 BEGIN
-	SELECT  [OriginalUrl], [TargetUrl] FROM dbo.[Link]
+	SELECT [Id], [OriginalUrl], [TargetUrl] FROM dbo.[Link]
 	WHERE TargetUrl = @TargetUrl 
 		AND IsDeleted != 1;
 END

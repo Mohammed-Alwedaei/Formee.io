@@ -13,8 +13,6 @@ public class LinksService
 
     public bool IsSuccessFetch;
 
-    public event Action OnChange;
-
     private readonly HttpClient _httpClient;
 
     public LinksService(HttpClient httpClient)
@@ -35,25 +33,18 @@ public class LinksService
 
             Links = new List<LinkDto>();
 
-            if (response != null)
-            {
-                Links = response;
-                LinksCount = response.Count;
-                IsSuccessFetch = true;
-            }
-            else
-            {
-                throw new Exception("something went wrong");
-            }
+            Links = response ?? throw new Exception("something went wrong");
+
+            LinksCount = response.Count;
+            IsSuccessFetch = true;
 
             IsFetching = false;
-
-            OnChange.Invoke();
         }
         catch (Exception)
         {
             Links = new List<LinkDto>();
             IsSuccessFetch = false;
+            IsFetching = false;
         }
     }
 }
