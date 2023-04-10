@@ -1,7 +1,7 @@
 using API.Entities;
 using API.Extensions;
 using API.Services;
-using ServiceBus.Extensions;
+using ServiceBus;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,12 +15,7 @@ builder.Services.AddSingleton<ContainersService>();
 
 builder.Services.AddAutoMapper(typeof(Program));
 
-builder.Services
-    .AddConfiguration(builder.Configuration)
-    .AddNotificationServiceBus()
-    .AddHistoryServiceBus()
-    .AddBackgroundProcessingTask();
-
+builder.Services.AddServiceBusSender();
 
 builder.Services.AddCors(options =>
 {

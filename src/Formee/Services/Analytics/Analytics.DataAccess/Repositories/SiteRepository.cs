@@ -13,7 +13,8 @@ public class SiteRepository : ISiteRepository
 
     public async Task<SiteEntity?> GetSiteByIdAsync(int id)
     {
-        return await _db.Site
+        return await _db.Sites
+            .AsNoTracking()
             .FirstOrDefaultAsync(s => s.Id == id 
                                       && s.IsDeleted == false);
     }
@@ -21,7 +22,8 @@ public class SiteRepository : ISiteRepository
     public async Task<List<SiteEntity>> GetAllSitesByContainerIdAsync
         (string containerId)
     {
-        return await _db.Site
+        return await _db.Sites
+            .AsNoTracking()
             .Where(s => s.ContainerId == containerId 
                         && s.IsDeleted == false)
             .ToListAsync();
@@ -31,7 +33,7 @@ public class SiteRepository : ISiteRepository
     {
         var siteToCreate = _mapper.Map<SiteEntity>(site);
 
-        var result = await _db.Site
+        var result = await _db.Sites
             .AddAsync(siteToCreate);
 
         await _db.SaveChangesAsync();
@@ -48,7 +50,7 @@ public class SiteRepository : ISiteRepository
     {
         var siteToUpdate = _mapper.Map<SiteEntity>(site);
 
-        var result = _db.Site.Update(siteToUpdate);
+        var result = _db.Sites.Update(siteToUpdate);
 
         await _db.SaveChangesAsync();
 
@@ -69,7 +71,7 @@ public class SiteRepository : ISiteRepository
             return new DeleteSiteDto();
         }
 
-        _db.Site.Remove(siteToDelete);
+        _db.Sites.Remove(siteToDelete);
 
         await _db.SaveChangesAsync();
 

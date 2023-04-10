@@ -13,14 +13,16 @@ public class CategoryRepository : ICategoryRepository
 
     public async Task<CategoryEntity?> GetByIdAsync(int id)
     {
-        return await _db.Category
+        return await _db.Categories
+            .AsNoTracking()
             .FirstOrDefaultAsync(c => c.Id == id 
                                       && c.IsDeleted != true);
     }
 
     public async Task<List<CategoryEntity?>> GetAllAsync()
     {
-        return await _db.Category
+        return await _db.Categories
+            .AsNoTracking()
             .Where(c => c.IsDeleted != true)
             .ToListAsync();
     }
@@ -29,7 +31,7 @@ public class CategoryRepository : ICategoryRepository
     {
         var categoryToCreate = _mapper.Map<CategoryEntity>(category);
 
-        await _db.Category.AddAsync(categoryToCreate);
+        await _db.Categories.AddAsync(categoryToCreate);
 
         await _db.SaveChangesAsync();
 
@@ -44,7 +46,7 @@ public class CategoryRepository : ICategoryRepository
         categoryToUpdate.IdModified = true;
         categoryToUpdate.LastModifiedDate = DateTime.Now;
 
-        _db.Category.Update(categoryToUpdate);
+        _db.Categories.Update(categoryToUpdate);
 
         await _db.SaveChangesAsync();
 
@@ -66,7 +68,7 @@ public class CategoryRepository : ICategoryRepository
         categoryToDelete.IsDeleted = true;
         categoryToDelete.DeletedDate = DateTime.Now;
 
-        _db.Category.Update(categoryToDelete);
+        _db.Categories.Update(categoryToDelete);
 
         await _db.SaveChangesAsync();
 

@@ -4,11 +4,13 @@
     --color-secondary: #4d7b95;
     --color-white: #fff;
     --color-light: #edeeee;
-    --color-text: #414141;
+    --color-text: #150f46;
     --color-body: #fbf7ff;
     --color-dimmed: #d4d4d4;
     --font-family: 'Poppins', sans-serif;
     --font-size-link: 1.1rem;
+    --box-shadow-sm: 0 7px 10px rgba(65, 65, 65, 0.1);
+    --box-shadow-lg: 0 10px 12px rgba(65, 65, 65, 0.1);
 }
 
 * {
@@ -18,10 +20,11 @@
 }
 
 body {
-    background-color: var(--color-body);
+    background-color: var(--color-white);
     font-family: var(--font-family);
     font-weight: 300;
-    color: var(--color-text);
+    color: var(--color-text) !important;
+    padding: 2.5rem;
 }
 
 h1:focus {
@@ -109,9 +112,11 @@ h1:focus {
     width: 100%;
 }
 
-
 .mr-2 {
     margin-right: 2rem;
+}
+.ml-1 {
+    margin-left: 1rem;
 }
 
 .fm-link {
@@ -122,74 +127,68 @@ h1:focus {
     position: relative;
 }
 
-.fm-link__active {
-    color: var(--color-primary);
-    background-color: var(--color-body);
-    border-top-left-radius: 7px;
-    border-bottom-left-radius: 7px;
-}
-
-    .fm-link__active::before {
-        content: "";
-        position: absolute;
-        top: -10px;
-        right: 0;
-        background-color: var(--color-primary);
-        z-index: 10;
-        width: 10px;
-        height: 10px;
-        border-bottom-right-radius: 7px;
-        box-shadow: 5px 0 0 var(--color-body);
-    }
-
-    .fm-link__active::after {
-        content: "";
-        position: absolute;
-        bottom: -10px;
-        right: 0;
-        background-color: var(--color-primary);
-        z-index: 10;
-        width: 10px;
-        height: 10px;
-        border-top-right-radius: 7px;
-        box-shadow: 5px 0 0 var(--color-body);
-    }
-
 .fm-seperator__horizontal {
     border: 1px solid var(--color-light);
     margin-block: 1rem;
 }
 
-.e-sidebar {
-    background-color: var(--color-primary) !important;
-    padding-left: 2rem;
+.fm-sidebar__nav {
+    background-color: #7150eb !important;
+    border-radius: 10px;
+    height: 100%;
 }
 
-    .e-sidebar.e-dock.e-close {
+.fm-sidebar__user {
+    background-color: #f2f2fd !important;
+    border-radius: 10px;
+    height: 100%;
+    padding-inline: 2rem;
+}
+
+.fm-sidebar__user .fm-link {
+    color: var(--color-body) !important;
+}
+
+.e-sidebar {
+    background-color: var(--color-white) !important;
+    padding: 2.5rem;
+}
+
+.fm-typography__display-1 {
+    font-size: 2.5rem;
+}
+
+.fm-typography__display-3 {
+    font-size: 2rem;
+}
+
+.fm-typography__lead {
+    font-size: 1.1rem;
+    font-weight: 400;
+    color: var(--color-text);
+}
+
+.e-sidebar.e-dock.e-close .fm-link {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+    .e-sidebar.e-dock.e-close .fm-text {
+        display: none !important;
+    }
+
+    .e-sidebar.e-dock.e-close .fm-motto,
+    .e-sidebar.e-dock.e-close .fm-icon {
+        display: block !important;
+    }
+
+    .e-sidebar.e-dock.e-close .fm-icon {
         padding-left: 0 !important;
     }
 
-        .e-sidebar.e-dock.e-close .fm-link {
-            border-top-left-radius: 0;
-            border-bottom-left-radius: 0;
-        }
-
-        .e-sidebar.e-dock.e-close .fm-text {
-            display: none !important;
-        }
-
-        .e-sidebar.e-dock.e-close .fm-motto,
-        .e-sidebar.e-dock.e-close .fm-icon {
-            display: block !important;
-        }
-
-        .e-sidebar.e-dock.e-close .fm-icon {
-            padding-left: 0 !important;
-        }
-
-        .e-sidebar.e-dock.e-close .fm-motto {
-            font-size: 1rem !important;
-        }
+    .e-sidebar.e-dock.e-close .fm-motto {
+        font-size: 1rem !important;
+    }
 
 .fm-motto {
     color: var(--color-white);
@@ -220,4 +219,27 @@ h1:focus {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.fm-color__dimmed {
+    color: #d4d4d4;
+}
+
+.fm-dashboard__item-clear-styles {
+    box-shadow: none !important;
+    border: none !important;
+    border-radius: 0 !important;
+}
+
+    .fm-dashboard__item-clear-styles .e-panel-header,
+    .fm-dashboard__item-clear-styles .e-panel-content {
+        padding: 0 !important;
+    }
+
+.fm-bg-color__success {
+    background-color: rgb(23, 220, 75);
+}
+
+.fm-bg-color__danger {
+    background-color: rgb(255, 79, 79);
 }

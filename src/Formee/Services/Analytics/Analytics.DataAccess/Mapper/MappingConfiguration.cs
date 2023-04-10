@@ -1,4 +1,5 @@
 ﻿using Analytics.Utilities.Dtos.PageHit;
+using Analytics.Utilities.Dtos.Session;
 
 namespace Analytics.BusinessLogic.Mapper;
 
@@ -18,5 +19,8 @@ public class MappingConfiguration : Profile
 
         //Hit entities mapping
         CreateMap<PageHitEntity, CreatePageHitDto>().ReverseMap();
+
+        //Session entities mapping
+        CreateMap<SessionEntity, SessionDto>().ReverseMap();
     }
 }

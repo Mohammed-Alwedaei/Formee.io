@@ -1,33 +1,33 @@
-﻿using Domain.Interfaces;
+﻿using Application.Hubs;
+using Domain.Interfaces;
 using Infrastructure.DbContexts;
 using Infrastructure.Repositories;
+using Infrastructure.ServiceBus;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using ServiceBus.Extensions;
-using ServiceBus.Models;
 
-namespace Infrastructure;
+namespace Infrastructure.Extensions;
 
 public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure
         (this IServiceCollection services, IConfiguration configuration)
     {
+        var connectionString = configuration.GetConnectionString("DefaultConnection");
+
         services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+            options.UseSqlServer(connectionString));
+
+        services.Configure<NotificationsServiceBusConnection>(
+            configuration.GetSection("ServiceBus"));
 
         services.AddScoped<IEmailsManager, EmailsManager>();
         services.AddScoped<INotificationsManager, NotificationsManager>();
 
-        services.AddConfiguration(configuration);
+        services.AddSingleton<NotificationsServiceBus>();
 
-        services.AddScoped<NotificationRepository<NotificationModel>, NotificationsManager>();
-
-        services
-            .AddNotificationServiceBus()
-            .AddHistoryServiceBus()
-            .AddBackgroundProcessingTask();
+        services.AddHostedService<StartupService>();
 
         return services;
     }

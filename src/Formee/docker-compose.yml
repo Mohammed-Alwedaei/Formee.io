@@ -34,20 +34,21 @@ services:
       - history.api
       - notifications.api
 
-  # analytics.api:
-  #   image: analytics.api
-  #   container_name: analytics.api
-  #   build: 
-  #     context: .
-  #     dockerfile: ./Services/Analytics/Analytics.API/Dockerfile
-  #   expose:
-  #     - "80"
-  #   ports:
-  #     - "5001:80"
-  #   environment:
-  #     ASPNETCORE_ENVIRONMENT: Development
-  #     ConnectionStrings__DefaultConnection: Server=host.docker.internal, 1433;Database=Formee.Analytics;User Id=Admin;Password=Admin@123123;integrated security=false;TrustServerCertificate=True
-  #     ConnectionStrings__ServiceBus: Endpoint=sb://formee.servicebus.windows.net/;SharedAccessKeyName=SharedAccessPolicy;SharedAccessKey=2zjgyBu0KGgdOiVx8rHy5GPnHBNvKoR9d+ASbDEu2fw=;EntityPath=topic-history
+  analytics.api:
+    image: analytics.api
+    container_name: analytics.api
+    build: 
+      context: .
+      dockerfile: ./Services/Analytics/Analytics.API/Dockerfile
+    expose:
+      - "80"
+    ports:
+      - "5001:80"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__DefaultConnection: Server=host.docker.internal, 1433;Database=Formee.Analytics;User Id=Admin;Password=Admin@123123;integrated security=false;TrustServerCertificate=True
+      ServiceBus__ConnectionString: Endpoint=sb://formee.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=+prGrnIC0RwHSKHF3zJ/5HW35R08KH4wG+ASbPIkqlk=
+      ServiceBus__History: topic-history
 
   containers.api:
     image: containers.api

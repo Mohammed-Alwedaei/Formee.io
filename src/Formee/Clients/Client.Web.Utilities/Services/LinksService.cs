@@ -5,6 +5,16 @@ namespace Client.Web.Utilities.Services;
 
 public class LinksService
 {
+    public List<LinkDto>? Links;
+
+    public int LinksCount;
+
+    public bool IsFetching;
+
+    public bool IsSuccessFetch;
+
+    public event Action OnChange;
+
     private readonly HttpClient _httpClient;
 
     public LinksService(HttpClient httpClient)
@@ -12,13 +22,38 @@ public class LinksService
         _httpClient = httpClient;
     }
 
-    public async Task<IReadOnlyList<LinkDto>> GetAllAsync(string containerId)
+    public async Task GetAllAsync(string containerId)
     {
-        var url = $"/api/links/all/{containerId}";
+        try
+        {
+            IsFetching = true;
 
-        var response = await _httpClient
-            .GetFromJsonAsync<List<LinkDto>>(url);
+            var url = $"/api/links/all/{containerId}";
 
-        return response ?? new List<LinkDto>();
+            var response = await _httpClient
+                .GetFromJsonAsync<List<LinkDto>>(url);
+
+            Links = new List<LinkDto>();
+
+            if (response != null)
+            {
+                Links = response;
+                LinksCount = response.Count;
+                IsSuccessFetch = true;
+            }
+            else
+            {
+                throw new Exception("something went wrong");
+            }
+
+            IsFetching = false;
+
+            OnChange.Invoke();
+        }
+        catch (Exception)
+        {
+            Links = new List<LinkDto>();
+            IsSuccessFetch = false;
+        }
     }
 }

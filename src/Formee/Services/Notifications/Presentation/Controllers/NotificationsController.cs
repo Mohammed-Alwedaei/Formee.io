@@ -52,20 +52,4 @@ public class NotificationsController : ControllerBase
 
         return Ok(result);
     }
-
-    //[HttpPost("test")]
-    //public async Task<IActionResult> SendNotification(NotificationDto notification)
-    //{
-    //    //_logger.LogInformation("GET: request at /api/notifications/reads at {datetime}",
-    //    //    DateTime.Now);
-
-    //    //var result = await _notificationsManager.CreateAndSendAsync(notification);
-
-    //    //if (result is null)
-    //    //{
-    //    //    return NotFound();
-    //    //}
-
-    //    //return Ok(result);
-    //}
 }

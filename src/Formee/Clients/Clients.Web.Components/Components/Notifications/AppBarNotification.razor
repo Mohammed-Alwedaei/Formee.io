@@ -1,18 +1,25 @@
-﻿@implements IAsyncDisposable
+﻿@inject NotificationsService NotificationsService
+
+@implements IDisposable
 
 @using Microsoft.AspNetCore.SignalR.Client
+@using Client.Web.Utilities.Services
+
 <div class="fm-notification__container">
     <SfButton IconCss="fa-solid fa-bell"
               CssClass="fm-notification__button"
-              OnClick="HandleButtonClick" />
+              OnClick="HandleButtonClick">
+        <span class="e-badge e-badge-success e-badge-notification e-badge-overlap">
+            @NotificationsService.UnreadNotificationsCount
+        </span>
+    </SfButton>
 
     <div class="fm-notification__modal @ModalVisibility">
         <div class="d-flex justify-content-between align-items-center">
             <p>My Notifications</p>
 
             <SfButton IconCss="fa-solid fa-bell"
-                      CssClass="e-link"
-                      OnClick="HandleMarkAllAsRead">
+                      CssClass="e-link">
                 Mark All as Read
             </SfButton>
         </div>
@@ -20,13 +27,15 @@
         <FmSeperator />
 
         <div class="fm-notification__list-view">
-            @if (Notifications is not null)
+            @if (NotificationsService.Notifications is not null 
+                 && NotificationsService.IsFetching != true)
             {
-                foreach (var notification in notificationsToDisplay)
+                foreach (var notification in NotificationsService.Notifications)
                 {
-                    var last = notificationsToDisplay.LastOrDefault();
+                    var last = NotificationsService.Notifications.LastOrDefault();
 
-                    <NotificationModalItem Notification="notification" />
+                    <NotificationModalItem Notification="notification"
+                                           OnMarkAsRead="HandleMarkAsRead" />
 
                     if (notification != last)
                     {
@@ -42,11 +51,9 @@
 
         <FmSeperator />
 
-
         <div class="fm-notification__view-all-button">
             <SfButton IconCss="fa-solid fa-bell"
-                      CssClass="e-link"
-                      OnClick="HandleMarkAllAsRead">
+                      CssClass="e-link">
                 View All
             </SfButton>
         </div>
@@ -54,43 +61,24 @@
 </div>
 
 @code {
-    [Parameter]
-    public List<NotificationDto> Notifications { get; set; }
-
-    private Stack<NotificationDto> notificationsToDisplay;
-
-    private HubConnection? hubConnection;
-
     private bool IsVisible { get; set; } = false;
 
     private string ModalVisibility =>
         IsVisible ? "fm-notification__modal-show" : "fm-notification__modal-hidden";
 
-    private
-        bool IsConnected =>
-        hubConnection?.State == HubConnectionState.Connected;
-
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        hubConnection = new HubConnectionBuilder()
-            .WithUrl("http://localhost:5000/hubs/notifications")
-            .Build();
+        NotificationsService.ListenToMarkAsRead();
 
-        notificationsToDisplay = new Stack<NotificationDto>();
-
-        foreach (var notification in Notifications)
+        NotificationsService.OnChange += async () =>
         {
-            notificationsToDisplay.Push(notification);
-        }
+            await InvokeAsync(StateHasChanged);
+        };
+    }
 
-        hubConnection.On<NotificationDto>("ReceiveNotification", 
-            async (notification) =>
-            {
-                notificationsToDisplay.Push(notification);
-                await InvokeAsync(StateHasChanged);
-            });
-
-        await hubConnection.StartAsync();
+    private async Task HandleMarkAsRead(int id)
+    {
+        await NotificationsService.MarkNotificationAsReadAsync(id);
     }
 
     private void HandleButtonClick()
@@ -99,16 +87,8 @@
         StateHasChanged();
     }
 
-    private async Task HandleMarkAllAsRead()
+    public void Dispose()
     {
-
-    }
-
-    public async ValueTask DisposeAsync()
-    {
-        if (hubConnection is not null)
-        {
-            await hubConnection.DisposeAsync();
-        }
+        NotificationsService.OnChange -= StateHasChanged;
     }
 }

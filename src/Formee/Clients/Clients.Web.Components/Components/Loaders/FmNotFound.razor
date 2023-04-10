@@ -1,0 +1,27 @@
+﻿@if (IsFound)
+{
+    @Content
+}
+else
+{
+    <div class="fm-notfound__wrapper">
+        <img src="_content/Clients.Web.Components/images/not-found.svg"
+             class="fm-notfound__wrapper-img"
+             alt="elements are not found">
+        
+        <FmSpacer />
+
+        <FmTypography Text="There are no links in this container" 
+                      Type="@Typography.LevelTwo"
+                      Classes="fm-color__dimmed"
+                      TextAlign="center" />
+    </div>
+}
+
+@code {
+    [Parameter]
+    public bool IsFound { get; set; }
+
+    [Parameter]
+    public RenderFragment Content { get; set; }
+}

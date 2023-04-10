@@ -1,0 +1,33 @@
+﻿@using SelectEventArgs = Syncfusion.Blazor.Navigations.SelectEventArgs
+
+<div>
+    <SfTab @ref="Tab" @bind-SelectedItem="_selectedTab">
+        <TabAnimationSettings>
+            <TabAnimationPrevious Effect="@Syncfusion.Blazor.AnimationEffect.None" />
+            <TabAnimationNext Effect="@Syncfusion.Blazor.AnimationEffect.None" />
+        </TabAnimationSettings>
+
+        <TabEvents Selected="HandleTabSelect"/>
+
+        <TabItems>
+            @FmTabItems
+        </TabItems>
+    </SfTab>
+</div>
+
+@code {
+    [Parameter]
+    public RenderFragment FmTabItems { get; set; }
+
+    [Parameter]
+    public EventCallback<string> OnTabChange { get; set; }
+
+    SfTab Tab; 
+
+    private int _selectedTab;
+
+    public async Task HandleTabSelect(SelectEventArgs args)
+    {
+        await OnTabChange.InvokeAsync(Tab.Items[_selectedTab].ID);
+    }
+}

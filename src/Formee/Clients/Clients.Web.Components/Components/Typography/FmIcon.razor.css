@@ -1,0 +1,19 @@
+.fm-icon {
+    position: relative;
+}
+
+.fm-icon__icon {
+    z-index: 2
+}
+
+.fm-icon__dot {
+    position: absolute;
+    top: -7px;
+    right: -7px;
+    width: 1.7rem;
+    height: 1.7rem;
+    border-radius: 100px;
+    z-index: 0;
+    background-color: var(--color-text);
+    border: 5px solid var(--color-white);
+}

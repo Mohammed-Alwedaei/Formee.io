@@ -5,21 +5,18 @@ using Domain.Interfaces;
 using Infrastructure.DbContexts;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
-using ServiceBus.Extensions;
-using ServiceBus.Models;
 
 namespace Infrastructure.Repositories;
 
-public class NotificationsManager : NotificationRepository<NotificationModel>, INotificationsManager
+public class NotificationsManager : INotificationsManager
 {
     private readonly ApplicationDbContext _context;
-    private readonly IHubContext<NotificationsHub> _notificationsHub;
+    private readonly IHubContext<NotificationsHub> _hub;
 
-    public NotificationsManager(ApplicationDbContext context, 
-        IHubContext<NotificationsHub> notificationsHub)
+    public NotificationsManager(ApplicationDbContext context, IHubContext<NotificationsHub> hub)
     {
         _context = context;
-        _notificationsHub = notificationsHub;
+        _hub = hub;
     }
 
     public async Task<List<NotificationEntity>> GetAllNotificationsAsync
@@ -30,6 +27,15 @@ public class NotificationsManager : NotificationRepository<NotificationModel>, I
             .OrderByDescending(n => n.CreatedDate)
             .Take(numberOfRecords)
             .ToListAsync();
+    }
+
+    public async Task CreateAndSendAsync(NotificationDto entity)
+    {
+        var notification = await _context.Notifications.AddAsync(entity);
+
+        await _context.SaveChangesAsync();
+
+        await _hub.Clients.All.SendAsync("ReceiveNotification", notification.Entity);
     }
 
     public async Task<NotificationEntity> MarkNotificationAsReadAsync
@@ -46,16 +52,8 @@ public class NotificationsManager : NotificationRepository<NotificationModel>, I
 
         await _context.SaveChangesAsync();
 
+        await _hub.Clients.All.SendAsync("MarkNotificationAsReadResponse", notificationToUpdate);
+
         return notificationToUpdate;
-    }
-
-    public override async Task CreateAndSendAsync<TNotificationEntity>(NotificationModel entity)
-    {
-        await _context.Notifications.AddAsync(entity);
-
-        await _context.SaveChangesAsync();
-
-        await _notificationsHub.Clients.All
-            .SendAsync("ReceiveNotification", entity);
     }
 }

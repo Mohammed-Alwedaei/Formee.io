@@ -10,6 +10,10 @@ public class SiteEntity : Entity
     public string? ContainerId { get; set; }
 
     [Required]
+    [MaxLength(255)]
+    public string? Domain { get; set; }
+
+    [Required]
     [MinLength(5)]
     [MaxLength(30)]
     public string? Name { get; set; }

@@ -1,10 +1,6 @@
 ﻿namespace ServiceBus.ServiceBus;
 
-public interface IAzureServiceBus<TService> where TService : class
+public interface IAzureServiceBus<in TMessage> where TMessage : class
 {
-    Task SendMessage<TBody>(TBody body);
-
-    Task StartProcessing();
-
-    Task StopProcessing();
+    Task SendMessage(TMessage body);
 }

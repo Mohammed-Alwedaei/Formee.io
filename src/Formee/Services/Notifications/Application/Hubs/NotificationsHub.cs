@@ -1,5 +1,4 @@
-﻿using Domain.Dtos;
-using Domain.Interfaces;
+﻿using Domain.Interfaces;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 
@@ -17,14 +16,9 @@ public class NotificationsHub : Hub
         _logger = logger;
     }
 
-    public async Task HandleMarkAsReadNotification(int notificationId)
+    public async Task MarkNotificationAsReadRequest(int id)
     {
-        var notificationToUpdate = await _notificationsManager
-            .MarkNotificationAsReadAsync(notificationId);
-    }
-
-    public async Task SendNotification(NotificationDto notification)
-    {
-        await Clients.All.SendAsync("ReceiveNotification", notification);
+        _logger.LogInformation("Mark as read request in notifications api for entity of id: {id}", id);
+        await _notificationsManager.MarkNotificationAsReadAsync(id);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Analytics.Utilities.Dtos.Category;
 using ServiceBus.Constants;
+using ServiceBus.Messages;
 using ServiceBus.Models;
 using ServiceBus.ServiceBus;
 
@@ -11,10 +12,10 @@ public class CategoryController : ControllerBase
 {
     private readonly ICategoryRepository _categoryRepository;
     private readonly ILogger<CategoryController> _logger;
-    private readonly IAzureServiceBus _serviceBus;
+    private readonly IAzureServiceBus<HistoryMessage> _serviceBus;
     public CategoryController(ICategoryRepository categoryRepository, 
         ILogger<CategoryController> logger,
-        IAzureServiceBus serviceBus)
+        IAzureServiceBus<HistoryMessage> serviceBus)
     {
         _categoryRepository = categoryRepository;
         _logger = logger;
@@ -76,9 +77,9 @@ public class CategoryController : ControllerBase
             Service = SystemServices.Analytics
         };
 
-        await _serviceBus.SendMessage(new CustomServiceBusMessage
+        await _serviceBus.SendMessage(new HistoryMessage
         {
-            History = history
+            Entity = history
         });
 
         return Ok(result);
@@ -107,10 +108,10 @@ public class CategoryController : ControllerBase
             Service = SystemServices.Analytics
         };
 
-        await _serviceBus.SendMessage(new CustomServiceBusMessage
+        await _serviceBus.SendMessage(new HistoryMessage
         {
-            History = history
-        });
+            Entity = history
+        }); ;
 
         return Ok(result);
     }
@@ -129,7 +130,7 @@ public class CategoryController : ControllerBase
             return NotFound();
         }
 
-        var history = new HistoryModel
+        var history = new HistoryModel  
         {
             Title = "A category is deleted",
             Action = ActionType.Delete,
@@ -137,9 +138,9 @@ public class CategoryController : ControllerBase
             Service = SystemServices.Analytics
         };
 
-        await _serviceBus.SendMessage(new CustomServiceBusMessage
+        await _serviceBus.SendMessage(new HistoryMessage
         {
-            History = history
+            Entity = history
         });
 
         return Ok(result);

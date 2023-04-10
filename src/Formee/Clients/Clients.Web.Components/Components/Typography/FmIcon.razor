@@ -1,0 +1,16 @@
+﻿<div class="fm-icon">
+    <SfIcon IconCss="@Icon" HtmlAttributes="_htmlAttributes" />
+
+    <span class="fm-icon__dot"></span>
+</div>
+
+@code {
+    [Parameter]
+    public string Icon { get; set; }
+
+    private readonly Dictionary<string, object> _htmlAttributes = new()
+    {
+        { "class", "fm-icon__icon" }
+    };
+
+}

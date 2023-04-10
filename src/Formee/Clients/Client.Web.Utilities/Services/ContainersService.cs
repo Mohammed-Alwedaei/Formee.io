@@ -5,6 +5,14 @@ namespace Client.Web.Utilities.Services;
 
 public class ContainersService
 {
+    public List<ContainerDto> Containers;
+
+    public int ContainersCount; 
+
+    public bool IsFetching;
+
+    public event Action OnChange;
+
     private readonly HttpClient _httpClient;
 
     public ContainersService(HttpClient httpClient)
@@ -12,8 +20,10 @@ public class ContainersService
         _httpClient = httpClient;
     }
 
-    public async Task<List<ContainerDto>> GetAllByUserIdAsync(Guid userId)
+    public async Task GetAllByUserIdAsync(Guid userId)
     {
+        IsFetching = true;
+
         var url = $"/api/containers/all/{userId}";
 
         var response = await _httpClient
@@ -21,10 +31,16 @@ public class ContainersService
 
         if (response.Any())
         {
-            return response;
+            Containers = new List<ContainerDto>();
+
+            Containers = response;
+
+            ContainersCount = Containers.Count;
         }
 
-        return new List<ContainerDto>();
+        IsFetching = false;
+
+        OnChange.Invoke();
     }
 
     public async Task<ContainerDto> GetByIdAsync(string containerId)

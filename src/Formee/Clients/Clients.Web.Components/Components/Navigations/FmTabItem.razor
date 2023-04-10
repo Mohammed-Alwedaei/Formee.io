@@ -1,0 +1,22 @@
+﻿
+<TabItem ID="@Id">
+    <HeaderTemplate>
+        @Header
+    </HeaderTemplate>
+
+    <ContentTemplate>
+        @Body
+    </ContentTemplate>
+</TabItem>
+
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+
+    [Parameter]
+    public RenderFragment Header { get; set; }
+
+    [Parameter]
+    public RenderFragment Body { get; set; }
+}

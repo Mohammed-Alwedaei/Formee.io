@@ -13,8 +13,8 @@ public partial class View
     public FormsService FormsService { get; set; }
 
     [Parameter]
-    [SupplyParameterFromQuery(Name = "id")]
-    public int Id { get; set; }
+    [SupplyParameterFromQuery(Name = "siteId")]
+    public int SiteId { get; set; }
 
     private SiteDto _site { get; set; }
 
@@ -30,7 +30,7 @@ public partial class View
     {
         IsFetching = true;
 
-        //_site = await AnalyticsService.GetSiteByIdAsync(Id);
+        //_site = await AnalyticsService.GetSiteByIdAsync(SiteId);
 
         //_forms = await FormsService.GetAllBySiteIdAsync(_site.Id);
 
@@ -40,7 +40,7 @@ public partial class View
         //var endDate = DateTime.Now;
 
         //_pageHits = await AnalyticsService
-        //    .GetAllHitsInTimePeriodAsync(Id, startDate, endDate);
+        //    .GetAllHitsInTimePeriodAsync(SiteId, startDate, endDate);
 
         IsFetching = false;
     }

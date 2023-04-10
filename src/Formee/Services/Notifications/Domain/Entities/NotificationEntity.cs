@@ -1,6 +1,4 @@
-﻿using ServiceBus.Models;
-
-namespace Domain.Entities;
+﻿namespace Domain.Entities;
 
 public class NotificationEntity : Entity
 {
@@ -31,18 +29,6 @@ public class NotificationEntity : Entity
             Message = notificationDto.Message,
             IsRead = notificationDto.IsRead,
             CreatedDate = notificationDto.CreatedDate,
-        };
-    }
-
-    public static implicit operator NotificationEntity
-        (NotificationModel notificationModel)
-    {
-        return new NotificationEntity
-        {
-            GlobalUserId = notificationModel.GlobalUserId,
-            Heading = notificationModel.Heading,
-            Message = notificationModel.Message,
-            IsRead = notificationModel.IsRead,
         };
     }
 }

@@ -8,10 +8,9 @@ public class LinkEntity : Entity
     [StringLength(24)]
     public string ContainerId { get; set; } = null!;
 
-    [Required]
-    [MinLength(3)]
-    [MaxLength(30)]
-    public string Name { get; set; } = null!;
+    public int LinkDetailsId { get; set; }
+
+    public LinkDetailsEntity LinkDetails { get; set; }
 
     [Required]
     [MaxLength(1024)]

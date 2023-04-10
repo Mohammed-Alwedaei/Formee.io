@@ -4,11 +4,11 @@ namespace ServiceBus.Models;
 
 public class HistoryServiceBusConnection
 {
-    public string ConnectionString { get; set; }
+    public string? ConnectionString { get; set; }
 
     [JsonProperty("History")]
-    public string Topic { get; set; }
+    public string? Topic { get; set; }
 
     [JsonProperty("HistorySubscription")]
-    public string Subscription { get; set; }
+    public string? Subscription { get; set; }
 }

@@ -2,7 +2,9 @@
 
 public class ChartModel
 {
-    public object X { get; set; }
+    public int Id { get; set; }
 
-    public object Y { get; set; }
+    public DateTime Date { get; set; }
+
+    public int Count { get; set; }
 }

@@ -1,27 +1,26 @@
 using Application.Hubs;
-using Infrastructure;
+using Infrastructure.Extensions;
+using Newtonsoft.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
-builder.Services.AddInfrastructure(builder.Configuration);
 
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddInfrastructure(builder.Configuration);
+
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(
-        builder =>
-        {
-            builder.WithOrigins("https://localhost:7255", "http://127.0.0.1:5500")
-                .AllowAnyHeader()
-                .WithMethods("GET", "POST")
-                .AllowCredentials();
-        });
+    options.AddPolicy("cors", policy =>
+    {
+        policy.AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
 });
 
 builder.Services.AddSignalR();
@@ -35,7 +34,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors();
+app.UseCors("cors");
 
 //app.UseHttpsRedirection();
 

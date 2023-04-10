@@ -1,7 +1,7 @@
-﻿using System.Data;
-using Dapper;
-using Links.BusinessLogic.Contexts;
+﻿using Dapper;
+using System.Data;
 using Links.Utilities.Entities;
+using Links.BusinessLogic.Contexts;
 using Microsoft.AspNetCore.WebUtilities;
 
 namespace Links.BusinessLogic.Repositories;
@@ -21,7 +21,14 @@ public class LinkRepository : ILinkRepository
         using var connection = _db.Connect();
 
         var linkFromDb = await connection.QueryAsync
-            <LinkEntity>("sp_Link_GetById", new { Id = id },
+            <LinkEntity, LinkDetailsEntity, LinkEntity>("sp_Link_GetById", 
+                map: (link, details) =>
+                {
+                    link.LinkDetails = details;
+                    link.LinkDetailsId = details.Id;
+                    return link;
+                },
+                new { Id = id },
                 commandType: CommandType.StoredProcedure);
 
         return linkFromDb.FirstOrDefault();
@@ -49,7 +56,13 @@ public class LinkRepository : ILinkRepository
         using var connection = _db.Connect();
 
         var linksFromDb = await connection.QueryAsync
-            <LinkEntity>("sp_Link_GetAllByContainerId",
+            <LinkEntity, LinkDetailsEntity, LinkEntity>("sp_Link_GetAllByContainerId",
+                map: (link, details) =>
+                {
+                    link.LinkDetails = details;
+                    link.LinkDetailsId = details.Id;
+                    return link;
+                },
                 new { ContainerId = containerId },
                 commandType: CommandType.StoredProcedure);
 
@@ -64,6 +77,8 @@ public class LinkRepository : ILinkRepository
         var linkToCreate = new
         {
             entity.ContainerId,
+            entity.LinkDetails.Name,
+            entity.LinkDetails.Domain,
             entity.OriginalUrl,
             entity.IsDeleted,
             entity.CreatedDate

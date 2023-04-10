@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Analytics.BusinessLogic.Mapper;
 using Analytics.BusinessLogic.Contexts;
 using Analytics.BusinessLogic.Repositories;
-using ServiceBus.Extensions;
+using ServiceBus;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,8 +20,19 @@ builder.Services.AddAutoMapper(typeof(MappingConfiguration));
 builder.Services.AddScoped<ISiteRepository, SiteRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IPageHitRepository, PageHitRepository>();
+builder.Services.AddScoped<ISessionRepository, SessionsRepository>();
 
-builder.Services.AddAzureServiceBus();
+builder.Services.AddServiceBusSender();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("cors", policy =>
+    {
+        policy.AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
 
 var app = builder.Build();
 
@@ -33,6 +44,8 @@ if (app.Environment.IsDevelopment())
 }
 
 // app.UseHttpsRedirection();
+
+app.UseCors("cors");
 
 app.MapControllers();
 

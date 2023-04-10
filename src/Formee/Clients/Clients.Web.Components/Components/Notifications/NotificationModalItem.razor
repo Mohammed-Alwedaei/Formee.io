@@ -1,29 +1,39 @@
 ﻿@using Client.Web.Utilities.Services
 
-@inject NotificationsService NotificationsService
 
-<div class="d-flex justify-content-between align-items-center">
-    <div>
-        <p>@Notification.Id @Notification.Heading</p>
+@if (Notification is not null)
+{
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <div>
+                <p>@Notification.Heading</p>
+                <p>@Notification.Message</p>
+            </div>
 
-        <p class="fm__notification-item-date">
-            <FmDateViewer Date="Notification.CreatedDate"/>
-        </p>
+
+            <p class="fm__notification-item-date">
+                <FmDateViewer Date="Notification.CreatedDate"/>
+            </p>
+        </div>
+
+        <SfButton Disabled="Notification.IsRead" 
+                  IconCss="fa-solid fa-envelope-open-text"
+                  IsPrimary="false" 
+                  CssClass="e-link"
+              OnClick="HandleReadButtonClick" />
     </div>
-
-    <SfButton Disabled="Notification.IsRead" 
-              IconCss="fa-solid fa-envelope-open-text"
-              IsPrimary="false" 
-              CssClass="e-link" OnClick="HandleReadButtonClick" />
-</div>
+}
 
 @code {
     [Parameter]
     public NotificationDto Notification { get; set; }
 
+    [Parameter]
+    public EventCallback<int> OnMarkAsRead { get; set; }
+
+
     private async Task HandleReadButtonClick()
     {
-        var notification = await NotificationsService
-            .MarkNotificationAsReadAsync(Notification.Id);
+        await OnMarkAsRead.InvokeAsync(Notification.Id);
     }
 }

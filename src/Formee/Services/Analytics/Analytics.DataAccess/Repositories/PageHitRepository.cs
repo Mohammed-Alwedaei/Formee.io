@@ -14,7 +14,8 @@ public class PageHitRepository : IPageHitRepository
 
     public async Task<List<PageHitEntity>> GetAllBySiteId(int siteId)
     {
-        return await _db.PageHit
+        return await _db.PageHits
+            .AsNoTracking()
             .Where(h => h.SiteId == siteId)
             .ToListAsync();
     }
@@ -22,7 +23,8 @@ public class PageHitRepository : IPageHitRepository
     public async Task<List<PageHitEntity>> GetAllByCountryNameAsync
         (int siteId, string country)
     {
-        return await _db.PageHit
+        return await _db.PageHits
+            .AsNoTracking()
             .Where(h => h.SiteId == siteId && h.Country == country)
             .ToListAsync();
     }
@@ -30,7 +32,8 @@ public class PageHitRepository : IPageHitRepository
     public async Task<List<PageHitEntity>> GetAllByDateAsync
         (int siteId, DateTime startDate, DateTime endDate)
     {
-        return await _db.PageHit
+        return await _db.PageHits
+            .AsNoTracking()
             .Where(h => h.SiteId == siteId 
                         && h.CreatedDate >= startDate 
                         && h.CreatedDate <= endDate)
@@ -41,7 +44,7 @@ public class PageHitRepository : IPageHitRepository
     {
         var hitToCreate = _mapper.Map<PageHitEntity>(hit);
 
-        var result = await _db.PageHit
+        var result = await _db.PageHits
             .AddAsync(hitToCreate);
 
         await _db.SaveChangesAsync();

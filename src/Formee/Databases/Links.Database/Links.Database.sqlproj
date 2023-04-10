@@ -69,6 +69,7 @@
     <Build Include="dbo\StoredProcedures\sp_Link_DeleteById.sql" />
     <Build Include="dbo\StoredProcedures\sp_Link_DeleteAllByContainerId.sql" />
     <Build Include="dbo\StoredProcedures\sp_Redirect_GetByTargetUrl.sql" />
+    <Build Include="dbo\Tables\LinkDetails.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Links.Database.publish.xml" />

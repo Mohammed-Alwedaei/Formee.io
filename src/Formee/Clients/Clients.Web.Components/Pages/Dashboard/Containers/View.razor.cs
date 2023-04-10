@@ -18,12 +18,6 @@ public partial class View
 
     private ContainerDto Container { get; set; } = new();
 
-    private List<ChartModel> _pageHitsDisplay { get; set; } = new(){
-        new ChartModel { X = "Bahrain", Y = 170 },
-        new ChartModel { X = "Japan", Y = 1265 },
-        new ChartModel { X = "United States", Y = 3215 },
-    };
-
     protected override async Task OnParametersSetAsync()
     {
         Container = await ContainersService.GetByIdAsync(ContainerId);

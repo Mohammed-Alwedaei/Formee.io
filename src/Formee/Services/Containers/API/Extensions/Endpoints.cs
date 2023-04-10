@@ -1,6 +1,7 @@
 ﻿using API.Entities;
 using API.Services;
 using ServiceBus.Constants;
+using ServiceBus.Messages;
 using ServiceBus.Models;
 using ServiceBus.ServiceBus;
 
@@ -53,7 +54,7 @@ public static class Endpoints
          */
         containers.MapPost("/",
             async (ContainersService containersService,
-                IAzureServiceBus<HistoryServiceBus> serviceBus,
+                IAzureServiceBus<HistoryMessage> serviceBus,
                 ContainerEntity container) =>
             {
                 if (await containersService.CreateContainerAsync(container)
@@ -68,7 +69,7 @@ public static class Endpoints
                     };
 
                     await serviceBus.SendMessage(
-                        new CustomServiceBusMessage<HistoryModel>
+                        new HistoryMessage
                         {
                             Entity = history
                         });
@@ -86,7 +87,7 @@ public static class Endpoints
          */
         containers.MapPut("/",
             async (ContainersService containersService,
-                IAzureServiceBus<HistoryServiceBus> serviceBus,
+                IAzureServiceBus<HistoryMessage> serviceBus,
                 ContainerEntity container) =>
             {
                 if (await containersService
@@ -101,7 +102,7 @@ public static class Endpoints
                     };
 
                     await serviceBus.SendMessage(
-                        new CustomServiceBusMessage<HistoryModel>
+                        new HistoryMessage
                         {
                             Entity = history
                         });
@@ -121,8 +122,7 @@ public static class Endpoints
          */
         containers.MapDelete("/{id:length(24)}",
             async (ContainersService containersService,
-                IAzureServiceBus<HistoryServiceBus> historyBus,
-                IAzureServiceBus<NotificationsServiceBus> notificationsBus,
+                IAzureServiceBus<NotificationMessage> serviceBus,
                 string id) =>
             {
                 var results = await containersService
@@ -145,14 +145,8 @@ public static class Endpoints
                         Message = "The container of name ... is deleted"
                     };
 
-                    await historyBus.SendMessage(
-                        new CustomServiceBusMessage<HistoryModel>
-                        {
-                            Entity = history
-                        });
-
-                    await notificationsBus.SendMessage(
-                        new CustomServiceBusMessage<NotificationModel>
+                    await serviceBus.SendMessage(
+                        new NotificationMessage
                         {
                             Entity = notification
                         });

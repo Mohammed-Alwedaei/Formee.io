@@ -13,125 +13,70 @@
 
 <FmSpacer />
 
-<FmTypography Text="Change container" />
-
-<FmSpacer />
-
-<FmLoader FetchingState="IsFetching">
-    <Content>
-        <ContainerSelector DataSource="Containers"
-                           OnChange="HandleContainerChangeEvent" />
-    </Content>
-</FmLoader>
-
-<FmSpacer />
-
-
-
-<FmLoader FetchingState="IsFetching">
-    <Content>
-        <Grid>
-            <Items>
-                <GridItem ColumnSize="@GridSize.Normal">
-                    <Child>
-                        <FmCard Classes="@Card.Warning">
-                            <FmHeader>
-                                <FmTypography Text="Links"
-                                              Type="@Typography.LevelTwo" />
-                            </FmHeader>
-
-                            <FmBody>
-                                <div>
-                                    <FmTypography Text="@Links.Count.ToString()"
-                                                  Type="@Typography.LevelThree" />
-
-                                    <SfIcon IconCss="fa-solid fa-money-bill" />
-                                </div>
-                            </FmBody>
-                        </FmCard>
-                    </Child>
-                </GridItem>
-
-                <GridItem ColumnSize="@GridSize.Normal">
-                    <Child>
-                        <FmCard Classes="@Card.Success">
-                            <FmHeader>
-                                <FmTypography Text="Redirects"
-                                              Type="@Typography.LevelTwo" />
-                            </FmHeader>
-
-                            <FmBody>
-                                <div>
-                                    <FmTypography Text="15"
-                                                  Type="@Typography.LevelThree" />
-
-                                    <SfIcon IconCss="fa-solid fa-money-bill" />
-                                </div>
-                            </FmBody>
-                        </FmCard>
-                    </Child>
-                </GridItem>
-
-                <GridItem ColumnSize="@GridSize.Normal">
-                    <Child>
-                        <FmCard Classes="@Card.Danger">
-                            <FmHeader>
-                                <FmTypography Text="Redirects"
-                                              Type="@Typography.LevelTwo" />
-                            </FmHeader>
-
-                            <FmBody>
-                                <div>
-                                    <FmTypography Text="10"
-                                                  Type="@Typography.LevelThree" />
-
-                                    <SfIcon IconCss="fa-solid fa-money-bill" />
-                                </div>
-                            </FmBody>
-                        </FmCard>
-                    </Child>
-                </GridItem>
-            </Items>
-        </Grid>
-
-        <FmSpacer />
-
-        <SfDashboardLayout Columns="4"
-                           CellSpacing="@(new double[] {40, 40})"
-                           AllowResizing="false"
-                           AllowDragging="false"
-                           AllowFloating="false">
-            <DashboardLayoutPanels>
-                <DashboardLayoutPanel Column="0" Row="0" SizeX="3" SizeY="1">
+<FmTab OnTabChange="HandleContainerChangeEvent">
+    <FmTabItems>
+        @if (ContainersService.Containers != null)
+        {
+            foreach (var container in ContainersService.Containers)
+            {
+                <FmTabItem Id="@container.Id">
                     <Header>
-                        <FmTypography Text="Analytics"
-                                      Type="@Typography.LevelTwo"/>
+                        <FmTypography Type="@Typography.LevelTwo" 
+                                      Icon="@container.Icon"
+                                      Text="@container.Name"
+                                      Classes="d-flex justify-content-center align-items-center"/>
                     </Header>
 
-                    <ContentTemplate>
+                    <Body>
+                        <FmSpacer />
 
-                    </ContentTemplate>
-                </DashboardLayoutPanel>
+                        <FmLoader FetchingState="IsFetching">
+                            <Content>
+                                <SfDashboardLayout Columns="4"
+                                           CellSpacing="@(new double[] {40, 40})"
+                                           AllowResizing="false"
+                                           AllowDragging="false"
+                                           AllowFloating="false">
+                                    <DashboardLayoutPanels>
+                                        <DashboardLayoutPanel Column="0" Row="0" SizeX="3" SizeY="1">
+                                            <Header>
+                                                <FmTypography Text="Analytics"
+                                                      Type="@Typography.LevelTwo" />
+                                            </Header>
 
-                <DashboardLayoutPanel Column="4" Row="0" SizeX="1" SizeY="1">
-                    <Header>
-                        <FmTypography Text="Recent Links"
-                                      Type="@Typography.LevelTwo"/>
-                    </Header>
+                                            <ContentTemplate>
 
-                    <ContentTemplate>
-                        @foreach (var link in Links)
-                        {
-                            <FmTypography Text="@link.TargetUrl"
-                                          Type="@Typography.LevelTwo"/>
+                                            </ContentTemplate>
+                                        </DashboardLayoutPanel>
 
-                            <FmTypography Text="@link.OriginalUrl"
-                                          Classes="fm-link__small"/>
-                        }
-                    </ContentTemplate>
-                </DashboardLayoutPanel>
-            </DashboardLayoutPanels>
-        </SfDashboardLayout>
-    </Content>
-</FmLoader>
+                                        <DashboardLayoutPanel Column="4" Row="0" SizeX="1" SizeY="1">
+                                            <Header>
+                                                <FmTypography Text="Recent Links"
+                                                      Type="@Typography.LevelTwo" />
+                                            </Header>
 
+                                            <ContentTemplate>
+                                                <FmNotFound IsFound="LinksService.IsSuccessFetch">
+                                                    <Content>
+                                                        @foreach (var link in LinksService.Links)
+                                                        {
+                                                            <FmTypography Text="@link.LinkDetails.Name"
+                                                              Type="@Typography.LevelTwo" />
+
+                                                            <FmTypography Text="@link.OriginalUrl"
+                                                              Classes="fm-link__small" />
+                                                        }
+                                                    </Content>
+                                                </FmNotFound>
+                                            </ContentTemplate>
+                                        </DashboardLayoutPanel>
+                                    </DashboardLayoutPanels>
+                                </SfDashboardLayout>
+                            </Content>
+                        </FmLoader>
+                    </Body>
+                </FmTabItem>
+            }
+        }
+    </FmTabItems>
+</FmTab>

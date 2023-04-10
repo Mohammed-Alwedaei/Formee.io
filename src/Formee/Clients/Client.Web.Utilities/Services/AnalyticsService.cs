@@ -1,10 +1,21 @@
 ﻿using Client.Web.Utilities.Dtos.Analytics;
+using Client.Web.Utilities.Models;
+using System.Collections.Generic;
 using System.Net.Http.Json;
 
 namespace Client.Web.Utilities.Services;
 
 public class AnalyticsService
 {
+    public List<SiteDto> Sites;
+    public List<PageHitDto> Hits;
+
+    public List<ChartModel> HitChartDataSeries;
+
+    public int HitsCount;
+
+    public bool IsFetching;
+
     private readonly HttpClient _httpClient;
 
     public AnalyticsService(HttpClient httpClient)
@@ -37,14 +48,60 @@ public class AnalyticsService
         return response ?? new List<SiteDto>();
     }
 
-    public async Task<List<PageHitDto>> GetAllHitsInTimePeriodAsync
+    public async Task GetAllHitsInTimePeriodAsync
         (int siteId, DateTime startDate, DateTime endDate)
     {
-        var url = $"/api/hits/all/{siteId}/{startDate.ToString("yyyy-MM-dd")}/{endDate.ToString("yyyy-MM-dd")}";
+        var formattedStartDate = startDate.ToString("yyyy-MM-dd");
+        var formattedEndDate = endDate.ToString("yyyy-MM-dd");
+
+        var url = $"/api/hits/all/{siteId}/{formattedStartDate}/{formattedEndDate}";
 
         var response = await _httpClient
             .GetFromJsonAsync<List<PageHitDto>>(url);
 
-        return response ?? new List<PageHitDto>();
+        if (response is not null)
+        {
+            Hits = new List<PageHitDto>();
+
+            Hits = response;
+
+            HitsCount = Hits.Count;
+        }
+    }
+
+    public void GenerateChartDataSeries()
+    {
+        IsFetching = true;
+        var dataSeries = new List<ChartModel>();
+        var counter = 0;
+
+        foreach (var hit in Hits)
+        {
+            counter += 1;
+
+            var isAvailableDate = dataSeries
+                .FirstOrDefault(c => c.Date.Date
+                                     == hit.CreatedDate.Date 
+                                     && c.Date.Hour - hit.CreatedDate.Hour == 0);
+
+            if (isAvailableDate is not null)
+            {
+                isAvailableDate.Count = counter;
+            }
+            else
+            {
+                dataSeries.Add(new ChartModel
+                {
+                    Id = hit.Id,
+                    Date = hit.CreatedDate,
+                    Count = 1
+                });
+            }
+        }
+
+        HitChartDataSeries = new List<ChartModel>();
+        HitChartDataSeries = dataSeries;
+
+        IsFetching = false;
     }
 }

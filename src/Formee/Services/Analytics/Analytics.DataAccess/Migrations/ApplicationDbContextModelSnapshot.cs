@@ -60,7 +60,7 @@ namespace Analytics.BusinessLogic.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Category");
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("Analytics.Utilities.Entities.PageHitEntity", b =>
@@ -96,7 +96,34 @@ namespace Analytics.BusinessLogic.Migrations
 
                     b.HasIndex("SiteId");
 
-                    b.ToTable("PageHit");
+                    b.ToTable("PageHits");
+                });
+
+            modelBuilder.Entity("Analytics.Utilities.Entities.SessionEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeviceId")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime>("LastDeviceHit")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Sessions");
                 });
 
             modelBuilder.Entity("Analytics.Utilities.Entities.SiteEntity", b =>
@@ -126,6 +153,11 @@ namespace Analytics.BusinessLogic.Migrations
                         .HasMaxLength(1024)
                         .HasColumnType("nvarchar(1024)");
 
+                    b.Property<string>("Domain")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
                     b.Property<string>("Icon")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -149,7 +181,7 @@ namespace Analytics.BusinessLogic.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Site");
+                    b.ToTable("Sites");
                 });
 
             modelBuilder.Entity("Analytics.Utilities.Entities.PageHitEntity", b =>

@@ -12,7 +12,7 @@ public partial class Index
     public NavigationManager NavigationManager { get; set; }
 
     [Parameter]
-    [SupplyParameterFromQuery(Name = "id")]
+    [SupplyParameterFromQuery(Name = "containerId")]
     public string ContainerId { get; set; }
 
     private List<SiteDto> Sites { get; set; }

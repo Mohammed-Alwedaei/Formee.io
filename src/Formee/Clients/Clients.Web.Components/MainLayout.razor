@@ -1,39 +1,40 @@
 ﻿@inherits LayoutComponentBase
 
-<SfSidebar @bind-IsOpen="_sidebarToggle"
+
+<SfSidebar @bind-IsOpen="_navigationSidebarToggle"
            Type="SidebarType.Push"
            Position="SidebarPosition.Left"
            EnableGestures="false"
            Width="300px"
-           DockSize="80px"
+           DockSize="190px"
            EnableDock="true">
     <ChildContent>
-        <div class="py-4">
-            <FmTypography Text="Formee" 
+        <div class="fm-sidebar__nav py-4">
+            <FmTypography Text="Formee"
                           Type="@Typography.LevelOne"
                           TextAlign="center"
-                          Classes="fm-motto mb-3"/>
+                          Classes="fm-motto mb-3" />
 
             <FmLink Route="/"
                     ActiveClass="fm-link__active"
                     Text="Home"
                     Classes="fm-link d-flex justify-content-center mb-3"
-                    Icon="fa-solid fa-home"/>
+                    Icon="fa-solid fa-home" />
 
             <FmLink Route="/dashboard/containers"
                     ActiveClass="fm-link__active"
                     MatchRoute="NavLinkMatch.Prefix"
                     Text="Containers"
                     Classes="fm-link d-flex justify-content-center mb-3"
-                    Icon="fa-solid fa-boxes-stacked"/>
+                    Icon="fa-solid fa-boxes-stacked" />
 
             <FmLink Route="/dashboard/sites"
                     ActiveClass="fm-link__active"
                     MatchRoute="NavLinkMatch.Prefix"
                     Text="Sites"
                     Classes="fm-link d-flex justify-content-center mb-3"
-                    Icon="fa-solid fa-window-restore"/>
-            
+                    Icon="fa-solid fa-window-restore" />
+
             <FmLink Route="@Routes.LiveChat"
                     ActiveClass="fm-link__active"
                     Text="Live Chat"
@@ -50,14 +51,14 @@
                     ActiveClass="fm-link__active"
                     Text="Identity Management"
                     Classes="fm-link d-flex justify-content-center mb-3"
-                    Icon="fa-solid fa-user"/>
+                    Icon="fa-solid fa-user" />
 
             <FmLink Route="/subscription"
                     ActiveClass="fm-link__active"
                     Text="Subscription"
                     Classes="fm-link d-flex justify-content-center mb-3"
-                    Icon="fa-solid fa-credit-card"/>
-            
+                    Icon="fa-solid fa-credit-card" />
+
             <FmLink Route="@Routes.History"
                     ActiveClass="fm-link__active"
                     Text="History"
@@ -67,31 +68,32 @@
     </ChildContent>
 </SfSidebar>
 
-<div class="maincontent">
+
+<div class="maincontent e-main-content">
     <SfAppBar ColorMode="AppBarColor.Light">
         <div class="app-bar__wrapper">
+            <FmTypography Text="Hello, Mohammed Alwedaei" 
+                          Type="@Typography.LevelOne" 
+                          Classes="fm-typography__display-1" />
+            <AppBarSpacer/>
             <div class="d-flex justify-content-center align-items-center">
-                <SfButton CssClass="e-inherit" 
-                          IconCss="e-icons e-menu"
-                          OnClick="Toggle"></SfButton>
-                <p>@_currentTime</p>
-            </div>
-
-            <AppBarSpacer />
-
-            <div class="app-bar-actions">
-                <div class="d-flex justify-content-between align-items-center">
-                    <FmLoader FetchingState="_isFetching">
-                        <Content>
-                            <AppBarNotification 
-                                Notifications="Notifications.ToList()" />
-                        </Content>
-                    </FmLoader>
-
-                    <div>
-                        <AppBarAccessControl />
+                <SfTooltip Position="Syncfusion.Blazor.Popups.Position.BottomCenter" 
+                           Content="Notifications Service">
+                    <div class="d-flex justify-content-center align-items-center">
+                        @if (NotificationsService.ConnectionStatus)
+                        {
+                            <span class="fm-connection-status fm-bg-color__success"></span>
+                            <FmTypography Text="Connected"
+                                      Classes="fm-typography__lead ml-1" />
+                        }
+                        else
+                        {
+                            <span class="fm-connection-status fm-bg-color__danger"></span>
+                            <FmTypography Text="Disconnected"
+                                      Classes="fm-typography__lead ml-1" />
+                        }
                     </div>
-                </div>
+                </SfTooltip>
             </div>
         </div>
     </SfAppBar>
@@ -102,5 +104,29 @@
         @Body
     </main>
 </div>
+
+<SfSidebar @bind-IsOpen="_userSidebarToggle"
+           Type="SidebarType.Push"
+           Position="SidebarPosition.Right"
+           EnableGestures="false"
+           Width="350px"
+           DockSize="120px"
+           EnableDock="true">
+    <ChildContent>
+        <div class="fm-sidebar__user py-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <FmLoader FetchingState="_isFetching">
+                    <Content>
+                        <AppBarNotification />
+                    </Content>
+                </FmLoader>
+
+                <div>
+                    <AppBarAccessControl />
+                </div>
+            </div>
+        </div>
+    </ChildContent>
+</SfSidebar>
 
 <FmSpacer />

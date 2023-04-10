@@ -10,215 +10,198 @@
 
 <FmSpacer />
 
-<section>
-    <SfDashboardLayout Columns="4"
+@if (!ContainersService.IsFetching && !NotificationsService.IsFetching)
+{
+    <section>
+        <SfDashboardLayout Columns="4"
                        CellSpacing="@(new double[]{ 40 ,40 })"
                        AllowResizing="false"
                        AllowDragging="false"
                        AllowFloating="false">
-        <DashboardLayoutPanels>
-            <DashboardLayoutPanel Column="0" Row="0" SizeX="3" SizeY="1">
-                <Header>
-                    <FmTypography Text="General Statistics"
+            <DashboardLayoutPanels>
+                <DashboardLayoutPanel CssClass="fm-dashboard__item-clear-styles"
+                                  Column="0"
+                                  Row="0"
+                                  SizeX="3"
+                                  SizeY="1">
+                    <Header>
+                        <FmTypography Text="General Statistics"
                                   Type="@Typography.LevelTwo" />
-                </Header>
-                <ContentTemplate>
-                    <Grid Gap="@GridGap.Large">
-                        <Items>
-                            <GridItem ColumnSize="@GridSize.GridItemSmall">
-                                <Child>
-                                    <FmCard Classes="@Card.Success">
-                                        <FmHeader>
-                                            <FmTypography Text="Containers"
-                                                          Type="@Typography.LevelTwo" />
-                                        </FmHeader>
+                    </Header>
+                    <ContentTemplate>
+                        <Grid Gap="@GridGap.Large">
+                            <Items>
+                                <GridItem ColumnSize="@GridSize.GridItemSmall">
+                                    <Child>
+                                        <FmCard>
+                                            <FmHeader>
+                                                <FmIcon Icon="fa-solid fa-boxes-stacked" />
+                                            </FmHeader>
 
-                                        <FmBody>
-                                            <div>
-                                                <FmTypography Text="@_containers.Count.ToString()"
-                                                              Classes=""
-                                                              Type="@Typography.LevelThree" />
+                                            <FmBody>
+                                                <FmTypography Text="@ContainersService.ContainersCount.ToString()"
+                                                          Type="@Typography.LevelThree"
+                                                          Classes="fm-typography__display-3"
+                                                          TextAlign="left" />
 
-                                                <SfIcon IconCss="fa-solid fa-money-bill" />
-                                            </div>
-                                        </FmBody>
-                                    </FmCard>
-                                </Child>
-                            </GridItem>
+                                                <FmTypography Text="Your active containers"
+                                                          Classes="fm-typography__lead" />
+                                            </FmBody>
+                                        </FmCard>
+                                    </Child>
+                                </GridItem>
 
-                            <GridItem ColumnSize="@GridSize.GridItemSmall">
-                                <Child>
-                                    <FmCard Classes="@Card.Danger">
-                                        <FmHeader>
-                                            <FmTypography Text="Sites"
-                                                          Type="@Typography.LevelTwo" />
-                                        </FmHeader>
-                                        
-                                        <FmBody>
+                                <GridItem ColumnSize="@GridSize.GridItemSmall">
+                                    <Child>
+                                        <FmCard>
+                                            <FmHeader>
+                                                <FmIcon Icon="fa-solid fa-window-restore" />
 
-                                            <FmTypography Text="Placeholder"
-                                                          Type="@Typography.LevelThree" />
-                                            
-                                            <SfIcon IconCss="fa-solid fa-money-bill" />
 
-                                            <FmTypography Text="Hello world this is something great" />
-                                        </FmBody>
+                                            </FmHeader>
 
-                                    </FmCard>
-                                </Child>
-                            </GridItem>
+                                            <FmBody>
+                                                <FmTypography Text="3"
+                                                          Type="@Typography.LevelThree"
+                                                          Classes="fm-typography__display-3"
+                                                          TextAlign="left" />
 
-                            <GridItem ColumnSize="@GridSize.GridItemSmall">
-                                <Child>
-                                    <FmCard Classes="@Card.Warning">
-                                        <FmHeader>
-                                            <FmTypography Text="Hits"
-                                                          Type="@Typography.LevelTwo" />
-                                        </FmHeader>
+                                                <FmTypography Text="Your site count"
+                                                          Classes="fm-typography__lead" />
+                                            </FmBody>
+                                        </FmCard>
+                                    </Child>
+                                </GridItem>
 
-                                        <FmBody>
+                                <GridItem ColumnSize="@GridSize.GridItemSmall">
+                                    <Child>
+                                        <FmCard>
+                                            <FmHeader>
+                                                <FmIcon Icon="fa-solid fa-location-crosshairs" />
+                                            </FmHeader>
 
-                                            <FmTypography Text="Placeholder"
-                                                          Type="@Typography.LevelThree" />
+                                            <FmBody>
+                                                <FmTypography Text="@AnalyticsService.HitsCount.ToString()"
+                                                          Type="@Typography.LevelThree"
+                                                          Classes="fm-typography__display-3"
+                                                          TextAlign="left" />
 
-                                            <SfIcon IconCss="fa-solid fa-money-bill" />
+                                                <FmTypography Text="Hits in last week"
+                                                          Classes="fm-typography__lead" />
+                                            </FmBody>
+                                        </FmCard>
+                                    </Child>
+                                </GridItem>
 
-                                            <FmTypography Text="Hello world this is something great" />
-                                        </FmBody>
+                                <GridItem ColumnSize="@GridSize.GridItemSmall">
+                                    <Child>
+                                        <FmCard>
+                                            <FmHeader>
+                                                <FmIcon Icon="fa-regular fa-rectangle-list" />
+                                            </FmHeader>
 
-                                    </FmCard>
-                                </Child>
-                            </GridItem>
+                                            <FmBody>
+                                                <FmTypography Text="175"
+                                                          Type="@Typography.LevelThree"
+                                                          Classes="fm-typography__display-3"
+                                                          TextAlign="left" />
 
-                            <GridItem ColumnSize="@GridSize.GridItemSmall">
-                                <Child>
-                                    <FmCard Classes="@Card.Chill">
-                                        <FmHeader>
-                                            <FmTypography Text="Forms"
-                                                          Type="@Typography.LevelTwo" />
-                                        </FmHeader>
+                                                <FmTypography Text="Forms sent in last week"
+                                                          Classes="fm-typography__lead" />
+                                            </FmBody>
+                                        </FmCard>
+                                    </Child>
+                                </GridItem>
+                            </Items>
+                        </Grid>
+                    </ContentTemplate>
+                </DashboardLayoutPanel>
 
-                                        <FmBody>
-
-                                            <FmTypography Text="Placeholder"
-                                                          Type="@Typography.LevelThree" />
-
-                                            <SfIcon IconCss="fa-solid fa-money-bill" />
-
-                                            <FmTypography Text="Hello world this is something great" />
-                                        </FmBody>
-
-                                    </FmCard>
-                                </Child>
-                            </GridItem>
-                        </Items>
-                    </Grid>
-                </ContentTemplate>
-            </DashboardLayoutPanel>
-
-            <DashboardLayoutPanel Column="4" SizeX="1" SizeY="1">
-                <Header>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <FmTypography Text="Active Containers"
+                <DashboardLayoutPanel CssClass="fm-dashboard__item-clear-styles"
+                                  Column="4"
+                                  SizeX="1"
+                                  SizeY="1">
+                    <Header>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <FmTypography Text="Unread Notifications"
                                       Type="@Typography.LevelTwo" />
-                    
-                        <FmTypography Text="@_containers.Count.ToString()"
+
+                            <FmTypography Text="@NotificationsService.UnreadNotificationsCount.ToString()"
                                       Type="@Typography.LevelThree" />
-                    </div>
-                </Header>
+                        </div>
+                    </Header>
 
-                <ContentTemplate>
-                    <FmCard>
-                        <FmBody>
-                            @foreach (var container in _containers)
-                            {
-                                <FmTypography Text="@container.Name"
-                                              Type="@Typography.LevelThree" />
+                    <ContentTemplate>
+                        <FmCard>
+                            <FmBody>
+                                @if (NotificationsService.Notifications is not null)
+                                {
+                                    @foreach (var notification in NotificationsService.Notifications)
+                                    {
+                                        <NotificationModalItem Notification="@notification"
+                                                               OnMarkAsRead="HandleMarkAsRead" />
+                                    }
+                                }
 
-                                <SfIcon IconCss="@container.Icon" />
-                            }
-                        </FmBody>
-                    </FmCard>
-                </ContentTemplate>
-            </DashboardLayoutPanel>
+                            </FmBody>
+                        </FmCard>
+                    </ContentTemplate>
+                </DashboardLayoutPanel>
 
-            <DashboardLayoutPanel Column="0" Row="1" SizeX="2" SizeY="1">
-                <Header>
-                    <FmTypography Text="Hits in this month"
+                <DashboardLayoutPanel Column="0" Row="1" SizeX="2" SizeY="1">
+                    <Header>
+                        <FmTypography Text="Hits in this month"
                                   Type="@Typography.LevelTwo" />
-                </Header>
+                    </Header>
 
-                <ContentTemplate>
+                    <ContentTemplate>
+                        @if (AnalyticsService.HitChartDataSeries is not null &&
+                             AnalyticsService.IsFetching != true)
+                        {
+                            <SfChart Width="100%" Title="Number of hits">
+                                <ChartPrimaryXAxis ValueType="Syncfusion.Blazor.Charts.ValueType.DateTime" 
+                                                   IntervalType="IntervalType.Auto" />
 
-                    <SfChart Width="100%" Title="Number of hits">
-                        <ChartPrimaryXAxis ValueType="Syncfusion.Blazor.Charts.ValueType.DateTime" />
+                                <ChartSeriesCollection>
+                                    <ChartSeries DataSource="@AnalyticsService.HitChartDataSeries"
+                                                 XName="Date"
+                                                 YName="Count"
+                                                 Type="ChartSeriesType.Line" />
+                                </ChartSeriesCollection>
+                            </SfChart>
+                        }
+                    </ContentTemplate>
+                </DashboardLayoutPanel>
 
-                        <ChartSeriesCollection>
-                            <ChartSeries DataSource="@_pageHitsDisplay"
-                                         XName="X"
-                                         YName="Y"
-                                         Type="ChartSeriesType.Line" />
-                        </ChartSeriesCollection>
-                    </SfChart>
-
-                </ContentTemplate>
-            </DashboardLayoutPanel>
-
-            <DashboardLayoutPanel Column="3" Row="1" SizeX="2" SizeY="1">
-                <Header>
-                    <FmTypography Text="General Statistics"
+                <DashboardLayoutPanel Column="3" Row="1" SizeX="2" SizeY="1">
+                    <Header>
+                        <FmTypography Text="General Statistics"
                                   Type="@Typography.LevelTwo" />
-                </Header>
-                <ContentTemplate>
-                    <FmCard>
-                        <FmHeader>
-                            <FmTypography Text="Placeholder"
+                    </Header>
+                    <ContentTemplate>
+                        <FmCard>
+                            <FmHeader>
+                                <FmTypography Text="Placeholder"
                                           Type="@Typography.LevelThree" />
-                        </FmHeader>
-                        <FmBody>
-                            <FmTypography Text="Placeholder"
+                            </FmHeader>
+                            <FmBody>
+                                <FmTypography Text="Placeholder"
                                           Type="@Typography.LevelThree" />
 
-                            <SfIcon IconCss="fa-solid fa-money-bill" />
+                                <SfIcon IconCss="fa-solid fa-money-bill" />
 
-                            <FmTypography Text="Hello world this is something great" />
-                        </FmBody>
-                    </FmCard>
-                </ContentTemplate>
-            </DashboardLayoutPanel>
-        </DashboardLayoutPanels>
-    </SfDashboardLayout>
-</section>
+                                <FmTypography Text="Hello world this is something great" />
+                            </FmBody>
+                        </FmCard>
+                    </ContentTemplate>
+                </DashboardLayoutPanel>
+            </DashboardLayoutPanels>
+        </SfDashboardLayout>
+    </section>
 
-<FmSpacer />
-
-@code {
-
-    // private List<PageHitModel> _pageHits = new()
-    // {
-    //     new PageHitModel
-    //     {
-    //
-    //     }
-    // };
-
-    private List<ChartModel> _pageHitsDisplay = new()
-    {
-        new ChartModel { X = new DateTime(2019, 01, 01) , Y = 10 },
-        new ChartModel { X = new DateTime(2019, 01, 02) , Y = 30 },
-        new ChartModel { X = new DateTime(2019, 01, 03) , Y = 21 },
-        new ChartModel { X = new DateTime(2019, 01, 04) , Y = 93 },
-        new ChartModel { X = new DateTime(2019, 01, 05) , Y = 53 },
-        new ChartModel { X = new DateTime(2019, 01, 06) , Y = 26 },
-        new ChartModel { X = new DateTime(2019, 01, 07) , Y = 66 },
-        new ChartModel { X = new DateTime(2019, 01, 08) , Y = 75 },
-        new ChartModel { X = new DateTime(2019, 01, 09) , Y = 63 },
-        new ChartModel { X = new DateTime(2019, 01, 10) , Y = 43 },
-        new ChartModel { X = new DateTime(2019, 01, 11) , Y = 10 },
-        new ChartModel { X = new DateTime(2019, 01, 12) , Y = 95 },
-        new ChartModel { X = new DateTime(2019, 01, 13) , Y = 34 },
-        new ChartModel { X = new DateTime(2019, 01, 14) , Y = 56 },
-        new ChartModel { X = new DateTime(2019, 01, 15) , Y = 61 },
-        new ChartModel { X = new DateTime(2019, 01, 16) , Y = 62 },
-    };
+    <FmSpacer />
+}
+else
+{
+    <SfSpinner Visible="true" Size="75" />
 }

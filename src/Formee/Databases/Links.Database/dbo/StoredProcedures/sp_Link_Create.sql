@@ -1,13 +1,19 @@
 ﻿CREATE PROCEDURE [dbo].[sp_Link_Create]
 	 @ContainerId NVARCHAR(24),
 	 @Name NVARCHAR(30),
+	 @Domain NVARCHAR(255),
 	 @OriginalUrl NVARCHAR(1024),
 	 @IsDeleted BIT,
 	 @CreatedDate DATETIME2(7)
 AS
 
 BEGIN
-	INSERT INTO dbo.[Link](ContainerId, Name, OriginalUrl, IsDeleted, CreatedDate)
+	-- Insert the link details and set the id of the record into the temp varibale (@LinkDetailTable)
+	INSERT INTO dbo.LinkDetails(Name, Domain)
+	VALUES(@Name, @Domain);
+	
+	-- Create the link and attach the link details id
+	INSERT INTO dbo.[Link](ContainerId, LinksDetailsId, OriginalUrl, IsDeleted, CreatedDate)
 	OUTPUT inserted.Id
-	VALUES(@ContainerId, @Name, @OriginalUrl, @IsDeleted, @CreatedDate);
+	VALUES(@ContainerId, SCOPE_IDENTITY(), @OriginalUrl, @IsDeleted, @CreatedDate);
 END

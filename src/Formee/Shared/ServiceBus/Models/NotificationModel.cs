@@ -8,5 +8,5 @@ public class NotificationModel
 
     public string? Message { get; set; }
 
-    public bool IsRead { get; set; } = false;
+    public bool IsRead { get; set; }
 }

@@ -1,12 +1,13 @@
 ﻿using Client.Web.Utilities.Dtos;
 using Client.Web.Utilities.Models;
 using Client.Web.Utilities.Services;
+using Syncfusion.Blazor.Buttons;
 using Syncfusion.Blazor.SplitButtons;
 
 namespace Clients.Web.Components.Pages.Dashboard.Containers;
 
 [Route(Routes.Containers)]
-public partial class Index
+public partial class Index : IDisposable
 {
     [Inject]
     public NavigationManager NavigationManager { get; set; }
@@ -17,33 +18,15 @@ public partial class Index
     [Inject]
     public AnalyticsService AnalyticsService { get; set; }
 
-    protected List<ContainerDto> _containers { get; set; }
-
-    private ContainersViewModel ViewModel { get; set; }
-
-    protected bool IsFetching { get; set; }
+    private string _containerId = string.Empty;
 
     protected override async Task OnParametersSetAsync()
     {
-        IsFetching = true;
-
         var userId = new Guid("3fa85f64-5717-4562-b3fc-2c963f66afa6");
 
-        _containers = await ContainersService.GetAllByUserIdAsync(userId);
+        ContainersService.OnChange += StateHasChanged;
 
-        ViewModel = new ContainersViewModel
-        {
-            Containers = _containers,
-            Sites = new List<SiteDto>()
-        };
-
-        foreach (var container in _containers)
-        {
-            ViewModel.Sites.AddRange(await AnalyticsService
-                .GetAllSitesAsync(container.Id));
-        }
-
-        IsFetching = false;
+        await ContainersService.GetAllByUserIdAsync(userId);
     }
 
     public void NavigateToNewContainer()
@@ -56,6 +39,11 @@ public partial class Index
         NavigationManager.NavigateTo($"{Routes.ViewContainer}?id={containerId}");
     }
 
+    private async Task HandleContainerChangeEvent(string containerId)
+    {
+        _containerId = containerId;
+    }
+
     private void ItemSelected(MenuEventArgs args)
     {
         if (args.Item.Text == "Edit")
@@ -66,5 +54,18 @@ public partial class Index
         {
             NavigationManager.NavigateTo($"{Routes.UpsertContainer}?type=delete&containerId={args.Item.Id}");
         }
+    }
+
+    private void HandleSiteSelect(ChipEventArgs args)
+    {
+        var site = AnalyticsService.Sites
+            .FirstOrDefault(s => s.Name == args.Text);
+
+        NavigationManager.NavigateTo($"{Routes.Sites}?containerId={site.ContainerId}");
+    }
+
+    public void Dispose()
+    {
+        ContainersService.OnChange -= StateHasChanged;
     }
 }

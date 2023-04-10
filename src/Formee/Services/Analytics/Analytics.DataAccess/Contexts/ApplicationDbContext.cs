@@ -8,11 +8,13 @@ public class ApplicationDbContext : DbContext
 
     }
 
-    public DbSet<SiteEntity> Site { get; set; }
+    public DbSet<SiteEntity> Sites { get; set; }
 
-    public DbSet<PageHitEntity> PageHit { get; set; }
+    public DbSet<PageHitEntity> PageHits { get; set; }
 
-    public DbSet<CategoryEntity> Category { get; set; }
+    public DbSet<CategoryEntity> Categories { get; set; }
+
+    public DbSet<SessionEntity> Sessions { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
