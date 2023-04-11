@@ -29,7 +29,7 @@ public class ContainersService
         var response = await _httpClient
             .GetFromJsonAsync<List<ContainerDto>>(url);
 
-        if (response.Any())
+        if (response != null && response.Any())
         {
             Containers = new List<ContainerDto>();
 

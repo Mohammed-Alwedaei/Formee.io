@@ -15,7 +15,7 @@
 
 <FmTab OnTabChange="HandleContainerChangeEvent">
     <FmTabItems>
-        @if (ContainersService.Containers != null)
+        @if (ContainersService.Containers.Any())
         {
             foreach (var container in ContainersService.Containers)
             {
@@ -43,7 +43,24 @@
                                     </Header>
 
                                     <ContentTemplate>
+                                        @if (_linkHitsChart.Any() && _isSuccessLinkFetch)
+                                        {
+                                            <SfChart Width="100%" Title="Number of hits">
+                                                <ChartPrimaryXAxis ValueType="Syncfusion.Blazor.Charts.ValueType.DateTime"
+                                                       IntervalType="IntervalType.Days" />
 
+                                                <ChartSeriesCollection>
+                                                    <ChartSeries DataSource="_linkHitsChart"
+                                                     XName="Date"
+                                                     YName="Count"
+                                                     Type="ChartSeriesType.Line" />
+                                                </ChartSeriesCollection>
+                                            </SfChart>
+                                        }
+                                        else
+                                        {
+                                            <p>There are no data to be displayed</p>
+                                        }
                                     </ContentTemplate>
                                 </DashboardLayoutPanel>
 
@@ -54,11 +71,11 @@
                                     </Header>
 
                                     <ContentTemplate>
-                                        @if (LinksService.IsSuccessFetch)
+                                        @if (_links.Any() && _isSuccessLinkFetch)
                                         {
-                                            var lastItem = LinksService.Links.LastOrDefault();
+                                            var lastItem = _links.LastOrDefault();
 
-                                            foreach (var link in LinksService.Links)
+                                            foreach (var link in _links)
                                             {
                                                 <FmLinkItem Link="link" />
 
@@ -82,7 +99,7 @@
         }
         else
         {
-            <SfSpinner Visible="true" /> 
+            <SfSpinner Visible="true" />
         }
     </FmTabItems>
 </FmTab>

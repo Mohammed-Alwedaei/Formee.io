@@ -153,7 +153,7 @@ public static class LinksEndpoints
         (this WebApplication app)
     {
         var redirectLinks = app
-            .MapGroup("/api/links/redirect/");
+            .MapGroup("/api/links/redirects/");
 
         var logger = app.Logger;
 
@@ -199,7 +199,7 @@ public static class LinksEndpoints
          * DESC : Redirect the user to a the original URL
          * AUTH : Anonymous
          */
-        redirectLinks.MapGet("/{linkId:int}", async
+        redirectLinks.MapGet("all/{linkId:int}", async
         (ILinkHitRepository linkHitRepository, int linkId) =>
         {
             logger.LogInformation("GET: request to /api/links/redirects/all/{linkId} at {datetime}",
@@ -213,6 +213,34 @@ public static class LinksEndpoints
 
             var result = await linkHitRepository
                 .GetAllByLinkIdAsync(linkId);
+
+            if (result is null)
+            {
+                throw new NotFoundException(ErrorMessages.NotFound);
+            }
+
+            return Results.Ok(result);
+        });
+
+        redirectLinks.MapGet("all/{containerId}/{startDate:DateTime}/{endDate:DateTime}", async
+            (ILinkHitRepository linkHitRepository, 
+                string containerId, 
+                DateTime startDate, 
+                DateTime endDate) =>
+        {
+            logger.LogInformation("GET: request to /api/links/all/{containerId}/{startDate:DateTime}/{endDate:DateTime} at {datetime}",
+                containerId,
+                DateTime.Now,
+                startDate,
+                endDate);
+
+            if (string.IsNullOrEmpty(containerId))
+            {
+                throw new BadRequestException(ErrorMessages.BadRequest);
+            }
+
+            var result = await linkHitRepository
+                .GetAllByContainerIdAsync(containerId, startDate, endDate);
 
             if (result is null)
             {

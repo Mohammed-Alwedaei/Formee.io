@@ -29,6 +29,25 @@ public class LinkHitRepository : ILinkHitRepository
     }
 
     /// <inheritdoc />
+    public async Task<List<LinkHitEntity>> GetAllByContainerIdAsync
+        (string containerId, DateTime startDate, DateTime endDate)
+    {
+        using var connection = _db.Connect();
+
+        var linkFromDb = await connection.QueryAsync
+            <LinkHitEntity>("sp_Hit_GetAllByContainerId",
+                new
+                {
+                    containerId,
+                    startDate,
+                    endDate
+                },
+                commandType: CommandType.StoredProcedure);
+
+        return linkFromDb.ToList();
+    }
+
+    /// <inheritdoc />
     public async Task CreateAsync(LinkHitEntity hit)
     {
         using var connection = _db.Connect();

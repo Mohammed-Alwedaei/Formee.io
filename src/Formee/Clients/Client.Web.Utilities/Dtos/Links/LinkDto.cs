@@ -2,6 +2,7 @@
 
 public class LinkDto
 {
+    public int Id { get; set; }
     public string ContainerId { get; set; } = null!;
 
     public int LinkDetailsId { get; set; }

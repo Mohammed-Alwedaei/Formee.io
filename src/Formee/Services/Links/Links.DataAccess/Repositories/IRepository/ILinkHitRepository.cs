@@ -12,6 +12,14 @@ public interface ILinkHitRepository
     Task<List<LinkHitEntity>> GetAllByLinkIdAsync(int id);
 
     /// <summary>
+    /// Get all link hits of all links in a container
+    /// </summary>
+    /// <param name="containerId"></param>
+    /// <returns></returns>
+    Task<List<LinkHitEntity>> GetAllByContainerIdAsync
+        (string containerId, DateTime startDate, DateTime endDate);
+
+    /// <summary>
     /// Create a link hit 
     /// </summary>
     /// <param name="hit"></param>
