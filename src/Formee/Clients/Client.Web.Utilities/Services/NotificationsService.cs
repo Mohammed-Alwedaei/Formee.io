@@ -6,10 +6,13 @@ namespace Client.Web.Utilities.Services;
 
 public class NotificationsService : IAsyncDisposable
 {
+
     public List<NotificationDto> Notifications;
 
     public int AllNotificationsCount;
     public int UnreadNotificationsCount;
+
+    public Guid UserId;
 
     public bool IsFetching;
 
@@ -17,8 +20,9 @@ public class NotificationsService : IAsyncDisposable
     private HubConnection _hubConnection;
     public bool ConnectionStatus;
 
+    public event Action StateChanged;
 
-    public event Action OnChange;
+    private void NotifyStateChanged() => StateChanged?.Invoke();
 
     public NotificationsService(HttpClient httpClient)
     {
@@ -32,29 +36,39 @@ public class NotificationsService : IAsyncDisposable
             .Build();
 
         await _hubConnection.StartAsync();
+
+        GetConnectionStatus();
+
+        NotifyStateChanged();
     }
 
-    public async Task GetAllByUserIdAsync
-        (Guid globalUserId, int numberOfRecords)
+    public async Task GetAllByUserIdAsync(Guid userId, int numberOfRecords)
     {
-        IsFetching = true;
+        try
+        {
+            IsFetching = true;
 
-        var url = $"/api/notifications/all/{globalUserId}/{numberOfRecords}";
+            var url = $"/api/notifications/all/{userId}/{numberOfRecords}";
 
-        var response = await _httpClient
-            .GetFromJsonAsync<List<NotificationDto>>(url);
+            var response = await _httpClient
+                .GetFromJsonAsync<List<NotificationDto>>(url);
 
-        Notifications = new List<NotificationDto>();
+            Notifications = new List<NotificationDto>();
 
-        Notifications = response;
+            Notifications = response ?? throw new Exception("A problem occurred");
 
-        Notifications.OrderByDescending(n => n.CreatedDate);
+            Notifications.OrderByDescending(n => n.CreatedDate);
 
-        UpdateNotificationsMeta();
+            UpdateNotificationsMeta();
 
-        IsFetching = false;
+            IsFetching = false;
 
-        OnChange.Invoke();
+            NotifyStateChanged();
+        }
+        catch (Exception ex)
+        {
+
+        }
     }
 
     public async Task MarkNotificationAsReadAsync
@@ -102,7 +116,7 @@ public class NotificationsService : IAsyncDisposable
 
                 UpdateNotificationsMeta();
 
-                OnChange.Invoke();
+                NotifyStateChanged();
             });
     }
 
@@ -117,6 +131,8 @@ public class NotificationsService : IAsyncDisposable
 
         UnreadNotificationsCount = Notifications
             .Count(n => n.IsRead != true);
+
+        NotifyStateChanged();
     }
 
     public async ValueTask DisposeAsync()

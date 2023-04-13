@@ -1,6 +1,4 @@
-﻿using Client.Web.Utilities.Dtos;
-using Client.Web.Utilities.Models;
-using Client.Web.Utilities.Services;
+﻿using Client.Web.Utilities.Services;
 using Syncfusion.Blazor.Buttons;
 using Syncfusion.Blazor.SplitButtons;
 
@@ -18,15 +16,18 @@ public partial class Index : IDisposable
     [Inject]
     public AnalyticsService AnalyticsService { get; set; }
 
+    [Parameter]
+    public string UserId { get; set; }
+
+    private Guid ParsedUserId => new(UserId);
+
     private string _containerId = string.Empty;
 
     protected override async Task OnParametersSetAsync()
     {
-        var userId = new Guid("3fa85f64-5717-4562-b3fc-2c963f66afa6");
-
         ContainersService.OnChange += StateHasChanged;
 
-        await ContainersService.GetAllByUserIdAsync(userId);
+        await ContainersService.GetAllByUserIdAsync(ParsedUserId);
     }
 
     public void NavigateToNewContainer()

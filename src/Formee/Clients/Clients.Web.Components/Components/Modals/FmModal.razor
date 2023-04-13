@@ -1,0 +1,49 @@
+﻿<div class="fm-modal__container">
+    <div @onclick="HandleModalReveal">
+        @Trigger
+    </div>
+
+    <div class="fm-modal__wrapper @_modalVisibility">
+        
+        <div class="d-flex justify-content-between align-items-center">
+            @Header
+        </div>
+
+        <FmSeperator/>
+
+        <div>
+            @Content
+        </div>
+
+        <FmSeperator/>
+
+        <div>
+            @Footer
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public RenderFragment Trigger { get; set; } 
+    
+    [Parameter]
+    public RenderFragment Header { get; set; } 
+
+    [Parameter]
+    public RenderFragment Content { get; set; } 
+
+    [Parameter]
+    public RenderFragment Footer { get; set; }
+
+    private bool _isVisibleModal;
+
+    private string _modalVisibility => _isVisibleModal 
+        ? "fm-modal__show" 
+        : "fm-modal__hidden";
+
+    private void HandleModalReveal()
+    {
+        _isVisibleModal = !_isVisibleModal;
+    }
+}

@@ -1,8 +1,12 @@
 ﻿using Client.Web.Utilities.Dtos;
+using Client.Web.Utilities.Dtos.Identity;
 using Client.Web.Utilities.Services;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 
 namespace Clients.Web.Components.Pages;
-public partial class Index: IDisposable
+
+public partial class Index : IDisposable
 {
     [Inject]
     public ContainersService ContainersService { get; set; }
@@ -13,30 +17,40 @@ public partial class Index: IDisposable
     [Inject]
     public AnalyticsService AnalyticsService { get; set; }
 
-    private List<ContainerDto> _containers = new ();
+    [Inject]
+    public NavigationManager NavigationManager { get; set; }
 
-    protected override async Task OnInitializedAsync()
+    [Inject]
+    public IdentityService IdentityService { get; set; }
+
+    [Inject]
+    public AppStateService AppStateService { get; set; }
+
+    protected UserDto? User;
+
+    private List<ContainerDto> _containers = new();
+
+    protected override async Task OnParametersSetAsync()
     {
-        var userId = new Guid("3fa85f64-5717-4562-b3fc-2c963f66afa6");
-
-        await ContainersService.GetAllByUserIdAsync(userId);
-
-        NotificationsService.ListenToMarkAsRead();
-
-        NotificationsService.OnChange += async () =>
-        {
-            await InvokeAsync(StateHasChanged);
-        };
-
         var today = DateTime.Now;
         var lastWeek = today.AddDays(-7);
 
-        await AnalyticsService
-            .GetAllHitsInTimePeriodAsync(3, lastWeek, today);
+        try
+        {
+            await ContainersService.GetAllByUserIdAsync(User.Id);
 
-        AnalyticsService.GenerateChartDataSeries();
+            await AnalyticsService
+                .GetAllHitsInTimePeriodAsync(3, lastWeek, today);
 
-        await InvokeAsync(StateHasChanged);
+            AnalyticsService.GenerateChartDataSeries();
+
+            await InvokeAsync(StateHasChanged);
+        }
+        catch (Exception ex)
+        {
+
+        }
+
     }
 
     private async Task HandleMarkAsRead(int id)
@@ -46,6 +60,6 @@ public partial class Index: IDisposable
 
     public void Dispose()
     {
-        NotificationsService.OnChange -= StateHasChanged;
+        NotificationsService.StateChanged -= StateHasChanged;
     }
 }

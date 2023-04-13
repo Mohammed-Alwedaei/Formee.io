@@ -1,6 +1,7 @@
 ﻿using Identity.BusinessLogic.Contexts;
 using Identity.BusinessLogic.Models;
 using Identity.BusinessLogic.Services;
+using Identity.BusinessLogic.Services.IServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 
@@ -24,7 +25,9 @@ public static class ServicesConfiguration
         services.Configure<BlobStorageConfiguration>(
             configuration.GetSection("AzureStorage"));
 
-        services.AddHttpClient<IdentityManager>(options =>
+        services.AddScoped<IIdentityManager, IdentityManager>();
+
+        services.AddHttpClient<IIdentityManager, IdentityManager>(options =>
             options.BaseAddress = new
                 Uri(configuration.GetValue<string>("Identity:APIUrl")));
 

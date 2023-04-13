@@ -9,75 +9,97 @@
            DockSize="190px"
            EnableDock="true">
     <ChildContent>
-        <div class="fm-sidebar__nav py-4">
-            <FmTypography Text="Formee"
+        @if (AppStateService.User.Id != Guid.Empty)
+        {
+            <div class="fm-sidebar__nav py-4">
+                <FmTypography Text="Formee"
                           Type="@Typography.LevelOne"
                           TextAlign="center"
                           Classes="fm-motto mb-3" />
 
-            <FmLink Route="/"
-                    ActiveClass="fm-link__active"
-                    Text="Home"
-                    Classes="fm-link d-flex justify-content-center mb-3"
-                    Icon="fa-solid fa-home" />
+                <SfTooltip Position="Syncfusion.Blazor.Popups.Position.RightCenter"
+                       Content="Home">
+                    <FmLink Route="@($"?userId={AppStateService.User.Id}")"
+                        ActiveClass="fm-link__active"
+                        Text="Home"
+                        Classes="fm-link d-flex justify-content-center mb-3"
+                        Icon="fa-solid fa-home" />
+                </SfTooltip>
 
-            <FmLink Route="/dashboard/containers"
-                    ActiveClass="fm-link__active"
-                    MatchRoute="NavLinkMatch.Prefix"
-                    Text="Containers"
-                    Classes="fm-link d-flex justify-content-center mb-3"
-                    Icon="fa-solid fa-boxes-stacked" />
+                <SfTooltip Position="Syncfusion.Blazor.Popups.Position.RightCenter"
+                       Content="My Containers">
+                    <FmLink Route="@($"{Routes.Containers}?user_id={AppStateService.User.Id}")"
+                        ActiveClass="fm-link__active"
+                        MatchRoute="NavLinkMatch.Prefix"
+                        Text="Containers"
+                        Classes="fm-link d-flex justify-content-center mb-3"
+                        Icon="fa-solid fa-boxes-stacked" />
+                </SfTooltip>
 
-            <FmLink Route="/dashboard/sites"
-                    ActiveClass="fm-link__active"
-                    MatchRoute="NavLinkMatch.Prefix"
-                    Text="Sites"
-                    Classes="fm-link d-flex justify-content-center mb-3"
-                    Icon="fa-solid fa-window-restore" />
+                <SfTooltip Position="Syncfusion.Blazor.Popups.Position.RightCenter"
+                       Content="My Sites">
+                    <FmLink Route="@Routes.Sites"
+                        ActiveClass="fm-link__active"
+                        MatchRoute="NavLinkMatch.Prefix"
+                        Text="Sites"
+                        Classes="fm-link d-flex justify-content-center mb-3"
+                        Icon="fa-solid fa-window-restore" />
+                </SfTooltip>
 
-            <FmLink Route="@Routes.LiveChat"
-                    ActiveClass="fm-link__active"
-                    Text="Live Chat"
-                    Classes="fm-link d-flex justify-content-center mb-3"
-                    Icon="fa-solid fa-headset" />
+                <SfTooltip Position="Syncfusion.Blazor.Popups.Position.RightCenter"
+                       Content="My Links">
+                    <FmLink Route="@Routes.Links"
+                        ActiveClass="fm-link__active"
+                        Text="Links"
+                        Classes="fm-link d-flex justify-content-center mb-3"
+                        Icon="fa-solid fa-arrow-up-right-from-square" />
+                </SfTooltip>
 
-            <FmLink Route="@Routes.Links"
-                    ActiveClass="fm-link__active"
-                    Text="Links"
-                    Classes="fm-link d-flex justify-content-center mb-3"
-                    Icon="fa-solid fa-arrow-up-right-from-square" />
+                <SfTooltip Position="Syncfusion.Blazor.Popups.Position.RightCenter"
+                       Content="My Profile">
+                    <FmLink Route="@($"{Routes.Identity}?userId={AppStateService.User.Id}")"
+                        ActiveClass="fm-link__active"
+                        Text="Identity Management"
+                        Classes="fm-link d-flex justify-content-center mb-3"
+                        Icon="fa-solid fa-user" />
+                </SfTooltip>
 
-            <FmLink Route="/identity"
-                    ActiveClass="fm-link__active"
-                    Text="Identity Management"
-                    Classes="fm-link d-flex justify-content-center mb-3"
-                    Icon="fa-solid fa-user" />
+                <SfTooltip Position="Syncfusion.Blazor.Popups.Position.RightCenter"
+                       Content="My Subscription">
+                    <FmLink Route="/subscription"
+                        ActiveClass="fm-link__active"
+                        Text="Subscription"
+                        Classes="fm-link d-flex justify-content-center mb-3"
+                        Icon="fa-solid fa-credit-card" />
+                </SfTooltip>
 
-            <FmLink Route="/subscription"
-                    ActiveClass="fm-link__active"
-                    Text="Subscription"
-                    Classes="fm-link d-flex justify-content-center mb-3"
-                    Icon="fa-solid fa-credit-card" />
-
-            <FmLink Route="@Routes.History"
-                    ActiveClass="fm-link__active"
-                    Text="History"
-                    Classes="fm-link d-flex justify-content-center mb-3"
-                    Icon="fa-solid fa-clock-rotate-left" />
-        </div>
+                <SfTooltip Position="Syncfusion.Blazor.Popups.Position.RightCenter"
+                       Content="My History">
+                    <FmLink Route="@Routes.History"
+                        ActiveClass="fm-link__active"
+                        Text="History"
+                        Classes="fm-link d-flex justify-content-center mb-3"
+                        Icon="fa-solid fa-clock-rotate-left" />
+                </SfTooltip>
+            </div>
+        }
     </ChildContent>
 </SfSidebar>
-
 
 <div class="maincontent e-main-content">
     <SfAppBar ColorMode="AppBarColor.Light">
         <div class="app-bar__wrapper">
-            <FmTypography Text="Hello, Mohammed Alwedaei" 
-                          Type="@Typography.LevelOne" 
+            @if (!string.IsNullOrEmpty(AppStateService.User.UserName))
+            {
+                <FmTypography Text="@($"Hello, {AppStateService.User.UserName}")"
+                          Type="@Typography.LevelOne"
                           Classes="fm-typography__display-1" />
-            <AppBarSpacer/>
+            }
+
+            <AppBarSpacer />
+
             <div class="d-flex justify-content-center align-items-center">
-                <SfTooltip Position="Syncfusion.Blazor.Popups.Position.BottomCenter" 
+                <SfTooltip Position="Syncfusion.Blazor.Popups.Position.BottomCenter"
                            Content="Notifications Service">
                     <div class="d-flex justify-content-center align-items-center">
                         @if (NotificationsService.ConnectionStatus)
@@ -101,9 +123,12 @@
     <FmSpacer />
 
     <main class="main-content__wrapper">
-        @Body
+        <ErrorBoundary>
+            @Body
+        </ErrorBoundary>
     </main>
 </div>
+
 
 <SfSidebar @bind-IsOpen="_userSidebarToggle"
            Type="SidebarType.Push"
@@ -115,18 +140,47 @@
     <ChildContent>
         <div class="fm-sidebar__user py-4">
             <div class="d-flex justify-content-between align-items-center">
-                <FmLoader>
-                    <Content>
-                        <AppBarNotification />
-                    </Content>
-                </FmLoader>
+                @if (AppStateService.User.Id != Guid.Empty)
+                {
+                    <AppBarNotification />
+                }
+
+                <SfTooltip Position="Syncfusion.Blazor.Popups.Position.BottomCenter"
+                           Content="Settings">
+                    <SfIcon IconCss="fa-solid fa-gear"
+                            class="fm-sidebar__icon" />
+                </SfTooltip>
 
                 <div>
-                    <AppBarAccessControl />
+                    @if (AppStateService.User.Id != Guid.Empty)
+                    {
+                        <AppBarAccessControl />
+                    }
                 </div>
+            </div>
+
+            <div>
+                @if (NotificationsService.Notifications is not null)
+                {
+                    foreach (var notification in NotificationsService.Notifications)
+                    {
+                        <p>@notification.Heading</p>
+                    }
+                }
+                else
+                {
+                    <p>There are no notifications to display</p>
+                }
             </div>
         </div>
     </ChildContent>
 </SfSidebar>
 
 <FmSpacer />
+
+<AuthorizeView>
+    @if (AppStateService.User.Id == Guid.Empty)
+    {
+        <FmAggregateUserData AuthProviderId="@context.User.Claims.FirstOrDefault(c => c.Type == "sub")?.Value" />
+    }
+</AuthorizeView>

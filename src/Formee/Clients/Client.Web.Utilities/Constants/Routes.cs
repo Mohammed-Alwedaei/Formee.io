@@ -19,4 +19,8 @@ public static class Routes
     public const string LiveChat = "/dashboard/livechat";
 
     public const string History = "/dashboard/history";
+
+    public const string Identity = "/dashboard/identity";
+
+    public const string IdentityUpsert = "/dashboard/identity/upsert";
 }

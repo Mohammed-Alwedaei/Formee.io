@@ -1,22 +1,14 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using Identity.BusinessLogic.Dtos;
+﻿using Identity.BusinessLogic.Entities;
 
-namespace Identity.BusinessLogic.Entities;
+namespace Identity.BusinessLogic.Dtos;
 
-public class AvatarEntity
+public class AvatarDto
 {
-    [Key]
     public int Id { get; set; }
 
-    [Required]
-    [MaxLength(100)]
     public string Name { get; set; } = null!;
 
     public Guid UserId { get; set; }
-
-    [ForeignKey(nameof(UserId))]
-    public UserEntity? User { get; set; }
 
     public bool? IsDeleted { get; set; } = false;
 
@@ -24,9 +16,9 @@ public class AvatarEntity
 
     public DateTime UploadedDate { get; set; }
 
-    public static implicit operator AvatarEntity(AvatarDto avatar)
+    public static implicit operator AvatarDto(AvatarEntity avatar)
     {
-        return new AvatarEntity
+        return new AvatarDto
         {
             Id = avatar.Id,
             Name = avatar.Name,

@@ -5,10 +5,12 @@
 AS
 
 BEGIN
-	SELECT [L].[Id], [L].[CreatedDate], [H].[Id], [H].[LinkId], [H].[CreatedDate]
+	SELECT DISTINCT [L].[Id], [L].[CreatedDate], [H].[Id], [H].[LinkId], [H].[CreatedDate]
 	FROM dbo.[Link] AS L
 	INNER JOIN dbo.[LinkHits] AS H
-	ON (L.ContainerId = @ContainerId)
-	WHERE ContainerId = @ContainerId AND IsDeleted != 1
-	AND H.CreatedDate >= @StartDate AND H.CreatedDate <= @EndDate;
+	ON (L.Id = H.LinkId)
+	WHERE L.ContainerId = @ContainerId
+	AND IsDeleted != 1 
+	AND H.CreatedDate >= @StartDate
+	AND H.CreatedDate <= @EndDate;
 END

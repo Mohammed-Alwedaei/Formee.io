@@ -34,4 +34,6 @@ builder.Services.AddScoped<HistoryService>();
 builder.Services.AddScoped<LinksService>();
 builder.Services.AddScoped<NotificationsService>();
 
+builder.Services.AddSingleton<AppStateService>();
+
 await builder.Build().RunAsync();

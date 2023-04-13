@@ -1,12 +1,8 @@
-.fm-notification__container {
+﻿.fm-modal__container {
     position: relative;
 }
 
-.fm-notification__button {
-    z-index: 9999;
-}
-
-.fm-notification__modal {
+.fm-modal__wrapper {
     position: absolute;
     top: 120%;
     right: 0;
@@ -20,20 +16,12 @@
     transition: all .4s ease;
 }
 
-.fm-notification__modal-hidden {
+.fm-modal__hidden {
     opacity: 0;
     pointer-events: none;
 }
 
-.fm-notification__modal-show {
+.fm-modal__show {
     opacity: 1;
     pointer-events: all;
 }
-
-.fm-notification__view-all-button {
-    text-align: center;
-}
-
-    .fm-notification__view-all-button span {
-        color: var(--color-dimmed);
-    }

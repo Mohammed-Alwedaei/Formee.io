@@ -1,0 +1,27 @@
+﻿<FmPageIntro Heading="Links">
+    <Breadcrumbs>
+        <BreadcrumbItem IconCss="fa-solid fa-house"
+                        Text="Dashboard"
+                        Url="@Routes.Home" />
+
+        <BreadcrumbItem IconCss="fa-solid fa-arrow-up-right-from-square"
+                        Disabled="true"
+                        Text="Identity"
+                        Url="/dashboard/{}" />
+    </Breadcrumbs>
+</FmPageIntro>
+
+<FmSpacer />
+
+<Grid>
+    <Items>
+        <GridItem ColumnSize="@GridSize.GridItemXLarge">
+            <Child>
+                @if (user is not null)
+                {
+                    <p>@user.UserName</p>
+                }
+            </Child>
+        </GridItem>
+    </Items>
+</Grid>

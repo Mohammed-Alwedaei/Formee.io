@@ -1,6 +1,5 @@
 ﻿using Client.Web.Utilities.Dtos;
 using Client.Web.Utilities.Services;
-using Microsoft.AspNetCore.Components.Authorization;
 
 namespace Clients.Web.Components;
 
@@ -8,15 +7,15 @@ public partial class MainLayout : IDisposable
 {
     [Inject]
     public ContainersService ContainersService { get; set; }
-    
+
     [Inject]
     public NotificationsService NotificationsService { get; set; }
 
     [Inject]
-    public NavigationManager NavigationManager { get; set; }
+    public AppStateService AppStateService { get; set; }
 
     [Inject]
-    public AuthenticationStateProvider AuthenticationStateProvider { get; set; }
+    public NavigationManager NavigationManager { get; set; }
 
     private Timer _timer;
     private DateTime _currentTime;
@@ -27,67 +26,35 @@ public partial class MainLayout : IDisposable
 
     private bool _isFetching;
 
-    protected override async Task OnParametersSetAsync()
+    private string? _userAuthProviderId;
+
+    private List<string> _errors;
+
+    /// <summary>
+    /// 
+    /// </summary>
+    protected override void OnInitialized()
     {
         _isFetching = true;
-
-        var userId = new Guid("3fa85f64-5717-4562-b3fc-2c963f66afa6");
-
-        NotificationsService.OnChange += StateHasChanged;
-
-        ContainersService.OnChange += StateHasChanged;
-
-        await ContainersService.GetAllByUserIdAsync(userId);
-
-        await NotificationsService.CreateClientConnection();
-
-        await NotificationsService.GetAllByUserIdAsync(userId, 5);
-
-        NotificationsService.GetConnectionStatus();
-
-        _isFetching = false;
-    }
-
-    protected override async Task OnInitializedAsync()
-    {
-        var authState = await AuthenticationStateProvider
-            .GetAuthenticationStateAsync();
-
-        var user = authState.User;
-
-        if (user.Identity is not null && user.Identity.IsAuthenticated)
-        {
-
-            NavigationManager.NavigateTo("/");
-        }
-
         _timer = new Timer(GetCurrentTime, null, 0, 1000);
     }
 
+    /// <summary>
+    /// Get the current time 
+    /// </summary>
+    /// <param name="_"></param>
     public void GetCurrentTime(object _)
     {
         _currentTime = DateTime.Now;
         InvokeAsync(StateHasChanged);
     }
 
-    public void HandleNavigationSidebarToggle()
-    {
-        _navigationSidebarToggle = !_navigationSidebarToggle;
-    }
-    
-    public void HandleUserSidebarToggle()
-    {
-        _userSidebarToggle = !_userSidebarToggle;
-    }
-
-    private void HandleNewContainerClick()
-    {
-        NavigationManager.NavigateTo("/containers/upsert?type=create");
-    }
-
+    /// <summary>
+    /// Dispose 
+    /// </summary>
     public void Dispose()
     {
-        NotificationsService.OnChange -= StateHasChanged;
+        NotificationsService.StateChanged -= StateHasChanged;
         ContainersService.OnChange -= StateHasChanged;
         _timer?.Dispose();
     }

@@ -1,36 +1,32 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using Identity.BusinessLogic.Dtos;
+﻿using Identity.BusinessLogic.Entities;
+using System.ComponentModel.DataAnnotations;
 
-namespace Identity.BusinessLogic.Entities;
+namespace Identity.BusinessLogic.Dtos;
 
-public class UserEntity
+public class UserDto
 {
-    [Key]
     public Guid Id { get; set; }
 
     [Required]
     [MaxLength(50)]
-    public string? UserName { get; set; }
+    public string UserName { get; set; } = null!;
 
     [Required]
     [MaxLength(50)]
-    public string? FirstName { get; set; }
-    
+    public string FirstName { get; set; } = null!;
+
     [Required]
     [MaxLength(50)]
-    public string? LastName { get; set; }
+    public string LastName { get; set; } = null!;
 
     [Required]
     [MaxLength(100)]
-    public string? AuthId { get; set; }
+    public string AuthId { get; set; } = null!;
 
     public int? AvatarId { get; set; }
 
-    [ForeignKey(nameof(AvatarId))]
-    public AvatarEntity? Avatar { get; set; }
+    public AvatarDto? Avatar { get; set; }
 
-    [Required]
     public int SubscriptionId { get; set; }
 
     public bool? IsDeleted { get; set; } = false;
@@ -41,9 +37,9 @@ public class UserEntity
 
     public DateTime CreatedDate { get; set; }
 
-    public static implicit operator UserEntity(UserDto user)
+    public static implicit operator UserDto(UserEntity user)
     {
-        return new UserEntity
+        return new UserDto
         {
             Id = user.Id,
             UserName = user.UserName,

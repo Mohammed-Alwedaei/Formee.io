@@ -1,6 +1,7 @@
 ﻿using System.Net.Http.Json;
 using Azure.Storage.Blobs;
 using Identity.BusinessLogic.Contexts;
+using Identity.BusinessLogic.Dtos;
 using Identity.BusinessLogic.Entities;
 using Identity.BusinessLogic.Exceptions;
 using Identity.BusinessLogic.Models;
@@ -8,6 +9,7 @@ using Identity.BusinessLogic.Services.IServices;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Identity.BusinessLogic.Services;
 
@@ -15,18 +17,18 @@ public class IdentityManager : IIdentityManager
 {
     private readonly IOptions<BlobStorageConfiguration> _blobStorage;
     private readonly HttpClient _httpClient;
-    private readonly ApplicationDbContext _db;
+    private readonly ApplicationDbContext _context;
 
     public IdentityManager(IOptions<BlobStorageConfiguration> blobStorage, 
         HttpClient httpClient,
-        ApplicationDbContext db)
+        ApplicationDbContext context)
     {
         _blobStorage = blobStorage;
         _httpClient = httpClient;
-        _db = db;
+        _context = context;
     }
 
-    public async Task<bool> AssignRoleToUser(AddRoleToUserModel users, 
+    public async Task<bool> AssignRoleToUser(AddRoleToUseDto users, 
         string roleId)
     {
         var response = await _httpClient
@@ -40,9 +42,39 @@ public class IdentityManager : IIdentityManager
         return false;
     }
 
+    public async Task<UserDto> GetByAuthIdAsync(string authId)
+    {
+        var userFromDb = await _context.User
+            .AsNoTracking()
+            .Include(u => u.Avatar)
+            .FirstOrDefaultAsync(u => u.AuthId == authId);
+
+        if (string.IsNullOrEmpty(userFromDb?.AuthId))
+        {
+            return new UserDto();
+        }
+
+        return userFromDb;
+    }
+
+    public async Task<UserDto> GetByIdAsync(Guid id)
+    {
+        var userFromDb = await _context.User
+            .AsNoTracking()
+            .Include(u => u.Avatar)
+            .FirstOrDefaultAsync(u => u.Id == id);
+
+        if (userFromDb != null && userFromDb.Id == Guid.Empty)
+        {
+            return new UserDto();
+        }
+
+        return userFromDb;
+    }
+
     public async Task<UserEntity> CreateAsync(UserEntity user)
     {
-        var hasRegistered = await _db.User
+        var hasRegistered = await _context.User
             .FirstOrDefaultAsync(u => u.AuthId == user.AuthId);
 
         if (hasRegistered is not null)
@@ -50,9 +82,9 @@ public class IdentityManager : IIdentityManager
             throw new BadRequestException("User already created");
         }
 
-        var createdUser = await _db.User.AddAsync(user);
+        var createdUser = await _context.User.AddAsync(user);
 
-        await _db.SaveChangesAsync();
+        await _context.SaveChangesAsync();
 
         return createdUser.Entity;
     }
@@ -79,13 +111,13 @@ public class IdentityManager : IIdentityManager
             Name = uniqueFileName
         };
 
-        var userFromDb = await _db.User
+        var userFromDb = await _context.User
             .FirstOrDefaultAsync(
                 u => u.Id == avatarToCreate.UserId);
 
         if (userFromDb is not null)
         {
-            var oldAvatar = await _db.Avatar
+            var oldAvatar = await _context.Avatar
                 .FirstOrDefaultAsync(
                     a => a.UserId == avatarToCreate.UserId);
 
@@ -94,18 +126,18 @@ public class IdentityManager : IIdentityManager
                 oldAvatar.IsDeleted = true;
                 oldAvatar.DeletedDate = avatarToCreate.UploadedDate;
 
-                _db.Avatar.Update(oldAvatar);
-                await _db.SaveChangesAsync();
+                _context.Avatar.Update(oldAvatar);
+                await _context.SaveChangesAsync();
             }
 
-            await _db.Avatar.AddAsync(avatarToCreate);
+            await _context.Avatar.AddAsync(avatarToCreate);
 
-            await _db.SaveChangesAsync();
+            await _context.SaveChangesAsync();
 
             userFromDb.AvatarId = avatarToCreate.Id;
 
-            _db.User.Update(userFromDb);
-            await _db.SaveChangesAsync();
+            _context.User.Update(userFromDb);
+            await _context.SaveChangesAsync();
             return await Task.FromResult(avatarToCreate);
         }
 

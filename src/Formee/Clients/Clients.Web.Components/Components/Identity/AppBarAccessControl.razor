@@ -1,21 +1,68 @@
 ﻿@using Microsoft.AspNetCore.Components.Web
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 
-
 @inject NavigationManager Navigation
+@inject AppStateService AppStateService
 @inject SignOutSessionStateManager SignOutManager
+
+<style>
+
+</style>
 
 <AuthorizeView>
     <Authorized>
-        Hello, @context.User.Identity.Name!
-        <a href="#" @onclick="BeginSignOut">Log out</a>
+        <FmModal>
+            <Trigger>
+                <SfTooltip Position="Syncfusion.Blazor.Popups.Position.BottomCenter"
+                           Content="My Profile">
+                    <div class="d-flex justify-content-between align-items-center"
+                         style="cursor: pointer;">
+                        @if (!string.IsNullOrEmpty(AppStateService.User.Avatar.Name))
+                        {
+                            var avatarUrl = $"https://adoptingmsastorage.blob.core.windows.net/accountavatars/{AppStateService.User.Avatar.Name}";
+
+                            var style = $"background-image: url({avatarUrl})";
+
+                            <div class="e-avatar e-avatar-circle" style="@style"></div>
+                        }
+
+                        <SfIcon IconCss="fa-solid fa-solid fa-chevron-down"
+                                class="fm-sidebar__icon ml-1" />
+                    </div>
+                </SfTooltip>
+            </Trigger>
+
+            <Header>
+                <FmTypography Text="Your Profile"
+                              Type="@Typography.LevelTwo" />
+            </Header>
+
+            <Content>
+                <FmTypography Text="@AppStateService.User.UserName" />
+
+                <FmSpacer />
+
+                <FmTypography Text="@AppStateService.User.FirstName" />
+            </Content>
+
+            <Footer>
+                <SfButton IconCss="fa-solid fa-arrow-right-from-bracket"
+                          IconPosition="IconPosition.Right"
+                          CssClass="e-block"
+                          OnClick="BeginSignOut">
+                    Logout
+                </SfButton>
+            </Footer>
+        </FmModal>
     </Authorized>
     <NotAuthorized>
         <a href="authentication/login">Log in</a>
     </NotAuthorized>
 </AuthorizeView>
 
-@code{
+@code {
+    private bool _isVisibleProfileModal;
+
     private async Task BeginSignOut(MouseEventArgs args)
     {
         await SignOutManager.SetSignOutState();

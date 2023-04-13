@@ -29,6 +29,8 @@ public partial class Index
 
     private bool _isSuccessLinkFetch;
 
+    private readonly String[] _palettes = { "#9e8ddf" };
+
     protected override async Task OnParametersSetAsync()
     {
         var userId = new Guid("3fa85f64-5717-4562-b3fc-2c963f66afa6");
@@ -45,7 +47,10 @@ public partial class Index
 
         if (_links.Any())
         {
-            _linkHits = await LinksService.GetLinkHitsById(_links.FirstOrDefault().Id);
+            var today = DateTime.Now;
+            var lastWeek = today.AddDays(-7);
+
+            _linkHits = await LinksService.GetAllHitsByContainerId(containerId, lastWeek, today);
 
             if (_linkHits.Any())
             {

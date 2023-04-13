@@ -1,18 +1,19 @@
 ﻿@inject NotificationsService NotificationsService
+@inject AppStateService AppStateService
 
 @implements IDisposable
 
-@using Microsoft.AspNetCore.SignalR.Client
-@using Client.Web.Utilities.Services
-
 <div class="fm-notification__container">
-    <SfButton IconCss="fa-solid fa-bell"
-              CssClass="fm-notification__button"
-              OnClick="HandleButtonClick">
-        <span class="e-badge e-badge-success e-badge-notification e-badge-overlap">
-            @NotificationsService.UnreadNotificationsCount
-        </span>
-    </SfButton>
+    <SfTooltip Position="Syncfusion.Blazor.Popups.Position.BottomCenter"
+               Content="My Notifications">
+        <SfIcon IconCss="fa-solid fa-bell"
+                class="fm-sidebar__icon"
+                @onclick="HandleButtonClick">
+            <span class="e-badge e-badge-success e-badge-notification e-badge-overlap">
+                @NotificationsService.UnreadNotificationsCount
+            </span>
+        </SfIcon>
+    </SfTooltip>
 
     <div class="fm-notification__modal @ModalVisibility">
         <div class="d-flex justify-content-between align-items-center">
@@ -27,15 +28,15 @@
         <FmSeperator />
 
         <div class="fm-notification__list-view">
-            @if (NotificationsService.Notifications is not null 
-                 && NotificationsService.IsFetching != true)
+            @if (NotificationsService.Notifications is not null
+            && NotificationsService.IsFetching != true)
             {
                 foreach (var notification in NotificationsService.Notifications)
                 {
                     var last = NotificationsService.Notifications.LastOrDefault();
 
                     <NotificationModalItem Notification="notification"
-                                           OnMarkAsRead="HandleMarkAsRead" />
+                                   OnMarkAsRead="HandleMarkAsRead" />
 
                     if (notification != last)
                     {
@@ -66,11 +67,15 @@
     private string ModalVisibility =>
         IsVisible ? "fm-notification__modal-show" : "fm-notification__modal-hidden";
 
-    protected override void OnInitialized()
+    protected override async Task OnParametersSetAsync()
     {
+        await NotificationsService.CreateClientConnection();
+
+        await NotificationsService.GetAllByUserIdAsync(AppStateService.User.Id, 5);
+
         NotificationsService.ListenToMarkAsRead();
 
-        NotificationsService.OnChange += async () =>
+        NotificationsService.StateChanged += async () =>
         {
             await InvokeAsync(StateHasChanged);
         };
@@ -89,6 +94,6 @@
 
     public void Dispose()
     {
-        NotificationsService.OnChange -= StateHasChanged;
+        NotificationsService.StateChanged -= StateHasChanged;
     }
 }

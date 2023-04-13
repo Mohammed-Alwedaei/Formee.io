@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿namespace Identity.BusinessLogic.Dtos;
 
-namespace Identity.BusinessLogic.Models;
-
-public class UploadAvatarModel
+public class UploadAvatarDto
 {
     public Guid Id { get; set; } = Guid.NewGuid();
 

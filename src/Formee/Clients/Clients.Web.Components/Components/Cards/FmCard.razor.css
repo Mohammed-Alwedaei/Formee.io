@@ -10,7 +10,7 @@
         color: var(--color-text);
     }
 
-    ::deep .e-card span {
+    ::deep .e-card .e-card__icon {
         color: #7150eb;
         font-size: 3.5rem;
     }

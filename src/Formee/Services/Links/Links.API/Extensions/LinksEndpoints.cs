@@ -155,6 +155,9 @@ public static class LinksEndpoints
         var redirectLinks = app
             .MapGroup("/api/links/redirects/");
 
+        var hits = app
+            .MapGroup("/api/links/hits/");
+
         var logger = app.Logger;
 
         /*
@@ -199,7 +202,7 @@ public static class LinksEndpoints
          * DESC : Redirect the user to a the original URL
          * AUTH : Anonymous
          */
-        redirectLinks.MapGet("all/{linkId:int}", async
+        hits.MapGet("all/{linkId:int}", async
         (ILinkHitRepository linkHitRepository, int linkId) =>
         {
             logger.LogInformation("GET: request to /api/links/redirects/all/{linkId} at {datetime}",
@@ -222,7 +225,7 @@ public static class LinksEndpoints
             return Results.Ok(result);
         });
 
-        redirectLinks.MapGet("all/{containerId}/{startDate:DateTime}/{endDate:DateTime}", async
+        hits.MapGet("all/{containerId}/{startDate:DateTime}/{endDate:DateTime}", async
             (ILinkHitRepository linkHitRepository, 
                 string containerId, 
                 DateTime startDate, 

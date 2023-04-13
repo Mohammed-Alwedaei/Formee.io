@@ -59,6 +59,33 @@ public class LinksService
         }
     }
 
+    public async Task<List<LinkHitDto>> GetAllHitsByContainerId
+        (string containerId, DateTime startDate, DateTime endDate)
+    {
+        try
+        {
+            IsFetching = true;
+
+            var formattedStartDate = startDate.ToString("yyyy-MM-dd");
+            var formattedEndDate = endDate.AddDays(1)
+                .ToString("yyyy-MM-dd");
+
+            var url = $"/api/links/hits/all/{containerId}/{formattedStartDate}/{formattedEndDate}";
+
+            var response = await _httpClient
+                .GetFromJsonAsync<List<LinkHitDto>>(url);
+
+            IsFetching = false;
+
+            return response ?? throw new Exception("something went wrong"); ;
+        }
+        catch (Exception)
+        {
+            IsFetching = false;
+            return new List<LinkHitDto>();
+        }
+    }
+
     public List<ChartModel> GenerateChartDataSeries(List<LinkHitDto> hits)
     {
         IsFetching = true;

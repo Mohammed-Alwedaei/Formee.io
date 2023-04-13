@@ -1,0 +1,37 @@
+﻿@inject IdentityService IdentityService
+@inject AppStateService AppStateService
+@inject NavigationManager NavigationManager
+
+@code {
+
+    [Parameter]
+    public string AuthProviderId { get; set; }
+
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationState { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var user = await IdentityService.GetByAuthIdAsync(AuthProviderId);
+
+        var authState = await authenticationState;
+
+        if (authState.User.Identity.IsAuthenticated)
+        {
+            if (user.Id == Guid.Empty)
+            {
+                NavigationManager
+                    .NavigateTo($"{Routes.IdentityUpsert}?type=create&auth_provider_id={AuthProviderId}");
+            }
+            else
+            {
+                AppStateService.SetUserState(user);
+                NavigationManager.GetUriWithQueryParameter("user_id", user.Id);
+            }
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/authentication/login");
+        }
+    }
+}

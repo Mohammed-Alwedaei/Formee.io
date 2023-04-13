@@ -43,17 +43,24 @@
                                     </Header>
 
                                     <ContentTemplate>
-                                        @if (_linkHitsChart.Any() && _isSuccessLinkFetch)
+                                        @if (_linkHitsChart != null)
                                         {
-                                            <SfChart Width="100%" Title="Number of hits">
+                                            <SfChart Width="100%"
+                                         Title="Number of hits"
+                                         Palettes="@_palettes">
                                                 <ChartPrimaryXAxis ValueType="Syncfusion.Blazor.Charts.ValueType.DateTime"
                                                        IntervalType="IntervalType.Days" />
+
+                                                <ChartTooltipSettings Enable="true" />
 
                                                 <ChartSeriesCollection>
                                                     <ChartSeries DataSource="_linkHitsChart"
                                                      XName="Date"
                                                      YName="Count"
-                                                     Type="ChartSeriesType.Line" />
+                                                     Type="ChartSeriesType.Spline">
+                                                        <ChartMarker Visible="true">
+                                                        </ChartMarker>
+                                                    </ChartSeries>
                                                 </ChartSeriesCollection>
                                             </SfChart>
                                         }
@@ -71,7 +78,7 @@
                                     </Header>
 
                                     <ContentTemplate>
-                                        @if (_links.Any() && _isSuccessLinkFetch)
+                                        @if (_links != null)
                                         {
                                             var lastItem = _links.LastOrDefault();
 
@@ -88,6 +95,33 @@
                                         else
                                         {
                                             <FmNotFound />
+                                        }
+                                    </ContentTemplate>
+                                </DashboardLayoutPanel>
+
+                                <DashboardLayoutPanel Column="0" Row="1" SizeX="1" SizeY="1">
+                                    <ContentTemplate>
+                                        @if (_linkHitsChart != null)
+                                        {
+                                            <SfChart Width="100%"
+                                         Title="Created Links"
+                                         Palettes="@_palettes">
+                                                <ChartPrimaryXAxis ValueType="Syncfusion.Blazor.Charts.ValueType.DateTime"
+                                                       IntervalType="IntervalType.Days" />
+
+                                                <ChartTooltipSettings Enable="true" />
+
+                                                <ChartSeriesCollection>
+                                                    <ChartSeries DataSource="_linkHitsChart"
+                                                     XName="Date"
+                                                     YName="Count"
+                                                     Type="ChartSeriesType.Column" />
+                                                </ChartSeriesCollection>
+                                            </SfChart>
+                                        }
+                                        else
+                                        {
+                                            <p>There are no data to be displayed</p>
                                         }
                                     </ContentTemplate>
                                 </DashboardLayoutPanel>
