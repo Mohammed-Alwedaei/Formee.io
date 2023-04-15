@@ -49,7 +49,10 @@ public static class UseServicesExtension
     /// <returns>WebApplication</returns>
     public static WebApplication MapEndpointsAndUseSecurity(this WebApplication app)
     {
-        // app.UseHttpsRedirection();
+        if (app.Configuration.GetValue<bool>("Settings:EnableHttpsRedirection"))
+        {
+            app.UseHttpsRedirection();
+        }
 
         app.UseCors("cors");
 
