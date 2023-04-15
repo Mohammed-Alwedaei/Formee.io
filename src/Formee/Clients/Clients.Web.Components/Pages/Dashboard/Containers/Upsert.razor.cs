@@ -14,14 +14,18 @@ public partial class Upsert
     public NavigationManager NavigationManager { get; set; }
 
     [Parameter]
-    [SupplyParameterFromQuery(Name = "containerId")]
+    [SupplyParameterFromQuery(Name = "user_id")]
+    public string UserId { get; set; }
+    
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "container_id")]
     public string ContainerId { get; set; }
 
     [Parameter]
-    [SupplyParameterFromQuery(Name = "type")]
+    [SupplyParameterFromQuery(Name = "upsert_type")]
     public string UpsertType { get; set; }
 
-    private ContainerDto _container = new();
+    private ContainerDto? _container = new();
 
     private ContainerDto _containerPreview = new();
 
@@ -34,20 +38,17 @@ public partial class Upsert
         // if true then create new container
         // if not true then update a container
         if (string.IsNullOrEmpty(ContainerId) && UpsertType == "create")
-        {
             _container = new ContainerDto();
-        }
-        else if (!string.IsNullOrEmpty(ContainerId)
-                && UpsertType == "update"
-                || UpsertType == "delete")
+
+        else if (!string.IsNullOrEmpty(ContainerId) && UpsertType == "update" || UpsertType == "delete")
         {
             _container = await ContainersService.GetByIdAsync(ContainerId);
 
             if (UpsertType == "delete")
-            {
                 IsDeleteOperation = true;
-            }
         }
+
+        _container.UserId = Guid.Parse(UserId);
     }
 
     ///
@@ -65,31 +66,18 @@ public partial class Upsert
     /// <returns></returns>
     private async Task HandleActionApprove()
     {
-        bool response;
+        var response = UpsertType switch
+        {
+            "delete" => await ContainersService.DeleteByIdAsync(ContainerId),
+            "update" => await ContainersService.UpdateAsync(_container),
+            _ => await ContainersService.CreateAsync(_container)
+        };
 
-        if (UpsertType == "delete")
-        {
-            response = await ContainersService.DeleteByIdAsync(ContainerId);
-        }
-        else if (UpsertType == "update")
-        {
-            response = await ContainersService.UpdateAsync(_container);
-        }
-        else
-        {
-            response = await ContainersService
-                .CreateAsync(_container);
-        }
+        var redirectUrl = !string.IsNullOrEmpty(response.Id) 
+            ? $"{Routes.Containers}?user_id={UserId}&container_id={response.Id}" 
+            : "/";
 
-
-        if (response)
-        {
-            NavigationManager.NavigateTo("/containers");
-        }
-        else
-        {
-            NavigationManager.NavigateTo("/");
-        }
+        NavigationManager.NavigateTo(redirectUrl);
     }
 
     /// <summary>

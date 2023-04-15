@@ -17,56 +17,60 @@ public partial class Index : IDisposable
     public AnalyticsService AnalyticsService { get; set; }
 
     [Parameter]
+    [SupplyParameterFromQuery(Name = "user_id")]
     public string UserId { get; set; }
 
-    private Guid ParsedUserId => new(UserId);
-
-    private string _containerId = string.Empty;
-
-    protected override async Task OnParametersSetAsync()
+    protected override void OnParametersSet()
     {
-        ContainersService.OnChange += StateHasChanged;
-
-        await ContainersService.GetAllByUserIdAsync(ParsedUserId);
+        ContainersService.OnChange += async () =>
+        {
+            await ContainersService.GetAllByUserIdAsync(Guid.Parse(UserId));
+            await InvokeAsync(StateHasChanged);
+        };
     }
 
+    /// <summary>
+    /// Redirect the user to create new container page
+    /// </summary>
     public void NavigateToNewContainer()
     {
         NavigationManager.NavigateTo($"{Routes.UpsertContainer}?type=create");
     }
 
-    public void HandleContainerClick(string containerId)
+    /// <summary>
+    /// Redirect the user to view the container details
+    /// </summary>
+    /// <param name="containerId"></param>
+    public void HandleContainerClick(string? containerId)
     {
-        NavigationManager.NavigateTo($"{Routes.ViewContainer}?id={containerId}");
+        NavigationManager.NavigateTo($"{Routes.ViewContainer}?user_id={UserId}&container_id={containerId}");
     }
 
-    private async Task HandleContainerChangeEvent(string containerId)
-    {
-        _containerId = containerId;
-    }
-
+    /// <summary>
+    /// Detect the event sent by the user and redirect to the corresponding upsert page
+    /// </summary>
+    /// <param name="args"></param>
     private void ItemSelected(MenuEventArgs args)
     {
-        if (args.Item.Text == "Edit")
-        {
-            NavigationManager.NavigateTo($"{Routes.UpsertContainer}?type=update&containerId={args.Item.Id}");
-        }
-        else
-        {
-            NavigationManager.NavigateTo($"{Routes.UpsertContainer}?type=delete&containerId={args.Item.Id}");
-        }
+        NavigationManager.NavigateTo(args.Item.Text == "Edit"
+            ? $"{Routes.UpsertContainer}?user_id={UserId}&upsert_type=update&container_id={args.Item.Id}"
+            : $"{Routes.UpsertContainer}?user_id={UserId}&upsert_type=delete&container_id={args.Item.Id}");
     }
 
+    /// <summary>
+    /// Redirect the user to the corresponding site when clicking on a site in the 
+    /// </summary>
+    /// <param name="args"></param>
     private void HandleSiteSelect(ChipEventArgs args)
     {
         var site = AnalyticsService.Sites
             .FirstOrDefault(s => s.Name == args.Text);
 
-        NavigationManager.NavigateTo($"{Routes.Sites}?containerId={site.ContainerId}");
+        NavigationManager.NavigateTo($"{Routes.Sites}?user_id={UserId}&container_id={site.ContainerId}");
     }
 
-    public void Dispose()
-    {
-        ContainersService.OnChange -= StateHasChanged;
-    }
+    /// <summary>
+    /// Dispose the free and unused resources
+    /// </summary>
+    public void Dispose() => ContainersService.OnChange -= StateHasChanged;
 }

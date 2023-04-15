@@ -1,5 +1,7 @@
 ﻿using Client.Web.Utilities.Dtos.Identity;
 using Client.Web.Utilities.Services;
+using Microsoft.AspNetCore.Components.Forms;
+using Syncfusion.Blazor.Inputs;
 
 namespace Clients.Web.Components.Pages.Dashboard.Identity;
 
@@ -11,6 +13,9 @@ public partial class Upsert
 
     [Inject]
     public NavigationManager NavigationManager { get; set; }
+
+    [Inject]
+    public AppStateService AppStateService { get; set; }
 
     [Parameter]
     [SupplyParameterFromQuery(Name = "userId")]

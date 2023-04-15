@@ -1,8 +1,4 @@
-﻿using Client.Web.Utilities.Dtos;
-using Client.Web.Utilities.Dtos.Identity;
-using Client.Web.Utilities.Services;
-using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
+﻿using Client.Web.Utilities.Services;
 
 namespace Clients.Web.Components.Pages;
 
@@ -26,33 +22,31 @@ public partial class Index : IDisposable
     [Inject]
     public AppStateService AppStateService { get; set; }
 
-    protected UserDto? User;
-
-    private List<ContainerDto> _containers = new();
-
     protected override async Task OnParametersSetAsync()
     {
         var today = DateTime.Now;
         var lastWeek = today.AddDays(-7);
 
-        try
+        AppStateService.OnUserStateChange += async () =>
         {
-            await ContainersService.GetAllByUserIdAsync(User.Id);
+            ContainersService.OnChange += async () => await InvokeAsync(StateHasChanged);
 
-            await AnalyticsService
-                .GetAllHitsInTimePeriodAsync(3, lastWeek, today);
+            await ContainersService.GetAllByUserIdAsync(AppStateService.User.Id);
+
+            await AnalyticsService.GetAllHitsInTimePeriodAsync(3, lastWeek, today, "categories");
+            
+            AnalyticsService.GenerateTopPerformingCategories();
 
             AnalyticsService.GenerateChartDataSeries();
-
+            
             await InvokeAsync(StateHasChanged);
-        }
-        catch (Exception ex)
-        {
-
-        }
-
+        };
     }
 
+    /// <summary>
+    /// Mark a notification as read through SignalR connection
+    /// </summary>
+    /// <param name="id"></param>
     private async Task HandleMarkAsRead(int id)
     {
         await NotificationsService.MarkNotificationAsReadAsync(id);
@@ -60,6 +54,8 @@ public partial class Index : IDisposable
 
     public void Dispose()
     {
+        AppStateService.OnUserStateChange -= StateHasChanged;
+        ContainersService.OnChange -= StateHasChanged;
         NotificationsService.StateChanged -= StateHasChanged;
     }
 }

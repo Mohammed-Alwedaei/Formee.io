@@ -1,9 +1,11 @@
 ﻿using Identity.BusinessLogic.Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace Identity.BusinessLogic.Dtos;
 
 public class AvatarDto
 {
+    [Key]
     public int Id { get; set; }
 
     public string Name { get; set; } = null!;
@@ -14,7 +16,7 @@ public class AvatarDto
 
     public DateTime? DeletedDate { get; set; }
 
-    public DateTime UploadedDate { get; set; }
+    public DateTime UploadedDate { get; set; } = DateTime.UtcNow;
 
     public static implicit operator AvatarDto(AvatarEntity avatar)
     {

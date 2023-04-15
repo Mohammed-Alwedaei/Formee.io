@@ -1,7 +1,10 @@
-﻿namespace Client.Web.Utilities.Dtos.History;
+﻿using System.Text.Json.Serialization;
+
+namespace Client.Web.Utilities.Dtos.History;
 
 public class HistoryDto
 {
+    [JsonPropertyName("__id")]
     public string Id { get; set; } = null!;
 
     public string Title { get; set; } = null!;

@@ -5,8 +5,13 @@
 
     <FmSpacer />
 
-    <FmTypography Text="There are no links in this container"
+    <FmTypography Text="@Message"
                   Type="@Typography.LevelTwo"
                   Classes="fm-color__dimmed"
                   TextAlign="center" />
 </div>
+
+@code {
+    [Parameter]
+    public string Message { get; set; }
+}

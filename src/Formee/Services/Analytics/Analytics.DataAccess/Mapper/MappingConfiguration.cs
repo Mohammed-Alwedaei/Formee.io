@@ -19,6 +19,7 @@ public class MappingConfiguration : Profile
 
         //Hit entities mapping
         CreateMap<PageHitEntity, CreatePageHitDto>().ReverseMap();
+        CreateMap<PageHitEntity, PageHitDto>().ReverseMap();
 
         //Session entities mapping
         CreateMap<SessionEntity, SessionDto>().ReverseMap();

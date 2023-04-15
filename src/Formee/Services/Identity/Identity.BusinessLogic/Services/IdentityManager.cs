@@ -6,6 +6,7 @@ using Identity.BusinessLogic.Entities;
 using Identity.BusinessLogic.Exceptions;
 using Identity.BusinessLogic.Models;
 using Identity.BusinessLogic.Services.IServices;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -19,7 +20,7 @@ public class IdentityManager : IIdentityManager
     private readonly HttpClient _httpClient;
     private readonly ApplicationDbContext _context;
 
-    public IdentityManager(IOptions<BlobStorageConfiguration> blobStorage, 
+    public IdentityManager(IOptions<BlobStorageConfiguration> blobStorage,
         HttpClient httpClient,
         ApplicationDbContext context)
     {
@@ -28,7 +29,7 @@ public class IdentityManager : IIdentityManager
         _context = context;
     }
 
-    public async Task<bool> AssignRoleToUser(AddRoleToUseDto users, 
+    public async Task<bool> AssignRoleToUser(AddRoleToUseDto users,
         string roleId)
     {
         var response = await _httpClient
@@ -72,7 +73,7 @@ public class IdentityManager : IIdentityManager
         return userFromDb;
     }
 
-    public async Task<UserEntity> CreateAsync(UserEntity user)
+    public async Task<UserDto> CreateAsync(UserEntity user)
     {
         var hasRegistered = await _context.User
             .FirstOrDefaultAsync(u => u.AuthId == user.AuthId);
@@ -89,9 +90,11 @@ public class IdentityManager : IIdentityManager
         return createdUser.Entity;
     }
 
-    public async Task<AvatarEntity> UploadUserAvatar(IFormFile file, Guid userId)
+    public async Task<AvatarDto> UploadUserAvatar(IFormFileCollection avatar, Guid userId)
     {
-        var fileName = file.FileName;
+        var file = avatar.FirstOrDefault();
+
+        var fileName = file.Name;
 
         var extension = Path.GetExtension(fileName);
 
@@ -105,7 +108,7 @@ public class IdentityManager : IIdentityManager
 
         await blobClient.UploadAsync(stream);
 
-        var avatarToCreate = new AvatarEntity
+        var avatarToCreate = new AvatarDto
         {
             UserId = userId,
             Name = uniqueFileName
@@ -121,24 +124,29 @@ public class IdentityManager : IIdentityManager
                 .FirstOrDefaultAsync(
                     a => a.UserId == avatarToCreate.UserId);
 
+            //Remove the old avatar 
             if (oldAvatar is not null)
             {
                 oldAvatar.IsDeleted = true;
                 oldAvatar.DeletedDate = avatarToCreate.UploadedDate;
 
+                userFromDb.AvatarId = null;
+
+                _context.User.Update(userFromDb);
+
                 _context.Avatar.Update(oldAvatar);
                 await _context.SaveChangesAsync();
             }
 
-            await _context.Avatar.AddAsync(avatarToCreate);
+            //Attach the new avatar to the user
+            var createdAvatar = await _context.Avatar.AddAsync(avatarToCreate);
 
-            await _context.SaveChangesAsync();
-
-            userFromDb.AvatarId = avatarToCreate.Id;
-
+            userFromDb.AvatarId = createdAvatar.Entity.Id;
             _context.User.Update(userFromDb);
             await _context.SaveChangesAsync();
-            return await Task.FromResult(avatarToCreate);
+
+            return await Task.FromResult(createdAvatar.Entity);
+
         }
 
         throw new NotFoundException("Entity Not found");

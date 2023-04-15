@@ -115,6 +115,7 @@ h1:focus {
 .mr-2 {
     margin-right: 2rem;
 }
+
 .ml-1 {
     margin-left: 1rem;
 }
@@ -149,11 +150,19 @@ h1:focus {
     border-radius: 10px;
     height: 100%;
     padding-inline: 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.fm-sidebar__user .fm-link {
-    color: var(--color-body) !important;
-}
+    .fm-sidebar__user > div {
+        width: 100%;
+    }
+
+    .fm-sidebar__user .fm-link {
+        color: var(--color-body) !important;
+    }
 
 .e-sidebar {
     background-color: var(--color-white) !important;
@@ -180,22 +189,22 @@ h1:focus {
     border-bottom-left-radius: 0;
 }
 
-    .e-sidebar.e-dock.e-close .fm-text {
-        display: none !important;
-    }
+.e-sidebar.e-dock.e-close .fm-text {
+    display: none !important;
+}
 
-    .e-sidebar.e-dock.e-close .fm-motto,
-    .e-sidebar.e-dock.e-close .fm-icon {
-        display: block !important;
-    }
+.e-sidebar.e-dock.e-close .fm-motto,
+.e-sidebar.e-dock.e-close .fm-icon {
+    display: block !important;
+}
 
-    .e-sidebar.e-dock.e-close .fm-icon {
-        padding-left: 0 !important;
-    }
+.e-sidebar.e-dock.e-close .fm-icon {
+    padding-left: 0 !important;
+}
 
-    .e-sidebar.e-dock.e-close .fm-motto {
-        font-size: 1rem !important;
-    }
+.e-sidebar.e-dock.e-close .fm-motto {
+    font-size: 1rem !important;
+}
 
 .fm-motto {
     color: var(--color-white);
@@ -255,4 +264,21 @@ h1:focus {
     cursor: pointer;
     font-size: 1.5rem;
     color: var(--color-text);
+}
+
+.e-upload.e-control-wrapper, .e-bigger.e-small .e-upload.e-control-wrapper {
+    height: 130px;
+}
+
+.e-file-select-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.sf-pager.e-control.e-pager.e-lib {
+    border-radius: 10px;
+    border: none;
+    box-shadow: var(--box-shadow-sm);
 }

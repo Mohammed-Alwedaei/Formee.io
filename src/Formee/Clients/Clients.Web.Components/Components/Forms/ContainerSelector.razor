@@ -27,9 +27,9 @@
     public List<ContainerDto> DataSource { get; set; }
 
     [Parameter]
-    public EventCallback<string> OnChange { get; set; }
+    public EventCallback<string?> OnChange { get; set; }
 
-    private void HandleContainerSelectionChange(string id)
+    private void HandleContainerSelectionChange(string? id)
     {
         OnChange.InvokeAsync(id);
     }

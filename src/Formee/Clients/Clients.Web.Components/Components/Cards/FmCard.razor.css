@@ -10,7 +10,7 @@
         color: var(--color-text);
     }
 
-    ::deep .e-card .e-card__icon {
+    ::deep .e-card .e-card__icon span{
         color: #7150eb;
         font-size: 3.5rem;
     }
@@ -31,5 +31,5 @@
     }
 
 ::deep .fm-card__border-dashed {
-    border: 5px dashed rgba(128, 128, 128, 0.25) !important;
+    border: 3px dashed rgba(128, 128, 128, 0.25) !important;
 }

@@ -6,8 +6,15 @@ const router = express.Router();
 router.get("/all/:userId", async (req, res) => {
   try {
     const userId = req.params.userId;
+    const pageNumber = req.query.pageNumber;
+    const nPerPage = req.query.nPerPage;
 
-    res.send(await History.find({ userId }));
+    const query = await History.find({ userId })
+      .sort({ createdDate: 1 })
+      .skip(pageNumber > 0 ? (pageNumber - 1) * nPerPage : 0)
+      .limit(nPerPage);
+
+    res.send(query);
   } catch (e) {
     console.error(e);
   }
@@ -16,8 +23,6 @@ router.get("/all/:userId", async (req, res) => {
 router.get("/all/:service", async (req, res) => {
   try {
     var service = req.params.service;
-
-    console.log(service.charAt(0).toUpperCase());
 
     res.send(
       await History.find({ service: { $regex: service, $options: "i" } })

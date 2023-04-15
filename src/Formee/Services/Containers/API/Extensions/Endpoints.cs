@@ -1,4 +1,5 @@
-﻿using API.Entities;
+﻿using API.Dto;
+using API.Entities;
 using API.Services;
 using ServiceBus.Constants;
 using ServiceBus.Messages;
@@ -88,10 +89,15 @@ public static class Endpoints
         containers.MapPut("/",
             async (ContainersService containersService,
                 IAzureServiceBus<HistoryMessage> serviceBus,
-                ContainerEntity container) =>
+                ContainerDto container) =>
             {
-                if (await containersService
-                        .UpdateContainerAsync(container))
+                if (string.IsNullOrEmpty(container.Id))
+                    return Results.BadRequest();
+
+                var result = await containersService
+                    .UpdateContainerAsync(container);
+
+                if (!string.IsNullOrEmpty(result.Id))
                 {
                     var history = new HistoryModel
                     {
@@ -107,12 +113,10 @@ public static class Endpoints
                             Entity = history
                         });
 
-                    Results.Ok();
+                    return Results.Ok();
                 }
-                else
-                {
-                    Results.BadRequest();
-                }
+
+                return Results.NotFound();
             });
 
         /*
@@ -125,22 +129,22 @@ public static class Endpoints
                 IAzureServiceBus<NotificationMessage> serviceBus,
                 string id) =>
             {
-                var results = await containersService
+                var result = await containersService
                     .DeleteContainerAsync(id);
 
-                if (results is not null)
+                if (result is not null)
                 {
                     var history = new HistoryModel
                     {
                         Title = "A new container is deleted",
                         Action = ActionType.Delete,
-                        UserId = results.UserId,
+                        UserId = result.UserId,
                         Service = SystemServices.Containers
                     };
 
                     var notification = new NotificationModel
                     {
-                        GlobalUserId = results.UserId,
+                        GlobalUserId = result.UserId,
                         Heading = "A container is Deleted",
                         Message = "The container of name ... is deleted"
                     };
@@ -151,7 +155,7 @@ public static class Endpoints
                             Entity = notification
                         });
 
-                    Results.Ok(id);
+                    Results.Ok(result);
                 }
                 else
                 {

@@ -4,7 +4,7 @@ namespace Client.Web.Utilities.Dtos;
 
 public class ContainerDto
 {
-    public string Id { get; set; }
+    public string? Id { get; set; }
 
     [Required]
     [MinLength(5)]

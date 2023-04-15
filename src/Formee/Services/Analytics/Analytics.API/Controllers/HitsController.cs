@@ -1,9 +1,6 @@
 ﻿using Analytics.Utilities.Dtos.PageHit;
 using Analytics.Utilities.Dtos.Session;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.Net.Http.Headers;
+using Analytics.Utilities.Entities;
 
 namespace Analytics.API.Controllers;
 
@@ -46,13 +43,45 @@ public class HitsController : ControllerBase
 
     [HttpGet("all/{siteId:int}/{startDate:DateTime}/{endDate:DateTime}")]
     public async Task<IActionResult> GetAllInTimePeriod
-        (int siteId, DateTime startDate, DateTime endDate)
+        (int siteId, 
+            DateTime startDate, 
+            DateTime endDate, 
+            [FromQuery] string filter)
     {
         _logger.LogInformation("GET: request at /api/hits/all/{siteId}/{startDate}/{endDate} at {datetime}",
             siteId, startDate, endDate, DateTime.Now);
 
-        var result = await _hitRepository
-            .GetAllByDateAsync(siteId, startDate, endDate);
+        List<PageHitDto> result = new();
+
+        if (string.Equals(filter, "sites"))
+        {
+            result = await _hitRepository
+                .GetAllByDateAsync(siteId, startDate, endDate, x => x.Site);
+        }
+
+        if (string.Equals(filter, "categories"))
+        {
+            result = await _hitRepository
+                .GetAllByDateAsync(siteId, startDate, endDate, x => x.Category);
+        }
+
+        if (string.Equals(filter, "all"))
+        {
+            result = await _hitRepository
+                .GetAllByDateAsync(siteId, 
+                    startDate, 
+                    endDate,
+                    x => x.Site,
+                    x => x.Category);
+        }
+
+        if (string.Equals(filter, "none"))
+        {
+            result = await _hitRepository
+                .GetAllByDateAsync(siteId,
+                    startDate,
+                    endDate);
+        }
 
         if (result.Count is 0)
         {

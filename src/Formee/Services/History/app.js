@@ -20,9 +20,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/history", historyRoutes);
 
-mongoose
-  .connect(process.env.MONGO_DB_HISTORY)
-  .then(() => console.log("Connected!"));
+mongoose.connect(process.env.MONGO_DB_HISTORY);
 
 ServiceBusConsumer.Main();
 

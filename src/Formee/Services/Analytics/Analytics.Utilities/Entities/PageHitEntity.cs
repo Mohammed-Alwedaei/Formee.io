@@ -8,8 +8,7 @@ public class PageHitEntity : BaseEntity
     [Required]
     public int SiteId { get; set; }
 
-    [ForeignKey(nameof(SiteId))]
-    public SiteEntity? Site { get; set; }
+    public virtual SiteEntity? Site { get; set; }
 
     [Required]
     [MinLength(3)]
@@ -24,6 +23,5 @@ public class PageHitEntity : BaseEntity
     [Required]
     public int CategoryId { get; set; }
 
-    [ForeignKey(nameof(CategoryId))]
-    public CategoryEntity Category { get; set; } = null!;
+    public virtual CategoryEntity Category { get; set; } = null!;
 }

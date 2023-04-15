@@ -16,7 +16,7 @@ public class LinksService
         _httpClient = httpClient;
     }
 
-    public async Task<List<LinkDto>> GetAllAsync(string containerId)
+    public async Task<List<LinkDto>> GetAllAsync(string? containerId)
     {
         try
         {
@@ -60,7 +60,7 @@ public class LinksService
     }
 
     public async Task<List<LinkHitDto>> GetAllHitsByContainerId
-        (string containerId, DateTime startDate, DateTime endDate)
+        (string? containerId, DateTime startDate, DateTime endDate)
     {
         try
         {
@@ -86,10 +86,10 @@ public class LinksService
         }
     }
 
-    public List<ChartModel> GenerateChartDataSeries(List<LinkHitDto> hits)
+    public List<DateChartModel> GenerateChartDataSeries(List<LinkHitDto> hits)
     {
         IsFetching = true;
-        var dataSeries = new List<ChartModel>();
+        var dataSeries = new List<DateChartModel>();
 
         foreach (var hit in hits)
         {
@@ -102,7 +102,7 @@ public class LinksService
             }
             else
             {
-                dataSeries.Add(new ChartModel
+                dataSeries.Add(new DateChartModel
                 {
                     Id = hit.Id,
                     Date = hit.CreatedDate,

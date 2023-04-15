@@ -1,5 +1,7 @@
 ﻿using Identity.BusinessLogic.Dtos;
 using Identity.BusinessLogic.Services.IServices;
+using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Identity.API.Extensions;
 
@@ -48,10 +50,9 @@ public static class IdentityEndpoints
         });
 
         identity.MapPost("/users/avatar/{userId:Guid}", async
-            (IIdentityManager identityService, IFormFile file, Guid userId)
+            (IIdentityManager identityService, IFormFileCollection avatar, Guid userId)
             => Results.Ok(await identityService
-                .UploadUserAvatar(file, userId)));
-                    
+                .UploadUserAvatar(avatar, userId)));
 
         return app;
     }

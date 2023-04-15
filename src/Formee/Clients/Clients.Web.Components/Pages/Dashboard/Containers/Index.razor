@@ -2,44 +2,87 @@
     <Breadcrumbs>
         <BreadcrumbItem IconCss="fa-solid fa-house"
                         Text="Dashboard"
-                        Url="/" />
+                        Url="/"/>
 
         <BreadcrumbItem IconCss="fa-solid fa-boxes-stacked"
                         Disabled
                         Text="Containers"
-                        Url="/containers" />
+                        Url="/containers"/>
     </Breadcrumbs>
 </FmPageIntro>
 
-<FmSpacer />
+<FmSpacer/>
 
-<FmTab OnTabChange="HandleContainerChangeEvent">
-    <FmTabItems>
-        @if (ContainersService.Containers != null)
-        {
-            foreach (var container in ContainersService.Containers)
-            {
-                <FmTabItem Id="@container.Id">
-                    <Header>
-                        <FmTypography Type="@Typography.LevelTwo"
-                              Icon="@container.Icon"
-                              Text="@container.Name"
-                              Classes="d-flex justify-content-center align-items-center" />
-                    </Header>
+@if (ContainersService.Containers != null)
+{
+    <Grid Gap="@GridGap.Large">
+                <Items>
+                    @foreach (var container in ContainersService.Containers)
+                    {
+                        <GridItem ColumnSize="@GridSize.GridItemMedium">
+                            <Child>
+                                <FmCard Classes="p-2">
+                                    <FmHeader>
+                                        <div class="d-flex justify-content-between w-100">
+                                            <div class="d-flex justify-content-start align-items-center">
+                                                <FmTypography Type="@Typography.LevelTwo"
+                                                              Text="@container.Name"
+                                                              TextAlign="center"
+                                                              Icon="@container.Icon"/>
+                                            </div>
 
-                    <Body>
-                        <FmSpacer />
+                                            <div>
+                                                <SfButton IconCss="fa-solid fa-eye"
+                                                          IconPosition="IconPosition.Right"
+                                                          OnClick="() => HandleContainerClick(container.Id)">
+                                                    View
+                                                </SfButton>
+                                                <SfDropDownButton Content="Config"
+                                                                  IconCss="fa-solid fa-wrench">
+                                                    <DropDownButtonEvents ItemSelected="ItemSelected"/>
 
-                        <FmLoader FetchingState="ContainersService.IsFetching">
-                            <Content>
-                                <p>@container.Id</p>
-                            </Content>
-                        </FmLoader>
-                    </Body>
-                </FmTabItem>
-            }
-        }
-    </FmTabItems>
-</FmTab>
+                                                    <DropDownMenuItems>
+                                                        <DropDownMenuItem Text="Edit"
+                                                                          Id="@container.Id"
+                                                                          IconCss="fa-solid fa-edit"/>
 
+                                                        <DropDownMenuItem Text="Delete"
+                                                                          Id="@container.Id"
+                                                                          IconCss="fa-solid fa-trash"/>
+                                                    </DropDownMenuItems>
+                                                </SfDropDownButton>
+                                            </div>
+                                        </div>
+                                    </FmHeader>
 
+                                </FmCard>
+                            </Child>
+                        </GridItem>
+                    }
+                    <GridItem ColumnSize="@GridSize.GridItemXLarge">
+                        <Child>
+                            <FmCard Classes="py-4 fm-card__border-dashed"
+                                    IsHoverable="true" OnClick="NavigateToNewContainer">
+                                <FmBody>
+                                    <div class="d-flex align-items-center justify-content-center">
+                                        <FmTypography Type="@Typography.LevelTwo"
+                                                      Text="Create new Container"
+                                                      TextAlign="center"
+                                                      Icon="fa-solid fa-plus-circle"
+                                                      IconSize="1.5rem" />
+                                    </div>
+                                </FmBody>
+                            </FmCard>
+                        </Child>
+                    </GridItem>
+                </Items>
+            </Grid>
+}
+else
+{
+    <p>
+        There are no containers, please start creating one here
+        <FmLink Route="@($"{Routes.UpsertContainer}?user_id={UserId}&upsert_type=create")"
+                Text="Create container"/>
+    </p>
+}

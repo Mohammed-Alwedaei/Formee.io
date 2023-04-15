@@ -1,6 +1,6 @@
 ﻿namespace Client.Web.Utilities.Models;
 
-public class ChartModel
+public class DateChartModel
 {
     public int Id { get; set; }
 

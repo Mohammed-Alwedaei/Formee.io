@@ -1,18 +1,16 @@
 ﻿using Client.Web.Utilities.Dtos.Identity;
-using Microsoft.Extensions.Configuration;
 using System.Net.Http.Json;
-using System.Text.Json;
 
 namespace Client.Web.Utilities.Services;
 public class IdentityService
 {
     private readonly HttpClient _httpClient;
+    private readonly AppStateService _appStateService;
 
-    public IdentityService(HttpClient httpClient)
+    public IdentityService(HttpClient httpClient, AppStateService appStateService)
     {
         _httpClient = httpClient;
-
-
+        _appStateService = appStateService;
     }
 
     public async Task<UserDto?> GetByAuthIdAsync(string authProviderId)

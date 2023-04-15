@@ -19,13 +19,13 @@ public partial class Index
 
     [Parameter]
     [SupplyParameterFromQuery(Name = "containerId")]
-    public string ContainerId { get; set; }
+    public string? ContainerId { get; set; }
 
     private List<ContainerDto> _container = new();
 
     private List<LinkDto> _links = new();
     private List<LinkHitDto> _linkHits = new();
-    private List<ChartModel> _linkHitsChart = new();
+    private List<DateChartModel> _linkHitsChart = new();
 
     private bool _isSuccessLinkFetch;
 
@@ -40,7 +40,7 @@ public partial class Index
         await InvokeAsync(StateHasChanged);
     }
 
-    private async Task HandleContainerChangeEvent(string containerId)
+    private async Task HandleContainerChangeEvent(string? containerId)
     {
         NavigationManager.NavigateTo($"{Routes.Links}?containerId={containerId}");
         _links = await LinksService.GetAllAsync(containerId);

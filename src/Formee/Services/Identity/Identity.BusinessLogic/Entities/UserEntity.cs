@@ -7,6 +7,7 @@ namespace Identity.BusinessLogic.Entities;
 public class UserEntity
 {
     [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.None)]
     public Guid Id { get; set; }
 
     [Required]
@@ -27,7 +28,6 @@ public class UserEntity
 
     public int? AvatarId { get; set; }
 
-    [ForeignKey(nameof(AvatarId))]
     public AvatarEntity? Avatar { get; set; }
 
     [Required]

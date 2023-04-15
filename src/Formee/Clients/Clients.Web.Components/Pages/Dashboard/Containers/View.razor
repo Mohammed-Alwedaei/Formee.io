@@ -2,62 +2,84 @@
     <Breadcrumbs>
         <BreadcrumbItem IconCss="fa-solid fa-house"
                         Text="Dashboard"
-                        Url="/" />
+                        Url="/"/>
 
-        <BreadcrumbItem IconCss="fa-solid fa-table"
+        <BreadcrumbItem IconCss="fa-solid fa-boxes-stacked"
+                        Disabled
                         Text="Containers"
-                        Url="/containers" />
-
-        @if (Container is not null)
-        {
-            <BreadcrumbItem IconCss="@Container.Icon"
-                            Disabled
-                            Text="@Container.Name" />
-        }
+                        Url="/containers"/>
     </Breadcrumbs>
 </FmPageIntro>
 
-<FmSpacer />
+<FmSpacer/>
 
-<section>
-    <SfDashboardLayout Columns="4"
-                   CellSpacing="@(new double[]{ 40 ,40 })"
-                   AllowResizing="false"
-                   AllowDragging="false"
-                   AllowFloating="false">
-        <DashboardLayoutPanels>
-            <DashboardLayoutPanel Column="0"
-                                  Row="0"
-                                  SizeX="3"
-                                  SizeY="1">
-                <ContentTemplate>
-                    <div class="fm-markdown__display">
-                        @if (!string.IsNullOrEmpty(Container.Description))
-                        {
-                            @((MarkupString) Markdown.ToHtml(Container.Description))
-                        }
-                    </div>
-                </ContentTemplate>
-            </DashboardLayoutPanel>
-            <DashboardLayoutPanel Column="4"
-                                  Row="0"
-                                  SizeX="1"
-                                  SizeY="1">
-                <ContentTemplate>
-                    @*<SfAccumulationChart Title="Mobile Browser Statistics" EnableBorderOnMouseMove="false">
-                        <AccumulationChartLegendSettings Visible="true" />
-                        <AccumulationChartTooltipSettings Enable="true" />
+@if (ContainersService.Containers != null)
+{
+    <FmTab OnTabChange="HandleContainerChangeEvent">
+        <FmTabItems>
+            @foreach (var container in ContainersService.Containers)
+            {
+                <FmTabItem Id="@container.Id">
+                    <Header>
+                        <FmTypography Type="@Typography.LevelTwo"
+                                      Icon="@container.Icon"
+                                      Text="@container.Name"
+                                      Classes="d-flex justify-content-center align-items-center"/>
+                    </Header>
 
-                        <AccumulationChartSeriesCollection>
-                            <AccumulationChartSeries DataSource="_pageHitsDisplay"
-                                                     XName="X"
-                                                     YName="Y"
-                                                     Name="Browser" />
-                            
-                        </AccumulationChartSeriesCollection>
-                    </SfAccumulationChart>*@
-                </ContentTemplate>
-            </DashboardLayoutPanel>
-        </DashboardLayoutPanels>
-    </SfDashboardLayout>
-</section>
+                    <Body>
+                    <FmSpacer/>
+                    <SfDashboardLayout Columns="4"
+                                       CellSpacing="@(new double[] {40, 40})"
+                                       AllowResizing="false"
+                                       AllowDragging="false"
+                                       AllowFloating="false">
+                        <DashboardLayoutPanels>
+                            <DashboardLayoutPanel Column="0"
+                                                  Row="0"
+                                                  SizeX="3"
+                                                  SizeY="1">
+                                <ContentTemplate>
+                                    <div class="fm-markdown__display">
+                                        @if (!string.IsNullOrEmpty(container.Description))
+                                        {
+                                            @((MarkupString) Markdown.ToHtml(container.Description))
+                                        }
+                                    </div>
+                                </ContentTemplate>
+                            </DashboardLayoutPanel>
+                            <DashboardLayoutPanel Column="4"
+                                                  Row="0"
+                                                  SizeX="1"
+                                                  SizeY="1">
+                                <ContentTemplate>
+                                    @*<SfAccumulationChart Title="Mobile Browser Statistics" EnableBorderOnMouseMove="false">
+                                <AccumulationChartLegendSettings Visible="true" />
+                                <AccumulationChartTooltipSettings Enable="true" />
+
+                                <AccumulationChartSeriesCollection>
+                                <AccumulationChartSeries DataSource="_pageHitsDisplay"
+                                XName="X"
+                                YName="Y"
+                                Name="Browser" />
+
+                                </AccumulationChartSeriesCollection>
+                                </SfAccumulationChart>*@
+                                </ContentTemplate>
+                            </DashboardLayoutPanel>
+                        </DashboardLayoutPanels>
+                    </SfDashboardLayout>
+                    </Body>
+                </FmTabItem>
+            }
+        </FmTabItems>
+    </FmTab>
+}
+else
+{
+    <p>
+        There are no containers, please start creating one here
+        <FmLink Route="@($"{Routes.UpsertContainer}?user_id={UserId}&upsert_type=create")"
+                Text="Create container"/>
+    </p>
+}

@@ -2,19 +2,50 @@
     <Breadcrumbs>
         <BreadcrumbItem IconCss="fa-solid fa-house"
                         Text="Dashboard"
-                        Url="@Routes.Home" />
+                        Url="@Routes.Home"/>
 
         <BreadcrumbItem IconCss="fa-solid fa-clock-rotate-left"
                         Disabled="true"
                         Text="History"
-                        Url="@Routes.History" />
+                        Url="@Routes.History"/>
     </Breadcrumbs>
 </FmPageIntro>
 
-<FmSpacer />
+<FmSpacer/>
 
-<FmLoader>
-    <Content>
-        <SfGrid DataSource="History" />
-    </Content>
-</FmLoader>
+@if (!string.IsNullOrEmpty(AppState.User.Avatar.Name) && AppState.HistoryCollection != null)
+{
+    <Grid Gap="@GridGap.Large">
+        <Items>
+            @foreach (var history in AppState.HistoryCollection)
+            {
+                <GridItem ColumnSize="@GridSize.GridItemXLarge">
+                    <Child>
+                        <FmCard>
+                            <FmHeader>
+                                @{
+                                    var avatarUrl = $"https://adoptingmsastorage.blob.core.windows.net/accountavatars/{AppState.User.Avatar.Name}";
+
+                                    <img class="e-avatar e-avatar-large" src="@avatarUrl" alt=""/>
+                                }
+                                <FmTypography Text="@history.Title"/>
+                            </FmHeader>
+                            <FmBody>
+
+                            </FmBody>
+                        </FmCard>
+                    </Child>
+                </GridItem>
+            }
+        </Items>
+    </Grid>
+    
+    <FmSpacer />
+
+    <SfPager @ref="_pager"
+             PageSize=5
+             NumericItemsCount=4
+             TotalItemsCount=25
+             ItemClick="HandlePageChange">
+    </SfPager>
+}

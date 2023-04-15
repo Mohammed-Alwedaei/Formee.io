@@ -27,16 +27,16 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Development
     depends_on:
-      - containers.api
-      - forms.api
-      - identity.api
-      - links.api
-      - history.api
-      - notifications.api
+      - containers.service
+      - forms.service
+      - identity.service
+      - links.service
+      - history.service
+      - notifications.service
 
-  analytics.api:
-    image: analytics.api
-    container_name: analytics.api
+  analytics.service:
+    image: analytics.service
+    container_name: analytics.service
     build: 
       context: .
       dockerfile: ./Services/Analytics/Analytics.API/Dockerfile
@@ -50,9 +50,9 @@ services:
       ServiceBus__ConnectionString: Endpoint=sb://formee.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=+prGrnIC0RwHSKHF3zJ/5HW35R08KH4wG+ASbPIkqlk=
       ServiceBus__History: topic-history
 
-  containers.api:
-    image: containers.api
-    container_name: containers.api
+  containers.service:
+    image: containers.service
+    container_name: containers.service
     build:
       context: .
       dockerfile: ./Services/Containers/API/Dockerfile
@@ -71,9 +71,9 @@ services:
       ServiceBus__Notifications: topic-notifications
       ServiceBus__NotificationsSubscription: notifications
 
-  forms.api:
-    image: forms.api
-    container_name: forms.api
+  forms.service:
+    image: forms.service
+    container_name: forms.service
     build:
       context: .
       dockerfile: ./Services/Forms/Presentation/Dockerfile
@@ -84,9 +84,9 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: development
   
-  identity.api:
-    image: identity.api
-    container_name: identity.api
+  identity.service:
+    image: identity.service
+    container_name: identity.service
     build:
       context: .
       dockerfile: ./Services/Identity/Identity.API/Dockerfile
@@ -104,9 +104,9 @@ services:
       AzureStorage__ContainerName: accountavatars
 
 
-  links.api:
-    image: links.api
-    container_name: links.api
+  links.service:
+    image: links.service
+    container_name: links.service
     build:
       context: .
       dockerfile: ./Services/Links/Links.API/Dockerfile
@@ -118,8 +118,9 @@ services:
       ASPNETCORE_ENVIRONMENT: development
       ConnectionStrings__DefaultConnection: Server=host.docker.internal, 1433;Database=Formee.Links;User Id=Admin;Password=Admin@123123;integrated security=false;TrustServerCertificate=True
 
-  notifications.api:
-    image: notifications.api
+  notifications.service:
+    image: notifications.service
+    container_name: notifications.service
     build:
       context: .
       dockerfile: ./Services/Notifications/Presentation/Dockerfile
@@ -136,9 +137,9 @@ services:
       ServiceBus__NotificationsSubscription: notifications
       ServiceBus__HistorySubscription: history
 
-  subscriptions.api:
-    image: subscriptions.api
-    container_name: subscriptions.api
+  subscriptions.service:
+    image: subscriptions.service
+    container_name: subscriptions.service
     build:
       context: .
       dockerfile: ./Services/Subscriptions/Subscriptions.API/Dockerfile
@@ -150,9 +151,9 @@ services:
       ASPNETCORE_ENVIRONMENT: development
       ConnectionStrings__DefaultConnection: Server=host.docker.internal, 1433;Database=Formee.Subscriptions;User Id=Admin;Password=Admin@123123;integrated security=false;TrustServerCertificate=True
   
-  history.api:
-    image: history.api
-    container_name: history.api
+  history.service:
+    image: history.service
+    container_name: history.service
     build:
       context: .
       dockerfile: ./Services/History/Dockerfile
@@ -163,3 +164,14 @@ services:
     environment:
       AZURE_SERVICE_BUS: Endpoint=sb://formee.servicebus.windows.net/;SharedAccessKeyName=SharedAccessPolicy;SharedAccessKey=2zjgyBu0KGgdOiVx8rHy5GPnHBNvKoR9d+ASbDEu2fw=;EntityPath=topic-history
       MONGO_DB_HISTORY: mongodb://host.docker.internal/history
+
+  # monitoring.service:
+  #   image: monitoring.service
+  #   container_name: monitoring.service
+  #   build:
+  #     context: .
+  #     dockerfile: ./Services/Monitoring/Monitoring/Dockerfile
+  #   expose: 
+  #     - "80"
+  #   ports:
+  #     - "5009:3000"

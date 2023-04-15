@@ -7,7 +7,7 @@ public class ContainersService
 {
     public List<ContainerDto> Containers;
 
-    public int ContainersCount; 
+    public int Count; 
 
     public bool IsFetching;
 
@@ -35,7 +35,7 @@ public class ContainersService
 
             Containers = response;
 
-            ContainersCount = Containers.Count;
+            Count = Containers.Count;
         }
 
         IsFetching = false;
@@ -43,22 +43,17 @@ public class ContainersService
         OnChange.Invoke();
     }
 
-    public async Task<ContainerDto> GetByIdAsync(string containerId)
+    public async Task<ContainerDto?> GetByIdAsync(string containerId)
     {
         var url = $"/api/containers/{containerId}";
 
         var response = await _httpClient
             .GetFromJsonAsync<ContainerDto>(url);
 
-        if (response is not null)
-        {
-            return response;
-        }
-
-        return new ContainerDto();
+        return response ?? new ContainerDto();
     }
 
-    public async Task<bool> CreateAsync(ContainerDto container)
+    public async Task<ContainerDto?> CreateAsync(ContainerDto? container)
     {
         var url = "/api/containers";
 
@@ -67,13 +62,13 @@ public class ContainersService
 
         if (response.IsSuccessStatusCode)
         {
-            return true;
+            return await response.Content.ReadFromJsonAsync<ContainerDto?>();
         }
 
-        return false;
+        return new ContainerDto();
     }
 
-    public async Task<bool> UpdateAsync(ContainerDto container)
+    public async Task<ContainerDto?> UpdateAsync(ContainerDto? container)
     {
         var url = "/api/containers/";
 
@@ -82,13 +77,13 @@ public class ContainersService
 
         if (response.IsSuccessStatusCode)
         {
-            return true;
+            return await response.Content.ReadFromJsonAsync<ContainerDto?>();
         }
 
-        return false;
+        return new ContainerDto();
     }
 
-    public async Task<bool> DeleteByIdAsync(string containerId)
+    public async Task<ContainerDto?> DeleteByIdAsync(string containerId)
     {
         var url = $"/api/containers/{containerId}";
 
@@ -97,9 +92,9 @@ public class ContainersService
 
         if (response.IsSuccessStatusCode)
         {
-            return true;
+            return await response.Content.ReadFromJsonAsync<ContainerDto?>();
         }
 
-        return false;
+        return new ContainerDto();
     }
 }

@@ -1,8 +1,8 @@
-﻿using MongoDB.Bson;
+﻿using API.Dto;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace API.Entities;
-
 public class ContainerEntity
 {
     [BsonId]
@@ -19,9 +19,26 @@ public class ContainerEntity
 
     public bool IsDeleted { get; set; }
 
+    public DateTime? DeletedDate { get; set; }
+
     public bool? IsModified { get; set; }
 
     public DateTime? LastModifiedDate { get; set; }
 
-    public DateTime CreatedDate { get; set; } = DateTime.Now;
+    public DateTime CreatedDate { get; set; }
+
+    public static implicit operator ContainerEntity(ContainerDto container)
+    {
+        return new ContainerEntity
+        {
+            Id = container.Id,
+            Name = container.Name,
+            UserId = container.UserId,
+            Description = container.Description,
+            Icon = container.Icon,
+            IsModified = container.IsModified,
+            LastModifiedDate = container.LastModifiedDate,
+            CreatedDate = container.CreatedDate,
+        };
+    }
 }

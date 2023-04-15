@@ -49,13 +49,15 @@ namespace Identity.BusinessLogic.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
                     b.ToTable("Avatar");
                 });
 
             modelBuilder.Entity("Identity.BusinessLogic.Entities.UserEntity", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("AuthId")
@@ -98,26 +100,23 @@ namespace Identity.BusinessLogic.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AvatarId")
-                        .IsUnique()
-                        .HasFilter("[AvatarId] IS NOT NULL");
-
                     b.ToTable("User");
-                });
-
-            modelBuilder.Entity("Identity.BusinessLogic.Entities.UserEntity", b =>
-                {
-                    b.HasOne("Identity.BusinessLogic.Entities.AvatarEntity", "Avatar")
-                        .WithOne("User")
-                        .HasForeignKey("Identity.BusinessLogic.Entities.UserEntity", "AvatarId");
-
-                    b.Navigation("Avatar");
                 });
 
             modelBuilder.Entity("Identity.BusinessLogic.Entities.AvatarEntity", b =>
                 {
-                    b.Navigation("User")
+                    b.HasOne("Identity.BusinessLogic.Entities.UserEntity", "User")
+                        .WithOne("Avatar")
+                        .HasForeignKey("Identity.BusinessLogic.Entities.AvatarEntity", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Identity.BusinessLogic.Entities.UserEntity", b =>
+                {
+                    b.Navigation("Avatar");
                 });
 #pragma warning restore 612, 618
         }

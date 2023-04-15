@@ -6,19 +6,21 @@ namespace Client.Web.Utilities.Services;
 public class HistoryService
 {
     private readonly HttpClient _httpClient;
+    private readonly AppStateService _appState;
 
-    public HistoryService(HttpClient httpClient)
+    public HistoryService(HttpClient httpClient, AppStateService appState)
     {
         _httpClient = httpClient;
+        _appState = appState;
     }
 
-    public async Task<List<HistoryDto>> GetHistoryByUserId(Guid userId)
+    public async Task GetHistoryByUserId(Guid userId, int pageNumber, int recordPerPage)
     {
-        var url = $"/api/history/all/{userId}";
+        var url = $"/api/history/all/{userId}?pageNumber={pageNumber}&nPerPage={recordPerPage}";
 
-        var response = await _httpClient
+        var historyCollection = await _httpClient
             .GetFromJsonAsync<List<HistoryDto>>(url);
-
-        return response is null ? new List<HistoryDto>() : response;
+        
+        _appState.SetHistoryState(historyCollection);
     }
 }

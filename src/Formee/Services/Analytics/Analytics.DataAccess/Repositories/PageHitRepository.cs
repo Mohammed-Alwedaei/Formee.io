@@ -1,4 +1,5 @@
 ﻿using Analytics.Utilities.Dtos.PageHit;
+using System.Linq.Expressions;
 
 namespace Analytics.BusinessLogic.Repositories;
 
@@ -12,35 +13,50 @@ public class PageHitRepository : IPageHitRepository
         _mapper = mapper;
     }
 
-    public async Task<List<PageHitEntity>> GetAllBySiteId(int siteId)
+    public async Task<List<PageHitDto>> GetAllBySiteId(int siteId)
     {
-        return await _db.PageHits
+        var hits = await _db.PageHits
             .AsNoTracking()
             .Where(h => h.SiteId == siteId)
             .ToListAsync();
+
+        return _mapper.Map<List<PageHitDto>>(hits);
     }
 
-    public async Task<List<PageHitEntity>> GetAllByCountryNameAsync
+    public async Task<List<PageHitDto>> GetAllByCountryNameAsync
         (int siteId, string country)
     {
-        return await _db.PageHits
+        var hits = await _db.PageHits
             .AsNoTracking()
             .Where(h => h.SiteId == siteId && h.Country == country)
             .ToListAsync();
+
+        return _mapper.Map<List<PageHitDto>>(hits);
     }
 
-    public async Task<List<PageHitEntity>> GetAllByDateAsync
-        (int siteId, DateTime startDate, DateTime endDate)
+    public async Task<List<PageHitDto>> GetAllByDateAsync
+        (int siteId,
+            DateTime startDate,
+            DateTime endDate,
+            params Expression<Func<PageHitEntity, object>>[] includes)
     {
-        return await _db.PageHits
-            .AsNoTracking()
-            .Where(h => h.SiteId == siteId 
-                        && h.CreatedDate >= startDate 
-                        && h.CreatedDate <= endDate)
+        var query = _db.PageHits.AsNoTracking();
+
+        query = includes.
+            Aggregate(query,
+                (current, includeProperty)
+                    => current.Include(includeProperty));
+
+        var hits = await query.Where(h => h.SiteId == siteId
+                                          && h.Category.IsDeleted != true
+                                          && h.CreatedDate >= startDate
+                                          && h.CreatedDate <= endDate)
             .ToListAsync();
+
+        return _mapper.Map<List<PageHitDto>>(hits);
     }
 
-    public async Task<CreatePageHitDto> CreateAsync(CreatePageHitDto hit)
+    public async Task<PageHitDto> CreateAsync(CreatePageHitDto hit)
     {
         var hitToCreate = _mapper.Map<PageHitEntity>(hit);
 
@@ -49,6 +65,6 @@ public class PageHitRepository : IPageHitRepository
 
         await _db.SaveChangesAsync();
 
-        return _mapper.Map<CreatePageHitDto>(result.Entity);
+        return _mapper.Map<PageHitDto>(result.Entity);
     }
 }

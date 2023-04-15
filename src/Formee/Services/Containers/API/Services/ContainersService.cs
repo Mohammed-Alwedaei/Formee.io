@@ -1,4 +1,5 @@
-﻿using API.Entities;
+﻿using API.Dto;
+using API.Entities;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 
@@ -48,16 +49,16 @@ public class ContainersService
        return container;
     }
 
-    public async Task<bool> UpdateContainerAsync(
-        ContainerEntity container)
+    public async Task<ContainerDto> UpdateContainerAsync(
+        ContainerDto container)
     {
         container.IsModified = true;
-        container.LastModifiedDate = DateTime.Now;
+        container.LastModifiedDate = DateTime.UtcNow;
 
-        var result = await _containerDatabase
+        await _containerDatabase
             .ReplaceOneAsync(c => c.Id == container.Id, container);
 
-        return result.IsAcknowledged;
+        return container;
     }
 
     public async Task<ContainerEntity> DeleteContainerAsync(
@@ -66,11 +67,11 @@ public class ContainersService
         var containerFromDb = await GetContainerById(id);
 
         containerFromDb.IsDeleted = true;
-        containerFromDb.IsModified = true;
-        containerFromDb.LastModifiedDate = DateTime.Now;
+        containerFromDb.DeletedDate = DateTime.UtcNow;
 
-        var container = await _containerDatabase
-            .ReplaceOneAsync(c => c.Id == id, containerFromDb);
+        await _containerDatabase
+            .ReplaceOneAsync(c => c.Id == id, 
+                containerFromDb);
 
         return containerFromDb;
     }

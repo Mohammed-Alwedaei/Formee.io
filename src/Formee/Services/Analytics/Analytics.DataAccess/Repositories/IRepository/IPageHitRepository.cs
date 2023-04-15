@@ -1,16 +1,20 @@
 ﻿using Analytics.Utilities.Dtos.PageHit;
+using System.Linq.Expressions;
 
 namespace Analytics.BusinessLogic.Repositories.IRepository;
 
 public interface IPageHitRepository
 {
-    Task<List<PageHitEntity>> GetAllBySiteId(int siteId);
+    Task<List<PageHitDto>> GetAllBySiteId(int siteId);
 
-    Task<List<PageHitEntity>> GetAllByCountryNameAsync
+    Task<List<PageHitDto>> GetAllByCountryNameAsync
         (int siteId, string country);
 
-    Task<List<PageHitEntity>> GetAllByDateAsync
-        (int siteId, DateTime startDate, DateTime endDate);
+    Task<List<PageHitDto>> GetAllByDateAsync
+        (int siteId, 
+            DateTime startDate,
+            DateTime endDate,
+            params Expression<Func<PageHitEntity, object>>[] includes);
 
-    Task<CreatePageHitDto> CreateAsync(CreatePageHitDto hit);
+    Task<PageHitDto> CreateAsync(CreatePageHitDto hit);
 }

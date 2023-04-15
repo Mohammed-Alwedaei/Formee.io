@@ -1,5 +1,6 @@
 ﻿using Identity.BusinessLogic.Dtos;
 using Identity.BusinessLogic.Entities;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Http;
 
 namespace Identity.BusinessLogic.Services.IServices;
@@ -14,7 +15,7 @@ public interface IIdentityManager
 
     //Task<bool> RemoveRoleFromUser(AddRoleToUserModel users, string roleId);
 
-    Task<UserEntity> CreateAsync(UserEntity user);
+    Task<UserDto> CreateAsync(UserEntity user);
 
-    Task<AvatarEntity> UploadUserAvatar(IFormFile file, Guid userId);
+    Task<AvatarDto> UploadUserAvatar(IFormFileCollection avatar, Guid userId);
 }

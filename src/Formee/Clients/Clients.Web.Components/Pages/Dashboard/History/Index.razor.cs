@@ -1,26 +1,48 @@
-﻿using Client.Web.Utilities.Dtos.History;
-using Client.Web.Utilities.Services;
+﻿using Client.Web.Utilities.Services;
+using Syncfusion.Blazor.Navigations;
 
 namespace Clients.Web.Components.Pages.Dashboard.History;
 
 [Route(Routes.History)]
-public partial class Index
+public partial class Index : IDisposable
 {
     [Inject]
     public HistoryService HistoryService { get; set; }
 
-    private List<HistoryDto> History { get; set; }
+    [Inject] 
+    public AppStateService AppState { get; set; }
+    
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "user_id")]
+    public string UserId { get; set; }
 
-    private bool IsFetching { get; set; }
+    private SfPager _pager;
 
+    private int _skipValue;
+
+    private int _recordPerPage;
+    
     protected override async Task OnParametersSetAsync()
     {
-        var userId = new Guid("3fa85f64-5717-4562-b3fc-2c963f66afa6");
+        _skipValue = 0;
+        
+        AppState.OnHistoryStateChange += async () =>
+        {
+            await InvokeAsync(StateHasChanged);
+        };
 
-        IsFetching = true;
+        await HistoryService.GetHistoryByUserId(Guid.Parse(UserId),_skipValue, 5);
+    }
 
-        History = await HistoryService.GetHistoryByUserId(userId);
+    private async Task HandlePageChange(PagerItemClickEventArgs args)
+    {
+        _skipValue = (args.CurrentPage * _pager.PageSize) - _pager.PageSize - 1;
+        _recordPerPage = _pager.PageSize;
+        await HistoryService.GetHistoryByUserId(Guid.Parse(UserId), _skipValue, _recordPerPage);
+    }
 
-        IsFetching = false;
+    public void Dispose()
+    {
+        AppState.OnHistoryStateChange -= StateHasChanged;
     }
 }

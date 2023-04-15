@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Analytics.Utilities.Entities;
 
@@ -27,11 +26,8 @@ public class SiteEntity : Entity
     [MaxLength(50)]
     public string? Icon { get; set; }
 
-    public IReadOnlyList<PageHitEntity>? PagesHits { get; set; }
-
     [Required]
     public int CategoryId { get; set; }
 
-    [ForeignKey(nameof(CategoryId))]
-    public CategoryEntity Category { get; set; } = null!;
+    public virtual CategoryEntity Category { get; set; } = null!;
 }

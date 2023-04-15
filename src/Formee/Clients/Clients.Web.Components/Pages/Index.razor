@@ -35,11 +35,13 @@
                                     <Child>
                                         <FmCard>
                                             <FmHeader>
-                                                <FmIcon Icon="fa-solid fa-boxes-stacked" />
+                                                <div class="e-card__icon">
+                                                    <FmIcon Icon="fa-solid fa-boxes-stacked" />
+                                                </div>
                                             </FmHeader>
 
                                             <FmBody>
-                                                <FmTypography Text="@ContainersService.ContainersCount.ToString()"
+                                                <FmTypography Text="@ContainersService.Count.ToString()"
                                                           Type="@Typography.LevelThree"
                                                           Classes="fm-typography__display-3"
                                                           TextAlign="left" />
@@ -55,9 +57,9 @@
                                     <Child>
                                         <FmCard>
                                             <FmHeader>
-                                                <FmIcon Icon="fa-solid fa-window-restore" />
-
-
+                                                <div class="e-card__icon">
+                                                    <FmIcon Icon="fa-solid fa-window-restore" />
+                                                </div>
                                             </FmHeader>
 
                                             <FmBody>
@@ -77,7 +79,9 @@
                                     <Child>
                                         <FmCard>
                                             <FmHeader>
-                                                <FmIcon Icon="fa-solid fa-location-crosshairs" />
+                                                <div class="e-card__icon">
+                                                    <FmIcon Icon="fa-solid fa-location-crosshairs" />
+                                                </div>
                                             </FmHeader>
 
                                             <FmBody>
@@ -97,7 +101,9 @@
                                     <Child>
                                         <FmCard>
                                             <FmHeader>
-                                                <FmIcon Icon="fa-regular fa-rectangle-list" />
+                                                <div class="e-card__icon">
+                                                    <FmIcon Icon="fa-regular fa-rectangle-list" />
+                                                </div>
                                             </FmHeader>
 
                                             <FmBody>
@@ -139,7 +145,7 @@
                                     @foreach (var notification in NotificationsService.Notifications)
                                     {
                                         <NotificationModalItem Notification="@notification"
-                                                               OnMarkAsRead="HandleMarkAsRead" />
+                                                   OnMarkAsRead="HandleMarkAsRead" />
                                     }
                                 }
 
@@ -155,44 +161,53 @@
                     </Header>
 
                     <ContentTemplate>
-                        @if (AnalyticsService.HitChartDataSeries is not null &&
+                        @if (AnalyticsService.HitChartDataSeries is not null && 
                              AnalyticsService.IsFetching != true)
                         {
                             <SfChart Width="100%" Title="Number of hits">
-                                <ChartPrimaryXAxis ValueType="Syncfusion.Blazor.Charts.ValueType.DateTime" 
-                                                   IntervalType="IntervalType.Days" />
+                                <ChartPrimaryXAxis ValueType="Syncfusion.Blazor.Charts.ValueType.DateTime"
+                                           IntervalType="IntervalType.Days" />
 
                                 <ChartSeriesCollection>
                                     <ChartSeries DataSource="@AnalyticsService.HitChartDataSeries"
-                                                 XName="Date"
-                                                 YName="Count"
-                                                 Type="ChartSeriesType.Line" />
+                                         XName="Date"
+                                         YName="Count"
+                                         Type="ChartSeriesType.Line" />
                                 </ChartSeriesCollection>
                             </SfChart>
+                        }
+                        else
+                        {
+                            <FmNotFound Message="There are no data to display" />
                         }
                     </ContentTemplate>
                 </DashboardLayoutPanel>
 
                 <DashboardLayoutPanel Column="3" Row="1" SizeX="2" SizeY="1">
                     <Header>
-                        <FmTypography Text="General Statistics"
+                        <FmTypography Text="Top performing Categories"
                                   Type="@Typography.LevelTwo" />
                     </Header>
                     <ContentTemplate>
-                        <FmCard>
-                            <FmHeader>
-                                <FmTypography Text="Placeholder"
-                                          Type="@Typography.LevelThree" />
-                            </FmHeader>
-                            <FmBody>
-                                <FmTypography Text="Placeholder"
-                                          Type="@Typography.LevelThree" />
+                        @if (AnalyticsService.TopPerformingCategories is not null &&
+                            AnalyticsService.IsFetching != true)
+                        {
+                            <SfChart Width="100%" Title="Number of hits">
+                                <ChartPrimaryXAxis ValueType="Syncfusion.Blazor.Charts.ValueType.Category"
+                                                   IntervalType="IntervalType.Days" />
 
-                                <SfIcon IconCss="fa-solid fa-money-bill" />
-
-                                <FmTypography Text="Hello world this is something great" />
-                            </FmBody>
-                        </FmCard>
+                                <ChartSeriesCollection>
+                                    <ChartSeries DataSource="@AnalyticsService.TopPerformingCategories"
+                                                 XName="Name"
+                                                 YName="Count"
+                                                 Type="ChartSeriesType.StackingBar" />
+                                </ChartSeriesCollection>
+                            </SfChart>
+                        }
+                        else
+                        {
+                            <FmNotFound Message="There are no data to display" />
+                        }
                     </ContentTemplate>
                 </DashboardLayoutPanel>
             </DashboardLayoutPanels>
