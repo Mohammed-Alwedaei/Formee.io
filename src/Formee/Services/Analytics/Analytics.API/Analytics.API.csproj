@@ -25,6 +25,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\..\Shared\ServiceBus\ServiceBus.csproj" />
+		<ProjectReference Include="..\..\..\Shared\SynchronousCommunication\SynchronousCommunication.csproj" />
 		<ProjectReference Include="..\Analytics.DataAccess\Analytics.BusinessLogic.csproj" />
 	</ItemGroup>
 </Project>

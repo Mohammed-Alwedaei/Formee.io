@@ -7,6 +7,8 @@ public class SiteEntity : Entity
     [Required]
     [MaxLength(24)]
     public string? ContainerId { get; set; }
+    
+    public Guid UserId { get; set; }
 
     [Required]
     [MaxLength(255)]

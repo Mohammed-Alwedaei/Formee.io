@@ -1,4 +1,5 @@
 ﻿using Analytics.Utilities.Dtos.Site;
+using SynchronousCommunication.HttpClients;
 
 namespace Analytics.API.Controllers;
 
@@ -7,13 +8,16 @@ namespace Analytics.API.Controllers;
 public class SitesController : ControllerBase
 {
     private readonly ILogger<SitesController> _logger;
+    private readonly ISubscriptionsClient _subscriptionsClient;
     private readonly ISiteRepository _siteRepository;
 
     public SitesController(ILogger<SitesController> logger, 
-        ISiteRepository siteRepository)
+        ISiteRepository siteRepository, 
+        ISubscriptionsClient subscriptionsClient)
     {
         _logger = logger;
         _siteRepository = siteRepository;
+        _subscriptionsClient = subscriptionsClient;
     }
 
     [HttpGet("{id:int}")]
@@ -24,11 +28,8 @@ public class SitesController : ControllerBase
 
         var result = await _siteRepository.GetSiteByIdAsync(id);
 
-        if (result is null)
-        {
-            return NotFound();
-        }
-
+        if (result is null) return NotFound();
+        
         return Ok(result);
     }
 
@@ -41,10 +42,7 @@ public class SitesController : ControllerBase
         var result = await _siteRepository
             .GetAllSitesByContainerIdAsync(containerId);
 
-        if (result is null)
-        {
-            return NotFound();
-        }
+        if (result is null) return NotFound();
 
         return Ok(result);
     }
@@ -55,14 +53,22 @@ public class SitesController : ControllerBase
         _logger.LogInformation("POST: request at /api/sites at {datetime}",
             DateTime.Now);
 
+        var userSubscription = await _subscriptionsClient.GetSubscriptionFeaturesAsync(site.UserId);
+
+        var userSites = await _siteRepository.GetAllSitesByUserIdAsync(site.UserId);
+
+        var numberOfRemainingSites = userSubscription.Subscription.SubscriptionFeatures.NumberOfSites - userSites.Count;
+
+        if (numberOfRemainingSites is 0)
+            return Forbid();
+
+        site.Domain = HttpContext.Request.Host.Host;
+
         var result = await _siteRepository.CreateSiteAsync(site);
 
-        if (result is null)
-        {
-            return NotFound();
-        }
+        if (result is null) return NotFound();
 
-        return Ok(result);
+        return Created("/", result);
     }
 
     [HttpPut]
@@ -73,10 +79,7 @@ public class SitesController : ControllerBase
 
         var result = await _siteRepository.UpdateSiteAsync(site);
 
-        if (result is null)
-        {
-            return NotFound();
-        }
+        if (result is null) return NotFound();
 
         return Ok(result);
     }
@@ -89,10 +92,7 @@ public class SitesController : ControllerBase
 
         var result = await _siteRepository.DeleteSiteByIdAsync(id);
 
-        if (result is null)
-        {
-            return NotFound();
-        }
+        if (result is null) return NotFound();
 
         return Ok(result);
     }

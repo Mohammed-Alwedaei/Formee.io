@@ -4,6 +4,7 @@ using Analytics.BusinessLogic.Mapper;
 using Analytics.BusinessLogic.Repositories;
 using Microsoft.EntityFrameworkCore;
 using ServiceBus;
+using SynchronousCommunication.Extensions;
 
 namespace Analytics.API.Extensions;
 
@@ -84,6 +85,8 @@ public static class ServicesExtensions
         services.AddScoped<ICategoryRepository, CategoryRepository>();
         services.AddScoped<IPageHitRepository, PageHitRepository>();
         services.AddScoped<ISessionRepository, SessionsRepository>();
+
+        services.AddSyncCommunication();
         
         return services;
     }
@@ -95,6 +98,9 @@ public static class ServicesExtensions
     /// <returns>IServiceCollection</returns>
     public static IServiceCollection AddServiceSecurity(this IServiceCollection services)
     {
+        services.AddAuthentication();
+        services.AddAuthorization();
+        
         services.AddCors(options =>
         {
             options.AddPolicy("cors", policy =>

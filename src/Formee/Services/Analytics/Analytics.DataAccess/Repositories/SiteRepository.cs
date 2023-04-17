@@ -19,12 +19,20 @@ public class SiteRepository : ISiteRepository
                                       && s.IsDeleted == false);
     }
 
-    public async Task<List<SiteEntity>> GetAllSitesByContainerIdAsync
-        (string containerId)
+    public async Task<List<SiteEntity>> GetAllSitesByContainerIdAsync(string containerId)
     {
         return await _db.Sites
             .AsNoTracking()
             .Where(s => s.ContainerId == containerId 
+                        && s.IsDeleted == false)
+            .ToListAsync();
+    }
+    
+    public async Task<List<SiteEntity>> GetAllSitesByUserIdAsync(Guid userId)
+    {
+        return await _db.Sites
+            .AsNoTracking()
+            .Where(s => s.UserId == userId 
                         && s.IsDeleted == false)
             .ToListAsync();
     }

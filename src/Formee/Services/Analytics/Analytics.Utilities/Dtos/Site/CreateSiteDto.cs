@@ -4,6 +4,10 @@ public class CreateSiteDto
 {
     public string? ContainerId { get; set; }
 
+    public Guid UserId { get; set; }
+
+    public string? Domain { get; set; }
+
     public string? Name { get; set; }
 
     public string? Description { get; set; }

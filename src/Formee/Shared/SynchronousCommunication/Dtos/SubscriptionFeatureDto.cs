@@ -6,11 +6,11 @@ public class SubscriptionFeatureDto : BaseDto
 
     public int NumberOfContainers { get; set; }
 
+    public int NumberOfSites { get; set; }
+    
     public int NumberOfForms { get; set; }
 
     public int NumberOfLinks { get; set; }
-
-    public bool HasLiveChatAccess { get; set; }
 
     public bool IsDeleted { get; set; }
 

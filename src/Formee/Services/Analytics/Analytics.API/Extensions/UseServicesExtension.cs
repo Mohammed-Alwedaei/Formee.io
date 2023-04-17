@@ -53,14 +53,14 @@ public static class UseServicesExtension
         {
             app.UseHttpsRedirection();
         }
-
+        
         app.UseCors("cors");
+        
+        app.UseAuthentication();
+        app.UseAuthorization();
 
         app.MapControllers();
 
-        app.UseAuthentication();
-        app.UseAuthorization();
-        
         return app;
     }
 }

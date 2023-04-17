@@ -5,6 +5,7 @@ public interface ISiteRepository
     Task<SiteEntity?> GetSiteByIdAsync(int id);
 
     Task<List<SiteEntity>> GetAllSitesByContainerIdAsync(string containerId);
+    Task<List<SiteEntity>> GetAllSitesByUserIdAsync(Guid userId);
 
     Task<CreateSiteDto> CreateSiteAsync(CreateSiteDto site);
 

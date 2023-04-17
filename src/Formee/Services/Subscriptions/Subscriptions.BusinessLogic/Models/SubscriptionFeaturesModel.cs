@@ -10,12 +10,12 @@ public class SubscriptionFeaturesModel : BaseModel
     public string? Name { get; set; }
 
     public int NumberOfContainers { get; set; }
+    
+    public int NumberOfSites { get; set; }
 
     public int NumberOfForms { get; set; }
 
     public int NumberOfLinks { get; set; }
-
-    public bool HasLiveChatAccess { get; set; }
 
     public bool IsDeleted { get; set; }
 
@@ -30,8 +30,8 @@ public class SubscriptionFeaturesModel : BaseModel
             Name = featureDto.Name,
             NumberOfContainers = featureDto.NumberOfContainers,
             NumberOfForms = featureDto.NumberOfForms,
+            NumberOfSites = featureDto.NumberOfSites,
             NumberOfLinks = featureDto.NumberOfLinks,
-            HasLiveChatAccess = featureDto.HasLiveChatAccess,
             IsDeleted = featureDto.IsDeleted,
             DeletedDate = featureDto.DeletedDate,
             CreatedDate = featureDto.CreatedDate
