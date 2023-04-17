@@ -57,10 +57,10 @@
   <ItemGroup>
     <Folder Include="Properties" />
     <Folder Include="dbo" />
-    <Folder Include="dbo\StoredProcedures" />
     <Folder Include="dbo\Tables" />
   </ItemGroup>
   <ItemGroup>
+    <Build Include="dbo\StoredProcedures\sp_Link_GetAllByUserId.sql" />
     <Build Include="dbo\Tables\Link.sql" />
     <Build Include="dbo\StoredProcedures\sp_Link_GetById.sql" />
     <Build Include="dbo\StoredProcedures\sp_Link_GetAllByContainerId.sql" />

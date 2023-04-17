@@ -21,6 +21,7 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\..\..\Shared\ServiceBus\ServiceBus.csproj" />
+	  <ProjectReference Include="..\..\..\Shared\SynchronousCommunication\SynchronousCommunication.csproj" />
 	</ItemGroup>
 
 </Project>

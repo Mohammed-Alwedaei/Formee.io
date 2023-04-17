@@ -21,6 +21,22 @@ public class SubscriptionFeaturesController : ControllerBase
     }
 
     [HttpGet]
+    public async Task<IActionResult> GetUserSubscriptionById(int id)
+    {
+        _logger.LogInformation("GET: request at /api/subscriptions/features/{id} at {datetime}",
+            id,
+            DateTime.Now);
+
+        if (id is 0) return BadRequest();
+
+        var result = await _subscriptionFeatureRepository.GetOneByIdAsync(id);
+
+        if (result is null) return NotFound();
+
+        return Ok(result);
+    }
+
+    /*[HttpGet]
     public async Task<IActionResult> GetAll()
     {
         _logger.LogInformation("GET: request at /api/subscriptions/features at {datetime}",
@@ -34,7 +50,7 @@ public class SubscriptionFeaturesController : ControllerBase
         }
 
         return Ok(result);
-    }
+    }*/
 
     [HttpPost]
     public async Task<IActionResult> CreateFeature

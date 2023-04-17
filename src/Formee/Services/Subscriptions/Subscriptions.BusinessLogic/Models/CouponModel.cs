@@ -4,7 +4,7 @@ namespace Subscriptions.BusinessLogic.Models;
 
 public class CouponModel : BaseModel
 {
-    public int AdminId { get; set; }
+    public int CreatedBy { get; set; }
 
     public int Discount { get; set; }
 
@@ -21,7 +21,7 @@ public class CouponModel : BaseModel
         var couponDto = new CouponModel
         {
             Id = coupon.Id,
-            AdminId = coupon.AdminId,
+            CreatedBy = coupon.CreatedBy,
             Discount = coupon.Discount,
             Name = coupon.Name,
             Description = coupon.Description,

@@ -14,6 +14,7 @@ public class SubscriptionRepository : ISubscriptionRepository
         var subscriptionFromDb = await _context.Subscriptions
             .FirstOrDefaultAsync(s => s.Id == id
                                       && s.IsDeleted != true);
+        
         if (subscriptionFromDb is null) return new SubscriptionDto();
 
         return subscriptionFromDb;
@@ -109,33 +110,7 @@ public class SubscriptionRepository : ISubscriptionRepository
 
         return userSubscriptionFromDb;
     }
-
-    public async Task<UserSubscriptionAggregate> AggregateUserSubscriptionByUserId(Guid id)
-    {
-        var userFromDb = await _context.Users
-            .FirstOrDefaultAsync(u => u.GlobalUserId == id);
-
-        if(userFromDb is null) return new UserSubscriptionAggregate();
-
-        var userSubscriptionAggregate = new UserSubscriptionAggregate();
-
-        var userSubscriptionRelationship = await _context.UserSubscriptions
-            .FirstOrDefaultAsync(u => u.UserId == userFromDb.Id);
-
-        var userSubscription = await _context.Subscriptions
-            .Include(s => s.SubscriptionFeatures)
-            .FirstOrDefaultAsync(s => s.Id == userSubscriptionRelationship.SubscriptionId);
-
-        if (userSubscription == null)
-        {
-            return userSubscriptionAggregate;
-        }
-
-        userSubscriptionAggregate.Subscription = userSubscription;
-        userSubscriptionAggregate.SubscriptionFeatures = userSubscription.SubscriptionFeatures;
-
-        return userSubscriptionAggregate;
-    }
+    
 
     public async Task<SubscriptionDto> DeleteAsync
         (int subscriptionId)

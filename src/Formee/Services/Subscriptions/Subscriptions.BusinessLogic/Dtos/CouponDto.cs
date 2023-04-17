@@ -4,7 +4,7 @@ namespace Subscriptions.BusinessLogic.Dtos;
 
 public class CouponDto : BaseDto
 {
-    public int AdminId { get; set; }
+    public int CreatedBy { get; set; }
 
     public int Discount { get; set; }
 
@@ -22,7 +22,7 @@ public class CouponDto : BaseDto
         var couponDto = new CouponDto
         {
             Id = coupon.Id,
-            AdminId = coupon.AdminId,
+            CreatedBy = coupon.CreatedBy,
             Name = coupon.Name,
             Discount = coupon.Discount,
             Description = coupon.Description,

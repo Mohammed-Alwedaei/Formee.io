@@ -1,4 +1,11 @@
-﻿namespace API.Extensions;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Subscriptions.BusinessLogic.DbContexts;
+using Subscriptions.BusinessLogic.Repositories;
+using Subscriptions.BusinessLogic.Repositories.IRepository;
+
+namespace Subscriptions.API.Extensions;
 
 public static class RegisterServicesExtension
 {
@@ -9,10 +16,23 @@ public static class RegisterServicesExtension
     /// </summary>
     /// <param name="services"></param>
     /// <returns>IServiceCollection</returns>
-    public static IServiceCollection AddDocumentation(this IServiceCollection services)
+    public static IServiceCollection AddEndpointsAndDocumentation(this IServiceCollection services)
     {
+        services.AddControllers();
+        
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
+
+        return services;
+    }
+
+    public static IServiceCollection AddServicesDependencies(this IServiceCollection services)
+    {
+        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IOrderRepository, OrderRepository>();
+        services.AddScoped<ICouponRepository, CouponRepository>();
+        services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
+        services.AddScoped<ISubscriptionFeatureRepository, SubscriptionFeatureRepository>();
 
         return services;
     }
@@ -22,32 +42,26 @@ public static class RegisterServicesExtension
     /// </summary>
     /// <param name="services"></param>
     /// <returns>IServiceCollection</returns>
-    public static IServiceCollection AddMonitoring(this IServiceCollection services)
+    public static IServiceCollection AddObservability(this IServiceCollection services)
     {
-        var mongoDbConnectionString = _configuration?.GetValue<string>("ContainersDatabase:ConnectionString");
-        var serviceBusConnectionString = _configuration?.GetValue<string>("AzureServiceBus:ConnectionString");
-        var serviceBusHistoryTopic = _configuration?.GetValue<string>("AzureServiceBus:HistoryTopic");
+        var sqlServerConnectionString = _configuration?.GetConnectionString("DefaultConnection");
 
         services.AddHealthChecks()
-            .AddMongoDb(mongoDbConnectionString)
-            .AddAzureServiceBusTopic(serviceBusConnectionString, serviceBusHistoryTopic);
+            .AddSqlServer(sqlServerConnectionString);
 
         return services;
     }
-    
+
     /// <summary>
-    /// Register persistant services 
+    /// 
     /// </summary>
     /// <param name="services"></param>
-    /// <returns></returns>
-    public static IServiceCollection AddPersistant(this IServiceCollection services)
+    /// <returns>IServiceCollection</returns>
+    public static IServiceCollection AddPersistent(this IServiceCollection services)
     {
-        services.AddSingleton<ContainersService>();
+        services.AddDbContext<ApplicationDbContext>(options =>
+            options.UseSqlServer(_configuration.GetConnectionString("DefaultConnection")));
         
-        services.AddAutoMapper(typeof(Program));
-
-        services.AddServiceBusSender();
-
         return services;
     }
     
@@ -58,9 +72,6 @@ public static class RegisterServicesExtension
     /// <returns>IServiceCollection</returns>
     public static IServiceCollection AddIdentityAndSecurity(this IServiceCollection services)
     {
-        services.AddAuthentication();
-        services.AddAuthorization();
-        
         services.AddCors(options =>
         {
             options.AddPolicy("cors", policy =>
@@ -84,9 +95,6 @@ public static class RegisterServicesExtension
         (this IServiceCollection services, IConfiguration? configuration)
     {
         _configuration = configuration;
-        
-        services.Configure<ContainersDatabaseConfiguration>(
-            configuration.GetSection("ContainersDatabase"));
 
         return services;
     }

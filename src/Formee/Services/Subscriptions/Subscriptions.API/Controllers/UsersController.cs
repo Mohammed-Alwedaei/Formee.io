@@ -51,6 +51,23 @@ public class UsersController : ControllerBase
 
         return Ok(result);
     }
+    
+    [HttpGet("subscription/{userId:Guid}")]
+    public async Task<IActionResult> GetAllSubscribedUsers(Guid userId)
+    {
+        _logger.LogInformation("GET: request at /api/users/all/subscription/{userId} at {datetime}",
+            userId, 
+            DateTime.Now);
+
+        var result = await _userRepository.GetSubscriptionByIdAsync(userId);
+
+        if (result.Id is 0)
+        {
+            return NotFound();
+        }
+
+        return Ok(result);
+    }
 
     [HttpGet("all/subscribed")]
     public async Task<IActionResult> GetAllSubscribedUsers()

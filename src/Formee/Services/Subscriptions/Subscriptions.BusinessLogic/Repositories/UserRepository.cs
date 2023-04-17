@@ -14,6 +14,21 @@ public class UserRepository : IUserRepository
         return await _context.Users
             .ToListAsync();
     }
+    
+    public async Task<UserSubscriptionDto> GetSubscriptionByIdAsync(Guid userId)
+    {
+        var userFromDb = await _context.Users.FirstOrDefaultAsync(u => u.GlobalUserId == userId);
+        
+        if(userFromDb.Id is 0) return new UserSubscriptionModel();
+        
+        var subscriptionFromDb = await _context.UserSubscriptions
+            .Include(u => u.User)
+            .Include(u => u.Subscription)
+            .ThenInclude(s => s.SubscriptionFeatures)
+            .FirstOrDefaultAsync(s => s.UserId == userFromDb.Id);
+        
+        return subscriptionFromDb ?? new UserSubscriptionModel();
+    }
 
     public async Task<List<UsersModel>> GetAllSubscribedAsync()
     {

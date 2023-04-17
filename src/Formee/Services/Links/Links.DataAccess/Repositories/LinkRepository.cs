@@ -34,6 +34,25 @@ public class LinkRepository : ILinkRepository
 
         return linkFromDb.FirstOrDefault();
     }
+    
+    /// <inheritdoc />
+    public async Task<List<LinkEntity>> GetAllByUserId(Guid userId)
+    {
+        using var connection = _db.Connect();
+
+        var linkFromDb = await connection.QueryAsync
+            <LinkEntity, LinkDetailsEntity, LinkEntity>("sp_Link_GetAllByUserId", 
+                map: (link, details) =>
+                {
+                    link.LinkDetails = details;
+                    link.LinkDetailsId = details.Id;
+                    return link;
+                },
+                new { UserId = userId },
+                commandType: CommandType.StoredProcedure);
+
+        return linkFromDb.ToList();
+    }
 
     public async Task<RedirectEntity> GetRedirectLinkAsync(string targetUrl)
     {
@@ -80,6 +99,7 @@ public class LinkRepository : ILinkRepository
         var linkToCreate = new
         {
             entity.ContainerId,
+            entity.UserId,
             entity.LinkDetails.Name,
             domain,
             entity.OriginalUrl,

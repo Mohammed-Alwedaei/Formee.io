@@ -9,6 +9,12 @@ public class SubscriptionFeatureRepository : ISubscriptionFeatureRepository
         _context = context;
     }
 
+    public async Task<SubscriptionFeatureDto> GetOneByIdAsync(int id)
+    {
+        return await _context.SubscriptionFeatures
+            .FirstOrDefaultAsync(s => s.Id == id && s.IsDeleted == false);
+    }
+
     public async Task<IReadOnlyList<SubscriptionFeatureDto>> GetAllAsync()
     {
         return await _context.SubscriptionFeatures

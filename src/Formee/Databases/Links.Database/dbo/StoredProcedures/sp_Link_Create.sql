@@ -1,5 +1,6 @@
 ﻿CREATE PROCEDURE [dbo].[sp_Link_Create]
 	 @ContainerId NVARCHAR(24),
+	 @UserId UNIQUEIDENTIFIER,
 	 @Name NVARCHAR(30),
 	 @Domain NVARCHAR(255),
 	 @OriginalUrl NVARCHAR(1024),
@@ -13,7 +14,7 @@ BEGIN
 	VALUES(@Name, @Domain);
 	
 	-- Create the link and attach the link details id
-	INSERT INTO dbo.[Link](ContainerId, LinksDetailsId, OriginalUrl, IsDeleted, CreatedDate)
+	INSERT INTO dbo.[Link](ContainerId, UserId, LinksDetailsId, OriginalUrl, IsDeleted, CreatedDate)
 	OUTPUT inserted.Id
-	VALUES(@ContainerId, SCOPE_IDENTITY(), @OriginalUrl, @IsDeleted, @CreatedDate);
+	VALUES(@ContainerId, @UserId, SCOPE_IDENTITY(), @OriginalUrl, @IsDeleted, @CreatedDate);
 END

@@ -10,7 +10,19 @@ public interface ILinkRepository
     /// <returns>Link Entity</returns>
     Task<LinkEntity> GetLinkByIdAsync(int id);
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="targetUrl"></param>
+    /// <returns></returns>
     Task<RedirectEntity> GetRedirectLinkAsync(string targetUrl);
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <returns></returns>
+    Task<List<LinkEntity>> GetAllByUserId(Guid userId);
 
     /// <summary>
     /// Get a list of short links that match the containerId

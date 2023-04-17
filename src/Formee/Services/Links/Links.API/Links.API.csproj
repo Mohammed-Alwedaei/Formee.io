@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Shared\SynchronousCommunication\SynchronousCommunication.csproj" />
     <ProjectReference Include="..\Links.DataAccess\Links.BusinessLogic.csproj" />
   </ItemGroup>
 

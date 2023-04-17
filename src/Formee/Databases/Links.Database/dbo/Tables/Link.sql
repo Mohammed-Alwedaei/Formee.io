@@ -2,6 +2,7 @@
 (
 	[Id] INT NOT NULL IDENTITY PRIMARY KEY,
 	[ContainerId] NVARCHAR(24) NOT NULL,
+    [UserId] UNIQUEIDENTIFIER NOT NULL,
 	[LinksDetailsId] INT NOT NULL REFERENCES [dbo].[LinkDetails](Id),
 	[OriginalUrl] NVARCHAR(1024) NOT NULL,
 	[TargetUrl] NVARCHAR(100) NULL,

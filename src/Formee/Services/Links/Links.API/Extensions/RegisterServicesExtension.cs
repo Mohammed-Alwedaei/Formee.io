@@ -3,6 +3,7 @@ using Links.API.Middlewares;
 using Links.BusinessLogic.Contexts;
 using Links.BusinessLogic.Repositories;
 using Links.BusinessLogic.Repositories.IRepository;
+using SynchronousCommunication.Extensions;
 
 namespace Links.API.Extensions;
 
@@ -47,8 +48,12 @@ public static class RegisterServices
     { 
         services.AddSingleton<DbContext>();
 
+        services.AddSyncCommunication();
         services.AddScoped<ILinkRepository, LinkRepository>();
         services.AddScoped<ILinkHitRepository, LinkHitRepository>();
+        
+        services.AddAuthentication();
+        services.AddAuthorization();
 
         return services;
     }

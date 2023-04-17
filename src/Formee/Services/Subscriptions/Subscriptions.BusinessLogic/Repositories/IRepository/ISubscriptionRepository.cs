@@ -17,7 +17,5 @@ public interface ISubscriptionRepository
 
     Task<UserSubscriptionModel> RemoveSubscriptionFromUserAsync(int userId);
 
-    Task<UserSubscriptionAggregate> AggregateUserSubscriptionByUserId(Guid id);
-
     Task<SubscriptionDto> DeleteAsync(int subscriptionId);
 }

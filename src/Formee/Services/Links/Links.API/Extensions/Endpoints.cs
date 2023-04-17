@@ -2,6 +2,7 @@
 using Links.BusinessLogic.Repositories.IRepository;
 using Links.Utilities.Entities;
 using Links.Utilities.Exceptions;
+using SynchronousCommunication.HttpClients;
 
 namespace Links.API.Extensions;
 
@@ -73,10 +74,22 @@ public static class LinksEndpoints
          * AUTH : Users
          */
         links.MapPost("/", async
-            (ILinkRepository linkRepository, LinkEntity link) =>
+            (ILinkRepository linkRepository, 
+                ISubscriptionsClient subscriptionsClient,
+                LinkEntity link) =>
         {
-            logger.LogInformation("POST: request to /api/links at {datetime}",
+            logger.LogInformation("POST: request to /api/links/ at {datetime}",
                 DateTime.Now);
+
+            var userSubscription = await subscriptionsClient.GetSubscriptionFeaturesAsync(link.UserId);
+
+            var activeUserLinks = await linkRepository.GetAllByUserId(link.UserId);
+
+            var numberOfRemainingLinks =
+                userSubscription.Subscription.SubscriptionFeatures.NumberOfLinks - activeUserLinks.Count;
+
+            if (numberOfRemainingLinks is 0)
+                return Results.Problem(statusCode: StatusCodes.Status403Forbidden);
 
             if (link is null)
             {
@@ -86,7 +99,7 @@ public static class LinksEndpoints
             if (await linkRepository.CreateLinkAsync(link)
                 is LinkEntity createdLink)
             {
-                return createdLink;
+                return Results.Created("/", createdLink);
             }
 
             throw new Exception(ErrorMessages.ServerError);

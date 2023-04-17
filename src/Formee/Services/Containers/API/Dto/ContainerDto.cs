@@ -1,6 +1,4 @@
-﻿using API.Entities;
-
-namespace API.Dto;
+﻿namespace API.Dto;
 
 public class ContainerDto
 {

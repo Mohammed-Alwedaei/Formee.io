@@ -1,10 +1,5 @@
-﻿using API.Dto;
-using API.Entities;
-using API.Services;
-using ServiceBus.Constants;
-using ServiceBus.Messages;
-using ServiceBus.Models;
-using ServiceBus.ServiceBus;
+﻿using Microsoft.AspNetCore.Mvc;
+using SynchronousCommunication.HttpClients;
 
 namespace API.Extensions;
 
@@ -55,9 +50,24 @@ public static class Endpoints
          */
         containers.MapPost("/",
             async (ContainersService containersService,
+                ISubscriptionsClient subscriptionClient,
                 IAzureServiceBus<HistoryMessage> serviceBus,
                 ContainerEntity container) =>
             {
+                //Check if the user can create a container
+                var subscriptionFeatures = await subscriptionClient.GetSubscriptionFeaturesAsync(container.UserId);
+                
+                var numberOfUserContainers = await containersService
+                    .GetAllContainerByUserIdAsync(container.UserId);
+
+                var numberOfRemainingContainers =
+                    subscriptionFeatures.Subscription.SubscriptionFeatures.NumberOfContainers - numberOfUserContainers.Count;
+
+                if (numberOfRemainingContainers is 0)
+                {
+                    return Results.Problem(statusCode: 403);
+                }
+                
                 if (await containersService.CreateContainerAsync(container)
                     is ContainerEntity containerResult)
                 {

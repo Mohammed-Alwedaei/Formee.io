@@ -1,8 +1,4 @@
-﻿using API.Dto;
-using API.Entities;
-using AutoMapper;
-
-namespace API;
+﻿namespace API;
 
 public class MappingConfiguration : Profile
 {

@@ -36,24 +36,6 @@ public class SubscriptionsController : ControllerBase
         return Ok(result);
     }
 
-    [HttpGet("aggregate/{userId:Guid}")]
-    public async Task<IActionResult> GetSubscriptionById(Guid userId)
-    {
-        _logger.LogInformation("GET: request at /api/subscriptions at {datetime}",
-            
-            DateTime.Now);
-
-        var result = await _subscriptionRepository
-            .AggregateUserSubscriptionByUserId(userId);
-
-        if (result is null)
-        {
-            return NotFound();
-        }
-
-        return Ok(result);
-    }
-
     [HttpGet("all")]
     public async Task<IActionResult> GetAllSubscriptions()
     {

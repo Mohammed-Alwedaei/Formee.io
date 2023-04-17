@@ -2,6 +2,8 @@
 
 public interface ISubscriptionFeatureRepository
 {
+    Task<SubscriptionFeatureDto?> GetOneByIdAsync(int id);
+    
     Task<IReadOnlyList<SubscriptionFeatureDto>> GetAllAsync();
 
     Task<SubscriptionFeatureDto> CreateAsync(SubscriptionFeatureDto feature);

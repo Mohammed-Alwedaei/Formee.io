@@ -1,25 +1,20 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿namespace Subscriptions.BusinessLogic.Dtos;
 
-namespace Subscriptions.BusinessLogic.Models;
-
-public class UserSubscriptionModel
+public class UserSubscriptionDto
 {
-    [Key]
     public int Id { get; set; }
 
     public int UserId { get; set; }
-
-    [ForeignKey(nameof(UserId))] 
-    public UsersModel User { get; set; }
+    
+    public UserDto User { get; set; }
 
     public int SubscriptionId { get; set; }
-
-    [ForeignKey(nameof(SubscriptionId))] 
-    public SubscriptionsModel Subscription { get; set; }
+    
+    public SubscriptionDto Subscription { get; set; }
 
     public DateTime CreatedDate { get; set; }
-
-    public static implicit operator UserSubscriptionModel(UserSubscriptionDto userSubscription)
+    
+    public static implicit operator UserSubscriptionDto(UserSubscriptionModel userSubscription)
     {
         return new UserSubscriptionDto()
         {

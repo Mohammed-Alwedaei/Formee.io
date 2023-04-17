@@ -1,5 +1,4 @@
-﻿using API.Dto;
-using MongoDB.Bson;
+﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace API.Entities;
