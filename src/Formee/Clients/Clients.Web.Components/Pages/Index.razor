@@ -64,16 +64,16 @@
 
                                             <FmBody>
                                                 @if (AppState.Analytics.Sites is not null)
-                                                                                               {
-                                                                                                   <FmTypography Text="@AppState.Analytics.Sites.Count.ToString()"
-                                                                                                                 Type="@Typography.LevelThree"
-                                                                                                                 Classes="fm-typography__display-3"
-                                                                                                                 TextAlign="left" />
-                                                                                               }
-                                                                                               else
-                                                                                               {
-                                                                                                   <SfSpinner Visible="true" />
-                                                                                               }
+                                                {
+                                                    <FmTypography Text="@AppState.Analytics.Sites.Count.ToString()"
+                                                                 Type="@Typography.LevelThree"
+                                                                 Classes="fm-typography__display-3"
+                                                                 TextAlign="left" />
+                                                }
+                                                else
+                                                {
+                                                    <SfSpinner Visible="true" />
+                                                }
 
                                                 <FmTypography Text="Your site count"
                                                           Classes="fm-typography__lead" />

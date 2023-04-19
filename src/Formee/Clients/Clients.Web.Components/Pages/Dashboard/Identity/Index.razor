@@ -2,26 +2,119 @@
     <Breadcrumbs>
         <BreadcrumbItem IconCss="fa-solid fa-house"
                         Text="Dashboard"
-                        Url="@Routes.Home" />
+                        Url="@Routes.Home"/>
 
         <BreadcrumbItem IconCss="fa-solid fa-arrow-up-right-from-square"
                         Disabled="true"
                         Text="Identity"
-                        Url="/dashboard/{}" />
+                        Url="/dashboard/{}"/>
     </Breadcrumbs>
 </FmPageIntro>
 
-<FmSpacer />
+<FmSpacer/>
 
-<Grid>
-    <Items>
-        <GridItem ColumnSize="@GridSize.GridItemXLarge">
-            <Child>
-                @if (user is not null)
-                {
-                    <p>@user.UserName</p>
-                }
-            </Child>
-        </GridItem>
-    </Items>
-</Grid>
+
+@if (AppState.Identity.User is not null)
+{
+    <SfDashboardLayout Columns="4"
+                       CellSpacing="@(new double[] {40, 40})"
+                       AllowResizing="false"
+                       AllowDragging="false"
+                       AllowFloating="false">
+        <DashboardLayoutPanels>
+            <DashboardLayoutPanel Column="0"
+                                  Row="0"
+                                  SizeX="3"
+                                  SizeY="1">
+                <Header>
+                    <FmTypography Text="My Profile"
+                                  Type="@Typography.LevelTwo"/>
+                </Header>
+                <ContentTemplate>
+
+                    <Grid>
+                        <Items>
+                            <GridItem ColumnSize="@GridSize.GridItemSmall">
+                                <Child>
+                                    <FmAvatar Name="@AppState.Identity.User.Avatar.Name"
+                                              Classes="e-avatar fm-avatar__profile"/>
+
+                                </Child>
+                            </GridItem>
+
+                            <GridItem ColumnSize="@GridSize.GridIteLarge">
+                                <Child>
+                                    <div>
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <div>
+                                                <FmTypography Text="Username"
+                                                              Type="@Typography.LevelTwo"/>
+                                                <FmSpacer/>
+                                                <FmTypography Text="@AppState.Identity.User.UserName"
+                                                              Type="@Typography.LevelTwo"/>
+                                            </div>
+
+                                            <div>
+                                                <FmTypography Text="FirstName"
+                                                              Type="@Typography.LevelTwo"/>
+                                                <FmSpacer/>
+                                                <FmTypography Text="@AppState.Identity.User.FirstName"
+                                                              Type="@Typography.LevelTwo"/>
+                                            </div>
+
+                                            <div>
+                                                <FmTypography Text="LastName"
+                                                              Type="@Typography.LevelTwo"/>
+                                                <FmSpacer/>
+                                                <FmTypography Text="@AppState.Identity.User.FirstName"
+                                                              Type="@Typography.LevelTwo"/>
+                                            </div>
+                                        </div>
+
+                                        <FmSpacer/>
+
+                                        <div>
+                                            <FmTypography Text="LastName"
+                                                          Type="@Typography.LevelTwo"/>
+                                            <FmSeperator/>
+                                            <FmTypography Text="@AppState.Identity.User.CreatedDate.ToString("f")"
+                                                          Type="@Typography.LevelTwo"/>
+                                        </div>
+                                    </div>
+                                </Child>
+                            </GridItem>
+                        </Items>
+                    </Grid>
+                </ContentTemplate>
+            </DashboardLayoutPanel>
+            
+            <DashboardLayoutPanel Column="4"
+                                  Row="0"
+                                  SizeX="1"
+                                  SizeY="2">
+                <Header>
+                    <FmTypography Text="Bio"
+                                  Type="@Typography.LevelTwo"/>
+                </Header>
+                <ContentTemplate>
+                    <FmTypography Text="A great bio"
+                                  Type="@Typography.LevelTwo"/>
+                </ContentTemplate>
+            </DashboardLayoutPanel>
+            
+            <DashboardLayoutPanel Column="0"
+                                              Row="1"
+                                              SizeX="3"
+                                              SizeY="1">
+                            <Header>
+                                <FmTypography Text="Subscription Info"
+                                              Type="@Typography.LevelTwo"/>
+                            </Header>
+                            <ContentTemplate>
+                                <FmTypography Text="Subscription info goes here"
+                                                                  Type="@Typography.LevelTwo"/>
+                            </ContentTemplate>
+                        </DashboardLayoutPanel>
+        </DashboardLayoutPanels>
+    </SfDashboardLayout>
+}

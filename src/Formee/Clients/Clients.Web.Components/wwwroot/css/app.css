@@ -282,3 +282,9 @@ h1:focus {
     border: none;
     box-shadow: var(--box-shadow-sm);
 }
+
+.fm-avatar__profile {
+    height: 200px;
+    width: 200px;
+    border-radius: 10px;
+}

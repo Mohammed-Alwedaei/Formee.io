@@ -23,4 +23,6 @@ public static class Routes
     public const string Identity = "/dashboard/identity";
 
     public const string IdentityUpsert = "/dashboard/identity/upsert";
+    
+    public const string Aggregate = "/dashboard/aggregate";
 }
