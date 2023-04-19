@@ -32,7 +32,6 @@ steps:
 - task: AzureCLI@2
   inputs:
     azureSubscription: 'sb-adopting-msa'
-    scriptType: 'ps'
     scriptLocation: 'inlineScript'
     inlineScript: |
       docker login azure
