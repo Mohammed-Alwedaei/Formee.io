@@ -2,7 +2,6 @@ version: "3.8"
 
 services:
   client.web:
-    image: client.web
     container_name: client.web
     build:
       context: .
@@ -15,7 +14,6 @@ services:
       - gateway.core
       
   gateway.core:
-    image: gateway.core
     container_name: gateway.core
     build: 
       context: .
@@ -28,6 +26,7 @@ services:
       ASPNETCORE_ENVIRONMENT: Development
     depends_on:
       - containers.service
+      - analytics.service
       - forms.service
       - identity.service
       - links.service
@@ -36,7 +35,6 @@ services:
       - monitoring.service
 
   analytics.service:
-    image: analytics.service
     container_name: analytics.service
     build: 
       context: .
@@ -53,7 +51,6 @@ services:
       ServiceBus__NotificationsTopic: topic-notifications
 
   containers.service:
-    image: containers.service
     container_name: containers.service
     build:
       context: .
@@ -74,7 +71,6 @@ services:
       ServiceBus__NotificationsSubscription: notifications
 
   forms.service:
-    image: forms.service
     container_name: forms.service
     build:
       context: .
@@ -87,7 +83,6 @@ services:
       ASPNETCORE_ENVIRONMENT: development
   
   identity.service:
-    image: identity.service
     container_name: identity.service
     build:
       context: .
@@ -107,7 +102,6 @@ services:
       Services__Subscriptions: http://host.docker.internal:5007
 
   links.service:
-    image: links.service
     container_name: links.service
     build:
       context: .
@@ -121,7 +115,6 @@ services:
       ConnectionStrings__DefaultConnection: Server=host.docker.internal, 1433;Database=Formee.Links;User Id=Admin;Password=Admin@123123;integrated security=false;TrustServerCertificate=True
 
   notifications.service:
-    image: notifications.service
     container_name: notifications.service
     build:
       context: .
@@ -140,7 +133,6 @@ services:
       ServiceBus__HistorySubscription: history
 
   subscriptions.service:
-    image: subscriptions.service
     container_name: subscriptions.service
     build:
       context: .
@@ -153,9 +145,7 @@ services:
       ASPNETCORE_ENVIRONMENT: development
       ConnectionStrings__DefaultConnection: Server=host.docker.internal, 1433;Database=Formee.Subscriptions;User Id=Admin;Password=Admin@123123;integrated security=false;TrustServerCertificate=True
       
-  
   history.service:
-    image: history.service
     container_name: history.service
     build:
       context: .
@@ -169,7 +159,6 @@ services:
       MONGO_DB_HISTORY: mongodb://host.docker.internal/history
 
   monitoring.service:
-    image: monitoring.service
     container_name: monitoring.service
     build:
       context: .
@@ -179,6 +168,7 @@ services:
     ports:
       - "5009:80"
     depends_on:
+      - analytics.service
       - containers.service
       - forms.service
       - identity.service
