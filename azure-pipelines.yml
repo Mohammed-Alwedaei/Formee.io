@@ -15,14 +15,14 @@ steps:
   inputs:
     azureSubscription: 'sb-adopting-msa'
     azureContainerRegistry: 'formee'
-    dockerComposeFile: './src/formee/docker-compose.yml'
+    dockerComposeFile: 'src/Formee/docker-compose.yml'
     action: Build services
 
 - task: DockerCompose@0
   inputs:
     azureSubscription: 'sb-adopting-msa'
     azureContainerRegistry: 'formee'
-    dockerComposeFile: './src/formee/docker-compose.yml'
+    dockerComposeFile: 'src/Formee/docker-compose.yml'
     action: Push services
     includeLatestTag: true
     includeSourceTags: true
