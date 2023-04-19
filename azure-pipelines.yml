@@ -28,3 +28,15 @@ steps:
     action: Push services
     includeLatestTag: true
     includeSourceTags: true
+
+- script: docker login azure
+  displayName: Login to azure
+
+- script: docker context create aci deployacicontext
+  displayName: Deploy aci context
+
+- script: docker context use deployacicontext
+  displayName: Use aci context
+
+- script: docker compose up
+  displayName: Run containers
