@@ -10,14 +10,14 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
-- task: DockerCompose@0
-  displayName: Container registery login
-  inputs:
-    containerregistrytype: 'Azure Container Registry'
-    azureSubscription: 'sb-adopting-msa'
-    azureContainerRegistry: 'formee.azurecr.io'
-    dockerComposeFile: 'src/Formee/docker-compose.yml'
-    action: Build services
+#- task: DockerCompose@0
+#  displayName: Container registery login
+#  inputs:
+#    containerregistrytype: 'Azure Container Registry'
+#    azureSubscription: 'sb-adopting-msa'
+#    azureContainerRegistry: 'formee.azurecr.io'
+#    dockerComposeFile: 'src/Formee/docker-compose.yml'
+#    action: Build services
 
 - task: DockerCompose@0
   inputs:
@@ -32,6 +32,7 @@ steps:
 - task: AzureCLI@2
   inputs:
     azureSubscription: 'sb-adopting-msa'
+    scriptType: bash
     scriptLocation: 'inlineScript'
     inlineScript: |
       docker login azure
