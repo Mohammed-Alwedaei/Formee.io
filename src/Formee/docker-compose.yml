@@ -1,18 +1,18 @@
 version: "3.8"
 
 services:
-  client.web:
-    image: client.web
-    container_name: client.web
-    build:
-      context: .
-      dockerfile: "./Clients/Client.Web/Dockerfile"
-    expose:
-      - "80"
-    ports:
-      - "8080:80"
-    depends_on:
-      - gateway.core
+  # client.web:
+  #   image: client.web
+  #   container_name: client.web
+  #   build:
+  #     context: .
+  #     dockerfile: "./Clients/Client.Web/Dockerfile"
+  #   expose:
+  #     - "80"
+  #   ports:
+  #     - "8080:80"
+  #   depends_on:
+  #     - gateway.core
       
   gateway.core:
     image: gateway.core
@@ -104,7 +104,7 @@ services:
       Identity__APIUrl: https://login.auth0.com
       AzureStorage__ConnectionString: DefaultEndpointsProtocol=https;AccountName=adoptingmsastorage;AccountKey=QNiF+oq3F+EpswAiImlnQINuLurflfMI/EgC+SvqHv/OW9yLJ6+42hm4/W+DipcLK+qpqDk9qHpN+AStIzFf1g==;EndpointSuffix=core.windows.net
       AzureStorage__ContainerName: accountavatars
-
+      Services__Subscriptions: http://host.docker.internal:5007
 
   links.service:
     image: links.service
@@ -152,6 +152,7 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: development
       ConnectionStrings__DefaultConnection: Server=host.docker.internal, 1433;Database=Formee.Subscriptions;User Id=Admin;Password=Admin@123123;integrated security=false;TrustServerCertificate=True
+      
   
   history.service:
     image: history.service

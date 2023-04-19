@@ -82,11 +82,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "Services\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Presentation", "Services\Notifications\Presentation\Presentation.csproj", "{8092CDE3-4819-4535-9CBE-689C803ACE3E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Monitoring", "Services\Monitoring\Monitoring\Monitoring.csproj", "{034AA47F-FD14-4F4A-9554-4738B9735896}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Monitoring", "Services\Monitoring\Monitoring\Monitoring.csproj", "{034AA47F-FD14-4F4A-9554-4738B9735896}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Monitoring", "Monitoring", "{5E949A79-B9FA-4FCB-84F1-A4F34740F155}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SynchronousCommunication", "Shared\SynchronousCommunication\SynchronousCommunication.csproj", "{EB2891F1-FE7A-4C2B-8587-B92AAC3BBFCD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SynchronousCommunication", "Shared\SynchronousCommunication\SynchronousCommunication.csproj", "{EB2891F1-FE7A-4C2B-8587-B92AAC3BBFCD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -241,8 +241,8 @@ Global
 		{3E349600-6301-48DE-86DD-10B3D65AFDA1} = {CACE9D51-C77A-45E5-8558-18BA8AFCECE8}
 		{AD0D7683-2FC3-4DE8-8582-490A7A61D4B1} = {CACE9D51-C77A-45E5-8558-18BA8AFCECE8}
 		{8092CDE3-4819-4535-9CBE-689C803ACE3E} = {CACE9D51-C77A-45E5-8558-18BA8AFCECE8}
-		{5E949A79-B9FA-4FCB-84F1-A4F34740F155} = {EEA84132-EB33-4865-AD30-CB3AC5D749D5}
 		{034AA47F-FD14-4F4A-9554-4738B9735896} = {5E949A79-B9FA-4FCB-84F1-A4F34740F155}
+		{5E949A79-B9FA-4FCB-84F1-A4F34740F155} = {EEA84132-EB33-4865-AD30-CB3AC5D749D5}
 		{EB2891F1-FE7A-4C2B-8587-B92AAC3BBFCD} = {2BBD9D61-8AA2-404F-A77E-B6D65A68020A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution

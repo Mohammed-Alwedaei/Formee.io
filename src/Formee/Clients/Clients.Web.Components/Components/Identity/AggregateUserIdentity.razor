@@ -36,24 +36,24 @@
             
             _logger.LogInformation("AUTH: user is authenticated");
 
-            _appState.Identity.StateChanged += StateHasChanged;
-
-            await _identityService.GetByAuthIdAsync(authProviderId);
-            
-            _logger.LogInformation("user id: {userId}", _appState.Identity.User.Id);
-
-            if (_appState.Identity.User.Id == Guid.Empty)
+            try
             {
-                _logger.LogInformation("AUTH: user does not have an account");
+                _appState.Identity.StateChanged += StateHasChanged;
+
+                await _identityService.GetByAuthIdAsync(authProviderId);
+
+                _logger.LogInformation("user id: {userId}", _appState.Identity.User.Id);
                 
-                _navigationManager
-                    .NavigateTo($"{Routes.IdentityUpsert}?upsert_type=create&auth_provider_id={authProviderId}");
-            }
-            else
-            {
                 _logger.LogInformation("AUTH: user account is found");
 
                 _navigationManager.NavigateTo($"/?user_Id={_appState.Identity.User.Id}&auth_provider_id={_appState.Identity.User.AuthId}");
+            }
+            catch (Exception exception)
+            {
+                _logger.LogInformation("AUTH: user does not have an account");
+
+                _navigationManager
+                    .NavigateTo($"{Routes.IdentityUpsert}?upsert_type=create&auth_provider_id={authProviderId}");
             }
         }
         else

@@ -14,6 +14,8 @@ public class SubscriptionDto : BaseDto
 
     public decimal AnnualPrice { get; set; }
 
+    public bool IsDefault { get; set; }
+
     public int SubscriptionFeaturesId { get; set; }
 
     public SubscriptionFeatureDto SubscriptionFeatures { get; set; }
@@ -23,7 +25,7 @@ public class SubscriptionDto : BaseDto
     public static implicit operator SubscriptionDto
         (SubscriptionsModel subscription)
     {
-        var subscriptionDto = new SubscriptionDto
+        return new SubscriptionDto
         {
             Id = subscription.Id,
             AdminId = subscription.AdminId,
@@ -31,12 +33,11 @@ public class SubscriptionDto : BaseDto
             Description = subscription.Description,
             Price = subscription.Price,
             AnnualPrice = subscription.AnnualPrice,
+            IsDefault = subscription.IsDefault,
             IsDeleted = subscription.IsDeleted,
             SubscriptionFeaturesId = subscription.SubscriptionFeaturesId,
             SubscriptionFeatures = subscription.SubscriptionFeatures,
             CreatedDate = subscription.CreatedDate
         };
-
-        return subscriptionDto;
     }
 }

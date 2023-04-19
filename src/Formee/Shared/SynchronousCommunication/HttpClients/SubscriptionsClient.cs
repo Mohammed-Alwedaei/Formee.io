@@ -39,4 +39,20 @@ public class SubscriptionsClient : ISubscriptionsClient
 
         return userSubscription;
     }
+
+    public async Task<SubscriptionDto> GetDefaultSubscription()
+    {
+        const string url = "/api/subscriptions/default";
+
+        var response = await _retryPolicy.ExecuteAsync(() => _httpClient.GetAsync(url));
+
+        if (response is null)
+            return new SubscriptionDto();
+
+        var content = await response.Content.ReadAsStringAsync();
+
+        var subscription = JsonConvert.DeserializeObject<SubscriptionDto>(content);
+
+        return subscription;
+    }
 }

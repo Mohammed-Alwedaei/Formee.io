@@ -42,7 +42,7 @@ public static class IdentityEndpoints
         }).WithTags("Admins");
 
         identity.MapPost("/users", async 
-            (IIdentityManager identityManager, UserDto user) =>
+            (IIdentityManager identityManager, CreateUserDto user) =>
         {
             var result = await identityManager.CreateAsync(user);
 

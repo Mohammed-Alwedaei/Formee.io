@@ -12,6 +12,8 @@ public class SubscriptionsModel : BaseModel
 
     public decimal AnnualPrice { get; set; }
 
+    public bool IsDefault { get; set; }
+
     public bool IsDeleted { get; set; }
 
     public int SubscriptionFeaturesId { get; set; }
@@ -31,6 +33,7 @@ public class SubscriptionsModel : BaseModel
             Price = subscriptionDto.Price,
             AnnualPrice = subscriptionDto.AnnualPrice,
             IsDeleted = subscriptionDto.IsDeleted,
+            IsDefault = subscriptionDto.IsDefault,
             SubscriptionFeaturesId = subscriptionDto.SubscriptionFeaturesId,
             SubscriptionFeatures = subscriptionDto.SubscriptionFeatures,
             CreatedDate = subscriptionDto.CreatedDate

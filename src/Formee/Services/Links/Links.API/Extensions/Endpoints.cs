@@ -1,5 +1,5 @@
-﻿using Domain.Constants;
-using Links.BusinessLogic.Repositories.IRepository;
+﻿using Links.BusinessLogic.Repositories.IRepository;
+using Links.Utilities.Constants;
 using Links.Utilities.Entities;
 using Links.Utilities.Exceptions;
 using SynchronousCommunication.HttpClients;

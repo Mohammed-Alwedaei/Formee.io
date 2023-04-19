@@ -4,6 +4,7 @@ using Identity.BusinessLogic.Services;
 using Identity.BusinessLogic.Services.IServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using SynchronousCommunication.Extensions;
 
 namespace Identity.API.Extensions;
 
@@ -40,6 +41,8 @@ public static class ServicesConfiguration
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(
                 configuration.GetConnectionString("DefaultConnection")));
+
+        services.AddSyncCommunication();
 
         return services;
     }

@@ -12,6 +12,8 @@ public class SubscriptionDto : BaseDto
 
     public decimal AnnualPrice { get; set; }
 
+    public bool IsDefault { get; set; }
+
     public int SubscriptionFeaturesId { get; set; }
 
     public SubscriptionFeatureDto SubscriptionFeatures { get; set; }

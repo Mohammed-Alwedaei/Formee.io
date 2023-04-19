@@ -34,7 +34,10 @@ public partial class Aggregate
             
             await IdentityService.GetByAuthIdAsync(authProviderId);
 
-            NavigationManager.NavigateTo($"{RedirectUrl}?user_id={AppState.Identity.User.Id}");
+            if (AppState.Identity.User is null && AppState.Identity.User.Id == Guid.Empty)
+                NavigationManager.NavigateTo($"{Routes.IdentityUpsert}?upsert_type=create&auth_provider_id={authProviderId}");
+            else
+                NavigationManager.NavigateTo($"{RedirectUrl}?user_id={AppState.Identity.User.Id}");
         }
     }
 }

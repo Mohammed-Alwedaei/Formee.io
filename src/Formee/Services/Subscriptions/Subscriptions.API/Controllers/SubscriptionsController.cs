@@ -35,6 +35,22 @@ public class SubscriptionsController : ControllerBase
 
         return Ok(result);
     }
+    
+    [HttpGet("default")]
+    public async Task<IActionResult> GetDefaultSubscription()
+    {
+        _logger.LogInformation("GET: request at /api/subscriptions/default at {datetime}",
+            DateTime.Now);
+
+        var result = await _subscriptionRepository.GetDefaultAsync();
+
+        if (result.Id is 0)
+        {
+            return NotFound();
+        }
+
+        return Ok(result);
+    }
 
     [HttpGet("all")]
     public async Task<IActionResult> GetAllSubscriptions()

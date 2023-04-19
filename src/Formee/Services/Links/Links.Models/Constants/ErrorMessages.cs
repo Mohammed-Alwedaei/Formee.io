@@ -1,4 +1,4 @@
-﻿namespace Domain.Constants;
+﻿namespace Links.Utilities.Constants;
 public static class ErrorMessages
 {
     public const string NotFound = "Could not find the requested entity";

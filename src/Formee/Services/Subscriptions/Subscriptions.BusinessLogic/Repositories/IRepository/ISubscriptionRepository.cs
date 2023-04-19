@@ -3,6 +3,8 @@
 public interface ISubscriptionRepository
 {
     Task<SubscriptionDto> GetOneById(int id);
+    
+    Task<SubscriptionDto> GetDefaultAsync();
 
     Task<List<SubscriptionDto>> GetAllAsync();
 

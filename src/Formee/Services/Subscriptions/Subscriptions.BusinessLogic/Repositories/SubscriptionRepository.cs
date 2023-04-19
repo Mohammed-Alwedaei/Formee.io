@@ -20,6 +20,19 @@ public class SubscriptionRepository : ISubscriptionRepository
         return subscriptionFromDb;
     }
 
+    public async Task<SubscriptionDto> GetDefaultAsync()
+    {
+        var subscriptionFromDb = await _context.Subscriptions
+            .AsNoTracking()
+            .Include(s => s.SubscriptionFeatures)
+            .FirstOrDefaultAsync(s => s.IsDefault == true
+                                      && s.IsDeleted != true);
+
+        if (subscriptionFromDb is null) return new SubscriptionDto();
+
+        return subscriptionFromDb;
+    }
+
     public async Task<List<SubscriptionDto>> GetAllAsync()
     {
         var listFromDb = await _context.Subscriptions.ToListAsync();

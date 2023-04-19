@@ -1,5 +1,4 @@
 ﻿using Client.Web.Utilities.Dtos.Identity;
-using System.Net.Http.Json;
 using Microsoft.Extensions.Logging;
 
 namespace Client.Web.Utilities.Services;
@@ -60,17 +59,15 @@ public class IdentityService
         _appState.Identity.IsFetching = false;
     }
 
-    public async Task<UserDto?> CreateAsync(UserDto user)
+    public async Task<CreateUserDto?> CreateAsync(CreateUserDto user)
     {
         const string url = "/api/identity/users";
 
         var response = await _httpClient.PostAsJsonAsync(url, user);
 
         if (response.IsSuccessStatusCode)
-        {
-            return await response.Content.ReadFromJsonAsync<UserDto>();
-        }
+            return await response.Content.ReadFromJsonAsync<CreateUserDto>();
 
-        return new UserDto();
+        return new CreateUserDto();
     }
 }

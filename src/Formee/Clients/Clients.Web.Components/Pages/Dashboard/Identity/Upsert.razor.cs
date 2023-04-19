@@ -1,5 +1,6 @@
 ﻿using Client.Web.Utilities.Dtos.Identity;
 using Client.Web.Utilities.Services;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Forms;
 using Syncfusion.Blazor.Inputs;
 
@@ -17,6 +18,9 @@ public partial class Upsert : IDisposable
     [Inject]
     public AppStateService AppState { get; set; }
 
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationState { get; set; }
+
     [Parameter]
     [SupplyParameterFromQuery(Name = "user_id")]
     public string UserId { get; set; }
@@ -29,7 +33,7 @@ public partial class Upsert : IDisposable
     [SupplyParameterFromQuery(Name = "auth_provider_id")]
     public string AuthProviderId { get; set; }
 
-    private UserDto User { get; set; } = new();
+    private CreateUserDto User { get; set; } = new();
 
     private bool _isVisibleConfirmationDialog;
 
@@ -39,9 +43,18 @@ public partial class Upsert : IDisposable
 
     private bool _isDeleteUpsert;
 
-    protected override void OnParametersSet()
+    protected override async Task OnParametersSetAsync()
     {
         _isDeleteUpsert = false;
+        
+        var authState = await authenticationState;
+        
+        var email = authState.User
+                .Claims
+                .FirstOrDefault(c => c.Type == "email")
+                ?.Value;
+
+        User.Email = email;
         User.AuthId = AuthProviderId;
 
         AppState.Identity.StateChanged += StateHasChanged;
@@ -51,8 +64,6 @@ public partial class Upsert : IDisposable
     {
         _isVisibleConfirmationDialog = true;
 
-        User.SubscriptionId = 4;
-        User.AvatarId = 4;
         StateHasChanged();
     }
 
@@ -69,7 +80,7 @@ public partial class Upsert : IDisposable
 
             await Task.Delay(2500);
 
-            NavigationManager.NavigateTo($"/dashboard/identity?userId={createdUser.Id}");
+            NavigationManager.NavigateTo("/");
         }
     }
 
@@ -77,7 +88,7 @@ public partial class Upsert : IDisposable
     {
         _isVisibleConfirmationDialog = false;
     }
-
+    
     public void Dispose()
     {
         AppState.Identity.StateChanged -= StateHasChanged;

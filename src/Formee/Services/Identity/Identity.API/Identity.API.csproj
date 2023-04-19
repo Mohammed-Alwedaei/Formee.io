@@ -22,10 +22,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\..\..\Shared\SynchronousCommunication\SynchronousCommunication.csproj" />
 		<ProjectReference Include="..\Identity.BusinessLogic\Identity.BusinessLogic.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Controllers\" />
 	</ItemGroup>
 </Project>

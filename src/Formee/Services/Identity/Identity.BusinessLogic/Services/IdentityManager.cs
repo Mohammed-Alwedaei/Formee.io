@@ -6,11 +6,10 @@ using Identity.BusinessLogic.Entities;
 using Identity.BusinessLogic.Exceptions;
 using Identity.BusinessLogic.Models;
 using Identity.BusinessLogic.Services.IServices;
-using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
+using SynchronousCommunication.HttpClients;
 
 namespace Identity.BusinessLogic.Services;
 
@@ -19,14 +18,17 @@ public class IdentityManager : IIdentityManager
     private readonly IOptions<BlobStorageConfiguration> _blobStorage;
     private readonly HttpClient _httpClient;
     private readonly ApplicationDbContext _context;
+    private readonly ISubscriptionsClient _subscriptionsClient;
 
     public IdentityManager(IOptions<BlobStorageConfiguration> blobStorage,
         HttpClient httpClient,
-        ApplicationDbContext context)
+        ApplicationDbContext context,
+        ISubscriptionsClient subscriptionsClient)
     {
         _blobStorage = blobStorage;
         _httpClient = httpClient;
         _context = context;
+        _subscriptionsClient = subscriptionsClient;
     }
 
     public async Task<bool> AssignRoleToUser(AddRoleToUseDto users,
@@ -79,9 +81,19 @@ public class IdentityManager : IIdentityManager
             .FirstOrDefaultAsync(u => u.AuthId == user.AuthId);
 
         if (hasRegistered is not null)
-        {
             throw new BadRequestException("User already created");
-        }
+
+        user.Id = Guid.NewGuid();
+
+        user.IsDeleted = false;
+        user.CreatedDate = DateTime.UtcNow;
+
+        _context.Entry(user).State = EntityState.Modified;
+
+        var defaultSubscription = await _subscriptionsClient
+            .GetDefaultSubscription();
+
+        user.SubscriptionId = defaultSubscription.Id;
 
         var createdUser = await _context.User.AddAsync(user);
 
