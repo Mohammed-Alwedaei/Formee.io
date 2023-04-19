@@ -1,5 +1,4 @@
 ﻿using Client.Web.Utilities.Dtos.History;
-using System.Net.Http.Json;
 
 namespace Client.Web.Utilities.Services;
 
@@ -16,11 +15,21 @@ public class HistoryService
 
     public async Task GetHistoryByUserId(Guid userId, int pageNumber, int recordPerPage)
     {
+        _appState.History.IsFetching = true;
+        
         var url = $"/api/history/all/{userId}?pageNumber={pageNumber}&nPerPage={recordPerPage}";
 
-        var historyCollection = await _httpClient
+        var response = await _httpClient
             .GetFromJsonAsync<List<HistoryDto>>(url);
-        
-        _appState.SetHistoryState(historyCollection);
+
+        if (response != null && response.Any())
+        {
+            _appState.History.HistoryCollection = new List<HistoryDto>();
+            _appState.History.HistoryCollection = response;
+        }
+        else
+            _appState.History.HistoryCollection = new List<HistoryDto>();
+
+        _appState.History.IsFetching = false;
     }
 }

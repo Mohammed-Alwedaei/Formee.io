@@ -26,7 +26,7 @@ public partial class Index : IDisposable
     {
         _skipValue = 0;
         
-        AppState.OnHistoryStateChange += async () =>
+        AppState.History.StateChanged += async () =>
         {
             await InvokeAsync(StateHasChanged);
         };
@@ -43,6 +43,6 @@ public partial class Index : IDisposable
 
     public void Dispose()
     {
-        AppState.OnHistoryStateChange -= StateHasChanged;
+        AppState.History.StateChanged -= StateHasChanged;
     }
 }

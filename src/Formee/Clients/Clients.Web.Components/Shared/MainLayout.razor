@@ -1,6 +1,5 @@
 ﻿@inherits LayoutComponentBase
 
-
 <SfSidebar @bind-IsOpen="_navigationSidebarToggle"
            Type="SidebarType.Push"
            Position="SidebarPosition.Left"
@@ -9,17 +8,17 @@
            DockSize="190px"
            EnableDock="true">
     <ChildContent>
-        @if (AppStateService.User.Id != Guid.Empty)
-        {
-            <div class="fm-sidebar__nav py-4">
-                <FmTypography Text="Formee"
-                              Type="@Typography.LevelOne"
-                              TextAlign="center"
-                              Classes="fm-motto mb-3"/>
 
+        <div class="fm-sidebar__nav py-4">
+            <FmTypography Text="Formee"
+                          Type="@Typography.LevelOne"
+                          TextAlign="center"
+                          Classes="fm-motto mb-3"/>
+            @if (AppState.Identity.User.Id != Guid.Empty)
+            {
                 <SfTooltip Position="Syncfusion.Blazor.Popups.Position.RightCenter"
                            Content="Home">
-                    <FmLink Route="@($"?userId={AppStateService.User.Id}")"
+                    <FmLink Route="@($"?userId={AppState.Identity.User.Id}")"
                             ActiveClass="fm-link__active"
                             Text="Home"
                             Classes="fm-link d-flex justify-content-center mb-3"
@@ -28,7 +27,7 @@
 
                 <SfTooltip Position="Syncfusion.Blazor.Popups.Position.RightCenter"
                            Content="My Containers">
-                    <FmLink Route="@($"{Routes.Containers}?user_id={AppStateService.User.Id}")"
+                    <FmLink Route="@($"{Routes.Containers}?user_id={AppState.Identity.User.Id}")"
                             ActiveClass="fm-link__active"
                             MatchRoute="NavLinkMatch.Prefix"
                             Text="Containers"
@@ -57,7 +56,7 @@
 
                 <SfTooltip Position="Syncfusion.Blazor.Popups.Position.RightCenter"
                            Content="My Profile">
-                    <FmLink Route="@($"{Routes.Identity}?userId={AppStateService.User.Id}")"
+                    <FmLink Route="@($"{Routes.Identity}?userId={AppState.Identity.User.Id}")"
                             ActiveClass="fm-link__active"
                             Text="Identity Management"
                             Classes="fm-link d-flex justify-content-center mb-3"
@@ -75,23 +74,27 @@
 
                 <SfTooltip Position="Syncfusion.Blazor.Popups.Position.RightCenter"
                            Content="My History">
-                    <FmLink Route="@($"{Routes.History}?user_id={AppStateService.User.Id}")"
+                    <FmLink Route="@($"{Routes.History}?user_id={AppState.Identity.User.Id}")"
                             ActiveClass="fm-link__active"
                             Text="History"
                             Classes="fm-link d-flex justify-content-center mb-3"
                             Icon="fa-solid fa-clock-rotate-left"/>
                 </SfTooltip>
-            </div>
-        }
+            }
+            else
+            {
+                <SfSpinner Visible="true" />
+            }
+        </div>
     </ChildContent>
 </SfSidebar>
 
 <div class="maincontent e-main-content">
     <SfAppBar ColorMode="AppBarColor.Light">
         <div class="app-bar__wrapper">
-            @if (!string.IsNullOrEmpty(AppStateService.User.UserName))
+            @if (!string.IsNullOrEmpty(AppState.Identity.User.UserName))
             {
-                <FmTypography Text="@($"Hello, {AppStateService.User.UserName}")"
+                <FmTypography Text="@($"Hello, {AppState.Identity.User.UserName}")"
                               Type="@Typography.LevelOne"
                               Classes="fm-typography__display-1"/>
             }
@@ -102,7 +105,7 @@
                 <SfTooltip Position="Syncfusion.Blazor.Popups.Position.BottomCenter"
                            Content="Notifications Service">
                     <div class="d-flex justify-content-center align-items-center">
-                        @if (NotificationsService.ConnectionStatus)
+                        @if (AppState.Notifications.IsConnected)
                         {
                             <span class="fm-connection-status fm-bg-color__success"></span>
                             <FmTypography Text="Connected"
@@ -140,7 +143,7 @@
     <ChildContent>
         <div class="fm-sidebar__user py-4">
             <div class="d-flex justify-content-between align-items-center">
-                @if (AppStateService.User.Id != Guid.Empty)
+                @if (AppState.Identity.User.Id != Guid.Empty)
                 {
                     <AppBarNotification/>
                 }
@@ -152,7 +155,7 @@
                 </SfTooltip>
 
                 <div>
-                    @if (AppStateService.User.Id != Guid.Empty)
+                    @if (AppState.Identity.User.Id != Guid.Empty)
                     {
                         <AppBarAccessControl/>
                     }
@@ -160,9 +163,9 @@
             </div>
 
             <div>
-                @if (NotificationsService.Notifications is not null)
+                @if (AppState.Notifications.NotificationsCollection is not null)
                 {
-                    foreach (var notification in NotificationsService.Notifications)
+                    foreach (var notification in AppState.Notifications.NotificationsCollection)
                     {
                         <p>@notification.Heading</p>
                     }
@@ -177,3 +180,7 @@
 </SfSidebar>
 
 <FmSpacer/>
+
+<AuthorizeView>
+    <AggregateUserIdentity />
+</AuthorizeView>

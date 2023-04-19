@@ -3,6 +3,7 @@ using System.Text;
 using Newtonsoft.Json;
 using ServiceBus.Messages;
 using Microsoft.Extensions.Configuration;
+using ServiceBus.Models;
 
 namespace ServiceBus.ServiceBus;
 
@@ -18,15 +19,11 @@ public class NotificationServiceBus : IAzureServiceBus<NotificationMessage>
             TransportType = ServiceBusTransportType.AmqpWebSockets
         };
 
-        var connectionString = configuration
-            .GetValue<string>("ServiceBus:ConnectionString");
+        var connectionString = configuration.GetValue<string>("ServiceBus:ConnectionString");
 
-        var topic = configuration
-            .GetValue<string>("ServiceBus:Notifications");
+        var topic = configuration.GetValue<string>("ServiceBus:NotificationsTopic");
 
-        _serviceBusClient = new ServiceBusClient(
-            connectionString,
-            clientOptions);
+        _serviceBusClient = new ServiceBusClient(connectionString, clientOptions);
 
         _serviceBusSender = _serviceBusClient
         .CreateSender(topic);

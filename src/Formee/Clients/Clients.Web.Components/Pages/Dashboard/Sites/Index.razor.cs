@@ -12,7 +12,7 @@ public partial class Index
     public NavigationManager NavigationManager { get; set; }
 
     [Parameter]
-    [SupplyParameterFromQuery(Name = "containerId")]
+    [SupplyParameterFromQuery(Name = "container_id")]
     public string ContainerId { get; set; }
 
     private List<SiteDto> Sites { get; set; }
@@ -27,7 +27,7 @@ public partial class Index
         }
         else
         {
-            Sites = await AnalyticsService.GetAllSitesAsync(ContainerId);
+            await AnalyticsService.GetAllSitesAsync(ContainerId);
 
             IsFetching = false;
         }

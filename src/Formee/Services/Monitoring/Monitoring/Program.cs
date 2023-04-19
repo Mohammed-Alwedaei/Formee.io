@@ -1,7 +1,13 @@
+using System.Text;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Newtonsoft.Json;
+
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddHealthChecks();
+
+builder.Services.AddHealthChecksUI()
+    .AddInMemoryStorage();
 
 var app = builder.Build();
 
@@ -12,10 +18,16 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+app.UseHealthChecks("/hc", new HealthCheckOptions
+{
+    ResponseWriter = async (context, report) =>
+    {
+        context.Response.ContentType = "application/json; charset=utf-8";
+        var bytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(report));
+        await context.Response.Body.WriteAsync(bytes);
+    }
+});
 
-app.MapHealthChecks("/hc");
-
-app.UseAuthorization();
+app.UseHealthChecksUI(config => config.UIPath =  "/hc-ui");
 
 app.Run();

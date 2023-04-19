@@ -1,4 +1,6 @@
-﻿using Links.API.Middlewares;
+﻿using HealthChecks.UI.Client;
+using Links.API.Middlewares;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 
 namespace Links.API.Extensions;
 
@@ -38,6 +40,13 @@ public static class UseServicesExtension
 
         app.UseAuthentication()
             .UseAuthorization();
+
+        app.MapHealthChecks("/healthcheck", new HealthCheckOptions
+        {
+            Predicate = _ => true,
+            ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+        });
+        
         return app;
     }
 }

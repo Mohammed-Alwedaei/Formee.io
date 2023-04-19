@@ -1,74 +1,47 @@
-﻿using Client.Web.Utilities.Dtos;
-using System.Net.Http.Json;
-using Microsoft.AspNetCore.SignalR.Client;
+﻿using Microsoft.AspNetCore.SignalR.Client;
+using Microsoft.Extensions.Configuration;
 
 namespace Client.Web.Utilities.Services;
 
 public class NotificationsService : IAsyncDisposable
 {
-
-    public List<NotificationDto> Notifications;
-
-    public int AllNotificationsCount;
-    public int UnreadNotificationsCount;
-
-    public Guid UserId;
-
-    public bool IsFetching;
-
     private readonly HttpClient _httpClient;
-    private HubConnection _hubConnection;
-    public bool ConnectionStatus;
+    private HubConnection? _hubConnection;
+    private readonly AppStateService _appState;
+    private readonly IConfiguration _configuration;
 
-    public event Action StateChanged;
-
-    private void NotifyStateChanged() => StateChanged?.Invoke();
-
-    public NotificationsService(HttpClient httpClient)
+    public NotificationsService(HttpClient httpClient, AppStateService appState, IConfiguration configuration)
     {
         _httpClient = httpClient;
+        _appState = appState;
+        _configuration = configuration;
     }
 
     public async Task CreateClientConnection()
     {
+        var url = _configuration["GatewayUrl"];
+
         _hubConnection = new HubConnectionBuilder()
-            .WithUrl("http://localhost:5000/hubs/notifications")
+            .WithUrl($"{url}/hubs/notifications")
             .Build();
 
         await _hubConnection.StartAsync();
 
-        GetConnectionStatus();
-
-        NotifyStateChanged();
+        _appState.Notifications.SetConnectionState(_hubConnection.State == HubConnectionState.Connected);
     }
 
     public async Task GetAllByUserIdAsync(Guid userId, int numberOfRecords)
     {
-        try
-        {
-            IsFetching = true;
+        _appState.Notifications.InvertFetchingState();
 
-            var url = $"/api/notifications/all/{userId}/{numberOfRecords}";
+        var url = $"/api/notifications/all/{userId}/{numberOfRecords}";
 
-            var response = await _httpClient
-                .GetFromJsonAsync<List<NotificationDto>>(url);
+        var response = await _httpClient
+            .GetFromJsonAsync<List<NotificationDto>>(url);
 
-            Notifications = new List<NotificationDto>();
+        _appState.Notifications.SetNotificationCollectionState(response ?? new List<NotificationDto>());
 
-            Notifications = response ?? throw new Exception("A problem occurred");
-
-            Notifications.OrderByDescending(n => n.CreatedDate);
-
-            UpdateNotificationsMeta();
-
-            IsFetching = false;
-
-            NotifyStateChanged();
-        }
-        catch (Exception ex)
-        {
-
-        }
+        _appState.Notifications.InvertFetchingState();
     }
 
     public async Task MarkNotificationAsReadAsync
@@ -86,7 +59,7 @@ public class NotificationsService : IAsyncDisposable
         }
 
         _hubConnection.On<NotificationDto>("ReceiveNotification",
-            (notification) => Notifications.Add(notification));
+            (notification) => _appState.Notifications.AddToNotificationsCollection(notification));
     }
 
     public void ListenToMarkAsRead()
@@ -99,40 +72,15 @@ public class NotificationsService : IAsyncDisposable
         _hubConnection.On<NotificationDto>("MarkNotificationAsReadResponse",
             (notification) =>
             {
-                var notificationToRemove = Notifications
+                var notificationToRemove = _appState.Notifications.NotificationsCollection
                     .FirstOrDefault(n => n.Id == notification.Id);
 
-                Notifications.Remove(notificationToRemove);
+                _appState.Notifications.RemoveFromNotificationsCollection(notificationToRemove);
 
-                Notifications.Add(notification);
+                _appState.Notifications.AddToNotificationsCollection(notification);
 
-                var sortedNotifications = Notifications
-                    .OrderByDescending(n => n.CreatedDate)
-                    .ToList();
-
-                Notifications = new List<NotificationDto>();
-
-                Notifications = sortedNotifications;
-
-                UpdateNotificationsMeta();
-
-                NotifyStateChanged();
+                _appState.Notifications.SortNotificationsCollection();
             });
-    }
-
-    public void GetConnectionStatus()
-    {
-        ConnectionStatus = _hubConnection?.State == HubConnectionState.Connected;
-    }
-
-    private void UpdateNotificationsMeta()
-    {
-        AllNotificationsCount = Notifications.Count;
-
-        UnreadNotificationsCount = Notifications
-            .Count(n => n.IsRead != true);
-
-        NotifyStateChanged();
     }
 
     public async ValueTask DisposeAsync()

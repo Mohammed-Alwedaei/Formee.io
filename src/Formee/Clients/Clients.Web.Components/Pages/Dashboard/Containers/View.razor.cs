@@ -6,6 +6,12 @@ namespace Clients.Web.Components.Pages.Dashboard.Containers;
 [Route(Routes.ViewContainer)]
 public partial class View
 {
+    [Inject]
+    public AppStateService AppState { get; set; }
+    
+    [Inject]
+    public ContainersService ContainersService { get; set; }
+    
     [Parameter]
     [SupplyParameterFromQuery(Name = "user_id")]
     public string UserId { get; set; }
@@ -16,9 +22,6 @@ public partial class View
 
     private string? _containerId;
 
-    [Inject]
-    public ContainersService ContainersService { get; set; }
-
     private ContainerDto Container { get; set; } = new();
 
     protected override async Task OnParametersSetAsync()
@@ -26,7 +29,7 @@ public partial class View
         if (string.IsNullOrEmpty(ContainerId))
         {
             await ContainersService.GetAllByUserIdAsync(Guid.Parse(UserId));
-            var container = ContainersService.Containers.FirstOrDefault();
+            var container = AppState.Containers.ContainersCollection.FirstOrDefault();
             _containerId = container?.Id;
         }
         else

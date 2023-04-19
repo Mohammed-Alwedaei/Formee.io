@@ -1,37 +1,18 @@
-﻿using Client.Web.Utilities.Dtos.History;
-using Client.Web.Utilities.Dtos.Identity;
+﻿using Client.Web.Utilities.StateManagement;
 
 namespace Client.Web.Utilities.Services;
 
 public class AppStateService
 {
-    public UserDto User { get; set; } = new();
+    public readonly IdentityState Identity = new ();
+    
+    public readonly ContainersState Containers  = new ();
 
-    public List<HistoryDto>? HistoryCollection;
+    public readonly AnalyticsState Analytics = new ();
+    
+    public readonly HistoryState History = new ();
 
-    public int HistoryCount;
-
-    public event Action OnUserStateChange;
-
-    public event Action OnHistoryStateChange;
-
-    public void SetUserState(UserDto user)
-    {
-        User = new UserDto();
-        User = user;
-        OnUserStateChange.Invoke();
-    }
-
-    /// <summary>
-    /// Set history state of the user
-    /// </summary>
-    /// <param name="newHistoryState"></param>
-    public void SetHistoryState(List<HistoryDto>? newHistoryState)
-    {
-        HistoryCollection = new List<HistoryDto>();
-        HistoryCollection = newHistoryState;
-        HistoryCount = HistoryCollection.Count;
-
-        OnHistoryStateChange.Invoke();
-    }
+    public readonly LinksState Links = new();
+    
+    public readonly NotificationsState Notifications = new();
 }

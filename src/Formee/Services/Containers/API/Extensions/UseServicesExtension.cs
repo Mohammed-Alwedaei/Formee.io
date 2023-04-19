@@ -35,7 +35,8 @@ public static class UseServicesExtension
         app.UseAuthentication()
             .UseAuthorization();
             
-        app.UseContainerEndpoints();
+        app.UseContainerEndpoints()
+            .MapHealthChecks("/hc");
 
         return app;
     }

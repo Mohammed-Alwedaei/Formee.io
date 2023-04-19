@@ -1,56 +1,42 @@
-﻿using Client.Web.Utilities.Dtos;
-using System.Net.Http.Json;
-
-namespace Client.Web.Utilities.Services;
+﻿namespace Client.Web.Utilities.Services;
 
 public class ContainersService
 {
-    public List<ContainerDto> Containers;
-
-    public int Count; 
-
-    public bool IsFetching;
-
-    public event Action OnChange;
-
     private readonly HttpClient _httpClient;
+    private readonly AppStateService _appState; 
 
-    public ContainersService(HttpClient httpClient)
+    public ContainersService(HttpClient httpClient, AppStateService appState)
     {
         _httpClient = httpClient;
+        _appState = appState;
     }
 
     public async Task GetAllByUserIdAsync(Guid userId)
     {
-        IsFetching = true;
-
+        _appState.Containers.IsFetching = true;
+        
         var url = $"/api/containers/all/{userId}";
 
         var response = await _httpClient
             .GetFromJsonAsync<List<ContainerDto>>(url);
+        
+        _appState.Containers.SetContainersCollectionState(response ?? new List<ContainerDto>());
 
-        if (response != null && response.Any())
-        {
-            Containers = new List<ContainerDto>();
-
-            Containers = response;
-
-            Count = Containers.Count;
-        }
-
-        IsFetching = false;
-
-        OnChange.Invoke();
+        _appState.Containers.IsFetching = false;
     }
 
-    public async Task<ContainerDto?> GetByIdAsync(string containerId)
+    public async Task GetByIdAsync(string containerId)
     {
+        _appState.Containers.IsFetching = true;
+        
         var url = $"/api/containers/{containerId}";
 
         var response = await _httpClient
             .GetFromJsonAsync<ContainerDto>(url);
 
-        return response ?? new ContainerDto();
+        _appState.Containers.SetContainerState(response ?? new ContainerDto());
+        
+        _appState.Containers.IsFetching = false;
     }
 
     public async Task<ContainerDto?> CreateAsync(ContainerDto? container)

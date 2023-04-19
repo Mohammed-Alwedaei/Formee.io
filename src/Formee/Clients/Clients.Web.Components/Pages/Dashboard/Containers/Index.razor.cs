@@ -15,18 +15,22 @@ public partial class Index : IDisposable
 
     [Inject]
     public AnalyticsService AnalyticsService { get; set; }
+    
+    [Inject]
+    public AppStateService AppState { get; set; }
 
     [Parameter]
     [SupplyParameterFromQuery(Name = "user_id")]
     public string UserId { get; set; }
 
-    protected override void OnParametersSet()
+    protected override async Task OnParametersSetAsync()
     {
-        ContainersService.OnChange += async () =>
+        AppState.Containers.StateChanged += async () =>
         {
-            await ContainersService.GetAllByUserIdAsync(Guid.Parse(UserId));
             await InvokeAsync(StateHasChanged);
         };
+        
+        await ContainersService.GetAllByUserIdAsync(Guid.Parse(UserId));
     }
 
     /// <summary>
@@ -63,8 +67,7 @@ public partial class Index : IDisposable
     /// <param name="args"></param>
     private void HandleSiteSelect(ChipEventArgs args)
     {
-        var site = AnalyticsService.Sites
-            .FirstOrDefault(s => s.Name == args.Text);
+        var site = AppState.Analytics.Sites.FirstOrDefault(s => s.Name == args.Text);
 
         NavigationManager.NavigateTo($"{Routes.Sites}?user_id={UserId}&container_id={site.ContainerId}");
     }
@@ -72,5 +75,8 @@ public partial class Index : IDisposable
     /// <summary>
     /// Dispose the free and unused resources
     /// </summary>
-    public void Dispose() => ContainersService.OnChange -= StateHasChanged;
+    public void Dispose()
+    {
+        AppState.Containers.StateChanged -=StateHasChanged;
+    }
 }

@@ -15,9 +15,9 @@
 
 <FmTab OnTabChange="HandleContainerChangeEvent">
     <FmTabItems>
-        @if (ContainersService.Containers.Any())
+        @if (AppState.Identity.User.Id != Guid.Empty)
         {
-            foreach (var container in ContainersService.Containers)
+            foreach (var container in AppState.Containers.ContainersCollection)
             {
                 <FmTabItem Id="@container.Id">
                     <Header>

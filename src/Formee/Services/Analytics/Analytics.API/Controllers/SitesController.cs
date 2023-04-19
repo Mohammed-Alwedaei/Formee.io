@@ -1,4 +1,7 @@
 ﻿using Analytics.Utilities.Dtos.Site;
+using ServiceBus.Messages;
+using ServiceBus.Models;
+using ServiceBus.ServiceBus;
 using SynchronousCommunication.HttpClients;
 
 namespace Analytics.API.Controllers;
@@ -10,14 +13,17 @@ public class SitesController : ControllerBase
     private readonly ILogger<SitesController> _logger;
     private readonly ISubscriptionsClient _subscriptionsClient;
     private readonly ISiteRepository _siteRepository;
+    private readonly IAzureServiceBus<NotificationMessage> _notificationServiceBus;
 
     public SitesController(ILogger<SitesController> logger, 
         ISiteRepository siteRepository, 
-        ISubscriptionsClient subscriptionsClient)
+        ISubscriptionsClient subscriptionsClient, 
+        IAzureServiceBus<NotificationMessage> notificationServiceBus)
     {
         _logger = logger;
         _siteRepository = siteRepository;
         _subscriptionsClient = subscriptionsClient;
+        _notificationServiceBus = notificationServiceBus;
     }
 
     [HttpGet("{id:int}")]
@@ -67,6 +73,13 @@ public class SitesController : ControllerBase
         var result = await _siteRepository.CreateSiteAsync(site);
 
         if (result is null) return NotFound();
+        
+        await _notificationServiceBus.SendMessage(new NotificationModel
+        {
+            GlobalUserId = result.UserId,
+            Heading = "A new site is created",
+            Message = $"You have created {result.Name} site"
+        });
 
         return Created("/", result);
     }
@@ -78,8 +91,15 @@ public class SitesController : ControllerBase
             DateTime.Now);
 
         var result = await _siteRepository.UpdateSiteAsync(site);
-
+        
         if (result is null) return NotFound();
+        
+        await _notificationServiceBus.SendMessage(new NotificationModel
+        {
+            GlobalUserId = result.UserId,
+            Heading = "A site is updated",
+            Message = $"You have updated {result.Name} site"
+        });
 
         return Ok(result);
     }
@@ -93,6 +113,13 @@ public class SitesController : ControllerBase
         var result = await _siteRepository.DeleteSiteByIdAsync(id);
 
         if (result is null) return NotFound();
+        
+        await _notificationServiceBus.SendMessage(new NotificationModel
+        {
+            GlobalUserId = result.UserId,
+            Heading = "A site is deleted",
+            Message = $"You have deleted {result.Name} site"
+        });
 
         return Ok(result);
     }

@@ -10,6 +10,9 @@ public partial class Index
 {
     [Inject]
     public LinksService LinksService { get; set; }
+    
+    [Inject]
+    public AppStateService AppState { get; set; }
 
     [Inject]
     public ContainersService ContainersService { get; set; }
@@ -18,10 +21,8 @@ public partial class Index
     public NavigationManager NavigationManager { get; set; }
 
     [Parameter]
-    [SupplyParameterFromQuery(Name = "containerId")]
+    [SupplyParameterFromQuery(Name = "container_id")]
     public string? ContainerId { get; set; }
-
-    private List<ContainerDto> _container = new();
 
     private List<LinkDto> _links = new();
     private List<LinkHitDto> _linkHits = new();
@@ -42,20 +43,17 @@ public partial class Index
 
     private async Task HandleContainerChangeEvent(string? containerId)
     {
-        NavigationManager.NavigateTo($"{Routes.Links}?containerId={containerId}");
-        _links = await LinksService.GetAllAsync(containerId);
+        NavigationManager.NavigateTo($"{Routes.Links}?container_id={containerId}");
+        await LinksService.GetAllAsync(containerId);
 
         if (_links.Any())
         {
             var today = DateTime.Now;
             var lastWeek = today.AddDays(-7);
 
-            _linkHits = await LinksService.GetAllHitsByContainerId(containerId, lastWeek, today);
+            await LinksService.GetAllHitsByContainerId(containerId, lastWeek, today);
 
-            if (_linkHits.Any())
-            {
-                _linkHitsChart = LinksService.GenerateChartDataSeries(_linkHits);
-            }
+            //TODO: create API endpoint to create the chart models
         }
     }
 
@@ -65,11 +63,11 @@ public partial class Index
         await ContainersService.GetAllByUserIdAsync(userId);
 
         //Check if the containers collection is not empty and fetch user links and insights
-        if (ContainersService.Containers.Any())
+        if (AppState.Containers.ContainersCollection.Any())
         {
             if (string.IsNullOrEmpty(ContainerId))
             {
-                var containerId = ContainersService.Containers.FirstOrDefault().Id;
+                var containerId = AppState.Containers.ContainersCollection.FirstOrDefault().Id;
                 await HandleContainerChangeEvent(containerId);
             }
             else

@@ -13,11 +13,11 @@
 
 <FmSpacer/>
 
-@if (ContainersService.Containers != null)
+@if (AppState.Containers.ContainersCollection != null)
 {
     <Grid Gap="@GridGap.Large">
                 <Items>
-                    @foreach (var container in ContainersService.Containers)
+                    @foreach (var container in AppState.Containers.ContainersCollection)
                     {
                         <GridItem ColumnSize="@GridSize.GridItemMedium">
                             <Child>

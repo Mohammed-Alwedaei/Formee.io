@@ -1,4 +1,6 @@
 ﻿using Analytics.BusinessLogic.Contexts;
+using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
 
 namespace Analytics.API.Extensions;
@@ -60,6 +62,12 @@ public static class UseServicesExtension
         app.UseAuthorization();
 
         app.MapControllers();
+
+        app.MapHealthChecks("/healthcheck", new HealthCheckOptions
+        {
+            Predicate = _ => true,
+            ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+        });
 
         return app;
     }

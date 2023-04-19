@@ -60,7 +60,7 @@ namespace Analytics.BusinessLogic.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("Analytics.Utilities.Entities.PageHitEntity", b =>
@@ -96,7 +96,7 @@ namespace Analytics.BusinessLogic.Migrations
 
                     b.HasIndex("SiteId");
 
-                    b.ToTable("PageHits");
+                    b.ToTable("PageHits", (string)null);
                 });
 
             modelBuilder.Entity("Analytics.Utilities.Entities.SessionEntity", b =>
@@ -123,7 +123,7 @@ namespace Analytics.BusinessLogic.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Sessions");
+                    b.ToTable("Sessions", (string)null);
                 });
 
             modelBuilder.Entity("Analytics.Utilities.Entities.SiteEntity", b =>
@@ -184,7 +184,7 @@ namespace Analytics.BusinessLogic.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Sites");
+                    b.ToTable("Sites", (string)null);
                 });
 
             modelBuilder.Entity("Analytics.Utilities.Entities.PageHitEntity", b =>

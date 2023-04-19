@@ -12,6 +12,9 @@ public partial class Upsert
 
     [Inject]
     public NavigationManager NavigationManager { get; set; }
+    
+    [Inject]
+    public AppStateService AppState { get; set; }
 
     [Parameter]
     [SupplyParameterFromQuery(Name = "user_id")]
@@ -42,7 +45,8 @@ public partial class Upsert
 
         else if (!string.IsNullOrEmpty(ContainerId) && UpsertType == "update" || UpsertType == "delete")
         {
-            _container = await ContainersService.GetByIdAsync(ContainerId);
+            await ContainersService.GetByIdAsync(ContainerId);
+            _container = AppState.Containers.Container;
 
             if (UpsertType == "delete")
                 IsDeleteOperation = true;

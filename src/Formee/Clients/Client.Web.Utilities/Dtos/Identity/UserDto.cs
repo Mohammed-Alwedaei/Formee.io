@@ -24,7 +24,7 @@ public class UserDto
 
     public int? AvatarId { get; set; }
 
-    public AvatarDto Avatar { get; set; }
+    public AvatarDto? Avatar { get; set; }
 
     public int SubscriptionId { get; set; }
 

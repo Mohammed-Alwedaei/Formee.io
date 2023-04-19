@@ -13,25 +13,32 @@
 
 <FmSpacer/>
 
-@if (!string.IsNullOrEmpty(AppState.User.Avatar.Name) && AppState.HistoryCollection != null)
+@if (!string.IsNullOrEmpty(AppState.Identity.User.Avatar.Name) && AppState.History.HistoryCollection != null)
 {
     <Grid Gap="@GridGap.Large">
         <Items>
-            @foreach (var history in AppState.HistoryCollection)
+            @foreach (var history in AppState.History.HistoryCollection)
             {
                 <GridItem ColumnSize="@GridSize.GridItemXLarge">
                     <Child>
                         <FmCard>
-                            <FmHeader>
-                                @{
-                                    var avatarUrl = $"https://adoptingmsastorage.blob.core.windows.net/accountavatars/{AppState.User.Avatar.Name}";
-
-                                    <img class="e-avatar e-avatar-large" src="@avatarUrl" alt=""/>
-                                }
-                                <FmTypography Text="@history.Title"/>
-                            </FmHeader>
                             <FmBody>
+                                <div>
+                                    @{
+                                        var avatarUrl = $"https://adoptingmsastorage.blob.core.windows.net/accountavatars/{AppState.Identity.User.Avatar.Name}";
 
+                                        <img class="e-avatar e-avatar-large" src="@avatarUrl" alt=""/>
+                                    }
+                                </div>
+
+                                <div>
+                                    <FmTypography Text="@history.Action"/>
+
+                                    <FmTypography Text="@history.Title"
+                                                  Type="@Typography.LevelTwo"/>
+
+                                    <FmTypography Text="@history.Service"/>
+                                </div>
                             </FmBody>
                         </FmCard>
                     </Child>
@@ -39,8 +46,8 @@
             }
         </Items>
     </Grid>
-    
-    <FmSpacer />
+
+    <FmSpacer/>
 
     <SfPager @ref="_pager"
              PageSize=5

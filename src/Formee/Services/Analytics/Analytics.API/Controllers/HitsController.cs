@@ -1,11 +1,9 @@
 ﻿using Analytics.Utilities.Dtos.PageHit;
 using Analytics.Utilities.Dtos.Session;
-using Analytics.Utilities.Entities;
-
 namespace Analytics.API.Controllers;
 
-[Route("api/[controller]")]
 [ApiController]
+[Route("api/[controller]")]
 public class HitsController : ControllerBase
 {
     private readonly IPageHitRepository _hitRepository;

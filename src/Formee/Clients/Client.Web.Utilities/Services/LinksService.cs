@@ -1,92 +1,61 @@
 ﻿using Client.Web.Utilities.Dtos.Links;
-using Client.Web.Utilities.Models;
-using System.Net.Http.Json;
-using Client.Web.Utilities.Dtos;
 
 namespace Client.Web.Utilities.Services;
 
 public class LinksService
 {
-    public bool IsFetching;
-
     private readonly HttpClient _httpClient;
+    private readonly AppStateService _appState;
 
-    public LinksService(HttpClient httpClient)
+    public LinksService(HttpClient httpClient, AppStateService appState)
     {
         _httpClient = httpClient;
+        _appState = appState;
     }
 
-    public async Task<List<LinkDto>> GetAllAsync(string? containerId)
+    public async Task GetAllAsync(string? containerId)
     {
-        try
-        {
-            IsFetching = true;
-            var url = $"/api/links/all/{containerId}";
+        _appState.Links.InvertFetchingState();
 
-            var response = await _httpClient
-                .GetFromJsonAsync<List<LinkDto>>(url);
+        var url = $"/api/links/all/{containerId}";
 
-            IsFetching = false;
+        var response = await _httpClient
+            .GetFromJsonAsync<List<LinkDto>>(url);
 
-            return response ?? throw new Exception("something went wrong");
-        }
-        catch (Exception)
-        {
-            IsFetching = false;
-            return new List<LinkDto>();
-        }
+        _appState.Links.SetLinksCollectionState(response ?? new List<LinkDto>());
+
+        _appState.Links.InvertFetchingState();
     }
 
-    public async Task<List<LinkHitDto>> GetLinkHitsById(int linkId)
+    public async Task GetLinkHitsById(int linkId)
     {
-        try
-        {
-            IsFetching = true;
+        _appState.Links.InvertFetchingState();
 
-            var url = $"/api/links/redirects/all/{linkId}";
+        var url = $"/api/links/redirects/all/{linkId}";
 
-            var response = await _httpClient
-                .GetFromJsonAsync<List<LinkHitDto>>(url);
+        var response = await _httpClient
+            .GetFromJsonAsync<List<LinkHitDto>>(url);
 
-            IsFetching = false;
-
-            return response ?? throw new Exception("something went wrong"); ;
-        }
-        catch (Exception)
-        {
-            IsFetching = false;
-            return new List<LinkHitDto>();
-        }
+        _appState.Links.SetLinkHitsState(response ?? new List<LinkHitDto>());
+        
+        _appState.Links.InvertFetchingState();
     }
 
-    public async Task<List<LinkHitDto>> GetAllHitsByContainerId
-        (string? containerId, DateTime startDate, DateTime endDate)
+    public async Task GetAllHitsByContainerId(string? containerId, DateTime startDate, DateTime endDate)
     {
-        try
-        {
-            IsFetching = true;
+        var formattedStartDate = startDate.ToString("yyyy-MM-dd");
+        var formattedEndDate = endDate.AddDays(1)
+            .ToString("yyyy-MM-dd");
 
-            var formattedStartDate = startDate.ToString("yyyy-MM-dd");
-            var formattedEndDate = endDate.AddDays(1)
-                .ToString("yyyy-MM-dd");
+        var url = $"/api/links/hits/all/{containerId}/{formattedStartDate}/{formattedEndDate}";
 
-            var url = $"/api/links/hits/all/{containerId}/{formattedStartDate}/{formattedEndDate}";
+        var response = await _httpClient
+            .GetFromJsonAsync<List<LinkHitDto>>(url);
 
-            var response = await _httpClient
-                .GetFromJsonAsync<List<LinkHitDto>>(url);
-
-            IsFetching = false;
-
-            return response ?? throw new Exception("something went wrong"); ;
-        }
-        catch (Exception)
-        {
-            IsFetching = false;
-            return new List<LinkHitDto>();
-        }
+        _appState.Links.SetLinkHitsInContainerCollectionState(response ?? new List<LinkHitDto>());
     }
 
-    public List<DateChartModel> GenerateChartDataSeries(List<LinkHitDto> hits)
+    /*public List GenerateChartDataSeries(List<LinkHitDto> hits)
     {
         IsFetching = true;
         var dataSeries = new List<DateChartModel>();
@@ -113,5 +82,5 @@ public class LinksService
 
         IsFetching = false;
         return dataSeries;
-    }
+    }*/
 }

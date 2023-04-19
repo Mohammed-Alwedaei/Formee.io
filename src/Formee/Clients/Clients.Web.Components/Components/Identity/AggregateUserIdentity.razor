@@ -1,0 +1,70 @@
+﻿@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Microsoft.Extensions.Logging
+
+@implements IDisposable
+
+@inject NavigationManager _navigationManager
+@inject AppStateService _appState
+@inject IdentityService _identityService
+@inject ILogger<AppBarAccessControl> _logger
+
+
+@code {
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationState { get; set; }
+    
+    protected override async Task OnParametersSetAsync()
+    {
+        await AggregateUserData();
+    }
+
+    /// <summary>
+    /// If user is authenticated:
+    /// Get user custom claims based on the authentication provider id
+    /// Otherwise redirect to login
+    /// </summary>
+    public async Task AggregateUserData()
+    {
+        var authState = await authenticationState;
+
+        if (authState.User.Identity.IsAuthenticated)
+        {
+            var authProviderId = authState.User
+                .Claims
+                .FirstOrDefault(c => c.Type == "sub")
+                ?.Value;
+            
+            _logger.LogInformation("AUTH: user is authenticated");
+
+            _appState.Identity.StateChanged += StateHasChanged;
+
+            await _identityService.GetByAuthIdAsync(authProviderId);
+            
+            _logger.LogInformation("user id: {userId}", _appState.Identity.User.Id);
+
+            if (_appState.Identity.User.Id == Guid.Empty)
+            {
+                _logger.LogInformation("AUTH: user does not have an account");
+                
+                _navigationManager
+                    .NavigateTo($"{Routes.IdentityUpsert}?upsert_type=create&auth_provider_id={authProviderId}");
+            }
+            else
+            {
+                _logger.LogInformation("AUTH: user account is found");
+
+                _navigationManager.NavigateTo($"/?user_Id={_appState.Identity.User.Id}&auth_provider_id={_appState.Identity.User.AuthId}");
+            }
+        }
+        else
+        {
+            _logger.LogInformation("AUTH: user is not authenticated");
+            _navigationManager.NavigateTo("/authentication/login");
+        }
+    }
+
+    public void Dispose()
+    {
+        _appState.Identity.StateChanged -= StateHasChanged;
+    }
+}

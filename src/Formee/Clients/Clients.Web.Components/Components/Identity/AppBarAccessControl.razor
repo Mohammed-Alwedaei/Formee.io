@@ -1,13 +1,10 @@
 ﻿@using Microsoft.AspNetCore.Components.Web
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Microsoft.Extensions.Logging
 
-@inject NavigationManager Navigation
-@inject AppStateService AppStateService
+@inject NavigationManager _navigationManager
+@inject AppStateService _appState
 @inject SignOutSessionStateManager SignOutManager
-
-<style>
-
-</style>
 
 <AuthorizeView>
     <Authorized>
@@ -17,9 +14,9 @@
                            Content="My Profile">
                     <div class="d-flex justify-content-between align-items-center"
                          style="cursor: pointer;">
-                        @if (!string.IsNullOrEmpty(AppStateService.User.Avatar.Name))
+                        @if (!string.IsNullOrEmpty(_appState.Identity.User.Avatar.Name))
                         {
-                            var avatarUrl = $"https://adoptingmsastorage.blob.core.windows.net/accountavatars/{AppStateService.User.Avatar.Name}";
+                            var avatarUrl = $"https://adoptingmsastorage.blob.core.windows.net/accountavatars/{_appState.Identity.User.Avatar.Name}";
 
                             var style = $"background-image: url({avatarUrl})";
 
@@ -27,22 +24,22 @@
                         }
 
                         <SfIcon IconCss="fa-solid fa-solid fa-chevron-down"
-                                class="fm-sidebar__icon ml-1" />
+                                class="fm-sidebar__icon ml-1"/>
                     </div>
                 </SfTooltip>
             </Trigger>
 
             <Header>
                 <FmTypography Text="Your Profile"
-                              Type="@Typography.LevelTwo" />
+                              Type="@Typography.LevelTwo"/>
             </Header>
 
             <Content>
-                <FmTypography Text="@AppStateService.User.UserName" />
+                <FmTypography Text="@_appState.Identity.User.UserName"/>
 
-                <FmSpacer />
+                <FmSpacer/>
 
-                <FmTypography Text="@AppStateService.User.FirstName" />
+                <FmTypography Text="@_appState.Identity.User.FirstName"/>
             </Content>
 
             <Footer>
@@ -54,6 +51,7 @@
                 </SfButton>
             </Footer>
         </FmModal>
+
     </Authorized>
     <NotAuthorized>
         <a href="authentication/login">Log in</a>
@@ -66,6 +64,6 @@
     private async Task BeginSignOut(MouseEventArgs args)
     {
         await SignOutManager.SetSignOutState();
-        Navigation.NavigateTo("authentication/logout");
+        _navigationManager.NavigateTo("authentication/logout");
     }
 }

@@ -23,5 +23,6 @@ public class PageHitEntity : BaseEntity
     [Required]
     public int CategoryId { get; set; }
 
-    public virtual CategoryEntity Category { get; set; } = null!;
+    [ForeignKey(nameof(CategoryId))]
+    public virtual CategoryEntity Category { get; set; }
 }

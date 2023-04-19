@@ -1,19 +1,22 @@
-﻿@inject NotificationsService NotificationsService
-@inject AppStateService AppStateService
+﻿@inject NotificationsService _notificationsService
+@inject AppStateService _appState
 
 @implements IDisposable
 
 <div class="fm-notification__container">
-    <SfTooltip Position="Syncfusion.Blazor.Popups.Position.BottomCenter"
-               Content="My Notifications">
-        <SfIcon IconCss="fa-solid fa-bell"
-                class="fm-sidebar__icon"
-                @onclick="HandleButtonClick">
-            <span class="e-badge e-badge-success e-badge-notification e-badge-overlap">
-                @NotificationsService.UnreadNotificationsCount
-            </span>
-        </SfIcon>
-    </SfTooltip>
+    @if (_appState.Notifications.NotificationsCollection is not null)
+    {
+        <SfTooltip Position="Syncfusion.Blazor.Popups.Position.BottomCenter"
+                   Content="My Notifications">
+            <SfIcon IconCss="fa-solid fa-bell"
+                    class="fm-sidebar__icon"
+                    @onclick="HandleButtonClick">
+                <span class="e-badge e-badge-success e-badge-notification e-badge-overlap">
+                    @_appState.Notifications.NotificationsCollection.Count
+                </span>
+            </SfIcon>
+        </SfTooltip>
+    }
 
     <div class="fm-notification__modal @ModalVisibility">
         <div class="d-flex justify-content-between align-items-center">
@@ -28,12 +31,12 @@
         <FmSeperator />
 
         <div class="fm-notification__list-view">
-            @if (NotificationsService.Notifications is not null
-            && NotificationsService.IsFetching != true)
+            @if (_appState.Notifications.NotificationsCollection is not null
+            && _appState.Notifications.IsFetching != true)
             {
-                foreach (var notification in NotificationsService.Notifications)
+                foreach (var notification in _appState.Notifications.NotificationsCollection)
                 {
-                    var last = NotificationsService.Notifications.LastOrDefault();
+                    var last = _appState.Notifications.NotificationsCollection.LastOrDefault();
 
                     <NotificationModalItem Notification="notification"
                                    OnMarkAsRead="HandleMarkAsRead" />
@@ -69,21 +72,18 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        await NotificationsService.CreateClientConnection();
+        _appState.Notifications.StateChanged += StateHasChanged;
+        
+        await _notificationsService.CreateClientConnection();
 
-        await NotificationsService.GetAllByUserIdAsync(AppStateService.User.Id, 5);
+        await _notificationsService.GetAllByUserIdAsync(_appState.Identity.User.Id, 5);
 
-        NotificationsService.ListenToMarkAsRead();
-
-        NotificationsService.StateChanged += async () =>
-        {
-            await InvokeAsync(StateHasChanged);
-        };
+        _notificationsService.ListenToMarkAsRead();
     }
 
     private async Task HandleMarkAsRead(int id)
     {
-        await NotificationsService.MarkNotificationAsReadAsync(id);
+        await _notificationsService.MarkNotificationAsReadAsync(id);
     }
 
     private void HandleButtonClick()
@@ -94,6 +94,6 @@
 
     public void Dispose()
     {
-        NotificationsService.StateChanged -= StateHasChanged;
+        _appState.Notifications.StateChanged -= StateHasChanged;
     }
 }

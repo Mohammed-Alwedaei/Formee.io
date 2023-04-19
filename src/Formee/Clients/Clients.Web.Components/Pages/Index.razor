@@ -10,7 +10,7 @@
 
 <FmSpacer />
 
-@if (!ContainersService.IsFetching && !NotificationsService.IsFetching)
+@if (AppState.Identity.User.Id != Guid.Empty)
 {
     <section>
         <SfDashboardLayout Columns="4"
@@ -41,7 +41,7 @@
                                             </FmHeader>
 
                                             <FmBody>
-                                                <FmTypography Text="@ContainersService.Count.ToString()"
+                                                <FmTypography Text="@AppState.Containers.ContainersCollection.Count.ToString()"
                                                           Type="@Typography.LevelThree"
                                                           Classes="fm-typography__display-3"
                                                           TextAlign="left" />
@@ -63,10 +63,17 @@
                                             </FmHeader>
 
                                             <FmBody>
-                                                <FmTypography Text="3"
-                                                          Type="@Typography.LevelThree"
-                                                          Classes="fm-typography__display-3"
-                                                          TextAlign="left" />
+                                                @if (AppState.Analytics.Sites is not null)
+                                                                                               {
+                                                                                                   <FmTypography Text="@AppState.Analytics.Sites.Count.ToString()"
+                                                                                                                 Type="@Typography.LevelThree"
+                                                                                                                 Classes="fm-typography__display-3"
+                                                                                                                 TextAlign="left" />
+                                                                                               }
+                                                                                               else
+                                                                                               {
+                                                                                                   <SfSpinner Visible="true" />
+                                                                                               }
 
                                                 <FmTypography Text="Your site count"
                                                           Classes="fm-typography__lead" />
@@ -85,10 +92,17 @@
                                             </FmHeader>
 
                                             <FmBody>
-                                                <FmTypography Text="@AnalyticsService.HitsCount.ToString()"
-                                                          Type="@Typography.LevelThree"
-                                                          Classes="fm-typography__display-3"
-                                                          TextAlign="left" />
+                                               @if (AppState.Analytics.Hits is not null)
+                                               {
+                                                   <FmTypography Text="@AppState.Analytics.Hits.Count.ToString()"
+                                                                 Type="@Typography.LevelThree"
+                                                                 Classes="fm-typography__display-3"
+                                                                 TextAlign="left" />
+                                               }
+                                               else
+                                               {
+                                                   <SfSpinner Visible="true" />
+                                               }
 
                                                 <FmTypography Text="Hits in last week"
                                                           Classes="fm-typography__lead" />
@@ -132,7 +146,7 @@
                             <FmTypography Text="Unread Notifications"
                                       Type="@Typography.LevelTwo" />
 
-                            <FmTypography Text="@NotificationsService.UnreadNotificationsCount.ToString()"
+                            <FmTypography Text="@AppState.Notifications.UnreadNotificationsCount.ToString()"
                                       Type="@Typography.LevelThree" />
                         </div>
                     </Header>
@@ -140,15 +154,14 @@
                     <ContentTemplate>
                         <FmCard>
                             <FmBody>
-                                @if (NotificationsService.Notifications is not null)
+                                @if (AppState.Notifications.NotificationsCollection is not null)
                                 {
-                                    @foreach (var notification in NotificationsService.Notifications)
+                                    @foreach (var notification in AppState.Notifications.NotificationsCollection)
                                     {
                                         <NotificationModalItem Notification="@notification"
-                                                   OnMarkAsRead="HandleMarkAsRead" />
+                                                               OnMarkAsRead="HandleMarkAsRead"/>
                                     }
                                 }
-
                             </FmBody>
                         </FmCard>
                     </ContentTemplate>
@@ -161,15 +174,15 @@
                     </Header>
 
                     <ContentTemplate>
-                        @if (AnalyticsService.HitChartDataSeries is not null && 
-                             AnalyticsService.IsFetching != true)
+                        @if (AppState.Analytics.HitChartDataSeries is not null && 
+                             AppState.Analytics.IsFetching != true)
                         {
                             <SfChart Width="100%" Title="Number of hits">
                                 <ChartPrimaryXAxis ValueType="Syncfusion.Blazor.Charts.ValueType.DateTime"
                                            IntervalType="IntervalType.Days" />
 
                                 <ChartSeriesCollection>
-                                    <ChartSeries DataSource="@AnalyticsService.HitChartDataSeries"
+                                    <ChartSeries DataSource="@AppState.Analytics.HitChartDataSeries"
                                          XName="Date"
                                          YName="Count"
                                          Type="ChartSeriesType.Line" />
@@ -189,15 +202,15 @@
                                   Type="@Typography.LevelTwo" />
                     </Header>
                     <ContentTemplate>
-                        @if (AnalyticsService.TopPerformingCategories is not null &&
-                            AnalyticsService.IsFetching != true)
+                        @if (AppState.Analytics.TopPerformingCategories is not null 
+                             && AppState.Analytics.IsFetching != true)
                         {
                             <SfChart Width="100%" Title="Number of hits">
                                 <ChartPrimaryXAxis ValueType="Syncfusion.Blazor.Charts.ValueType.Category"
                                                    IntervalType="IntervalType.Days" />
 
                                 <ChartSeriesCollection>
-                                    <ChartSeries DataSource="@AnalyticsService.TopPerformingCategories"
+                                    <ChartSeries DataSource="@AppState.Analytics.TopPerformingCategories"
                                                  XName="Name"
                                                  YName="Count"
                                                  Type="ChartSeriesType.StackingBar" />

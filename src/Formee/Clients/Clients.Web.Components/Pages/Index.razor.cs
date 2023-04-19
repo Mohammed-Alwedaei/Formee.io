@@ -20,27 +20,14 @@ public partial class Index : IDisposable
     public IdentityService IdentityService { get; set; }
 
     [Inject]
-    public AppStateService AppStateService { get; set; }
+    public AppStateService AppState { get; set; }
 
     protected override async Task OnParametersSetAsync()
     {
         var today = DateTime.Now;
         var lastWeek = today.AddDays(-7);
 
-        AppStateService.OnUserStateChange += async () =>
-        {
-            ContainersService.OnChange += async () => await InvokeAsync(StateHasChanged);
-
-            await ContainersService.GetAllByUserIdAsync(AppStateService.User.Id);
-
-            await AnalyticsService.GetAllHitsInTimePeriodAsync(3, lastWeek, today, "categories");
-            
-            AnalyticsService.GenerateTopPerformingCategories();
-
-            AnalyticsService.GenerateChartDataSeries();
-            
-            await InvokeAsync(StateHasChanged);
-        };
+        AggregatePageData(lastWeek, today);
     }
 
     /// <summary>
@@ -52,10 +39,26 @@ public partial class Index : IDisposable
         await NotificationsService.MarkNotificationAsReadAsync(id);
     }
 
+    private void AggregatePageData(DateTime startDate, DateTime endDate)
+    {
+        AppState.Identity.StateChanged += async () =>
+        {
+            AppState.Containers.StateChanged += async () => await InvokeAsync(StateHasChanged);
+
+            await ContainersService.GetAllByUserIdAsync(AppState.Identity.User.Id);
+
+            await AnalyticsService.GetAllHitsInTimePeriodAsync(3, startDate, endDate, "categories");
+
+            await AnalyticsService.GetTopPerformingCategories(3);
+
+            await InvokeAsync(StateHasChanged);
+        };
+    }
+
     public void Dispose()
     {
-        AppStateService.OnUserStateChange -= StateHasChanged;
-        ContainersService.OnChange -= StateHasChanged;
-        NotificationsService.StateChanged -= StateHasChanged;
+        AppState.Identity.StateChanged -= StateHasChanged;
+        AppState.Containers.StateChanged -= StateHasChanged;
+        AppState.Notifications.StateChanged -= StateHasChanged;
     }
 }

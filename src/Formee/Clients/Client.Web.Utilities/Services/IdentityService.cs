@@ -1,44 +1,63 @@
 ﻿using Client.Web.Utilities.Dtos.Identity;
 using System.Net.Http.Json;
+using Microsoft.Extensions.Logging;
 
 namespace Client.Web.Utilities.Services;
 public class IdentityService
 {
     private readonly HttpClient _httpClient;
-    private readonly AppStateService _appStateService;
+    private readonly AppStateService _appState;
+    private readonly ILogger<IdentityService> _logger;
 
-    public IdentityService(HttpClient httpClient, AppStateService appStateService)
+    public IdentityService(HttpClient httpClient, AppStateService appState, ILogger<IdentityService> logger)
     {
         _httpClient = httpClient;
-        _appStateService = appStateService;
+        _appState = appState;
+        _logger = logger;
     }
 
-    public async Task<UserDto?> GetByAuthIdAsync(string authProviderId)
+    public async Task GetByAuthIdAsync(string authProviderId)
     {
+        _appState.Identity.IsFetching = true;
+        
         var url = $"/api/identity/users/{authProviderId}";
+        
+        _logger.LogInformation("FETCHING: api request to route {url} at {date}", url, DateTime.UtcNow);
 
-        var response = await _httpClient.GetAsync(url);
+        var response = await _httpClient.GetFromJsonAsync<UserDto>(url);
 
-        if (response.IsSuccessStatusCode)
+        if (response.Id == Guid.Empty || string.IsNullOrEmpty(response.AuthId))
         {
-            return await response.Content.ReadFromJsonAsync<UserDto>();
-        }
+            _logger.LogError("ERROR: could not fetch route: {url} with status code of {statusCode}", url);
 
-        return new UserDto();
+            _appState.Identity.SetUserState(new UserDto());
+        }
+        
+        _logger.LogInformation("SUCCESS: fetch request to route: {url} succeeded", url);
+        _appState.Identity.SetUserState(response);
+            
+        _appState.Identity.IsFetching = false;
     }
     
-    public async Task<UserDto?> GetByIdAsync(Guid userId)
+    public async Task GetByIdAsync(Guid userId)
     {
         var url = $"/api/identity/users/{userId}";
 
-        var response = await _httpClient.GetAsync(url);
+        _logger.LogInformation("FETCHING: api request to route {url} at {date}", url, DateTime.UtcNow);
 
-        if (response.IsSuccessStatusCode)
+        var response = await _httpClient.GetFromJsonAsync<UserDto>(url);
+
+        if (response.Id == Guid.Empty || string.IsNullOrEmpty(response.AuthId))
         {
-            return await response.Content.ReadFromJsonAsync<UserDto>();
-        }
+            _logger.LogError("ERROR: could not fetch route: {url} with status code of {statusCode}", url);
 
-        return new UserDto();
+            _appState.Identity.SetUserState(response);
+        }
+        
+        _logger.LogInformation("SUCCESS: fetch request to route: {url} succeeded", url);
+        _appState.Identity.SetUserState(new UserDto());
+            
+        _appState.Identity.IsFetching = false;
     }
 
     public async Task<UserDto?> CreateAsync(UserDto user)

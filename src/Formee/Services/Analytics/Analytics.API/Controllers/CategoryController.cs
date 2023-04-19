@@ -11,15 +11,18 @@ namespace Analytics.API.Controllers;
 public class CategoryController : ControllerBase
 {
     private readonly ICategoryRepository _categoryRepository;
+    private readonly IPageHitRepository _hitRepository;
     private readonly ILogger<CategoryController> _logger;
     private readonly IAzureServiceBus<HistoryMessage> _serviceBus;
     public CategoryController(ICategoryRepository categoryRepository, 
         ILogger<CategoryController> logger,
-        IAzureServiceBus<HistoryMessage> serviceBus)
+        IAzureServiceBus<HistoryMessage> serviceBus, 
+        IPageHitRepository hitRepository)
     {
         _categoryRepository = categoryRepository;
         _logger = logger;
         _serviceBus = serviceBus;
+        _hitRepository = hitRepository;
     }
 
     [HttpGet("{id:int}")]
@@ -52,6 +55,48 @@ public class CategoryController : ControllerBase
         }
 
         return Ok(result);
+    }
+    
+    /// <summary>
+    /// Get Performing Categories
+    /// </summary>
+    /// <param name="siteId"></param>
+    /// <returns></returns>
+    [HttpGet("top/{siteId:int}")]
+    public async Task<IActionResult> GetTopPerformingCategories(int siteId)
+    {
+        _logger.LogInformation("GET: request at /api/categories/all at {datetime}",
+            DateTime.Now);
+
+        var now = DateTime.Now;
+
+        var lastWeek = DateTime.Now.AddDays(-7);
+
+        var result = await _hitRepository.GetAllByDateAsync(siteId,
+            lastWeek, 
+            now, 
+            p => p.Category);
+
+        var categoryAnalytics = new List<CategoryAnalyticsDto>();
+
+        foreach (var hit in result)
+        {
+            var hasCategory = categoryAnalytics.FirstOrDefault(c => c.Name == hit.Category?.Name);
+
+            if (hasCategory is null) 
+                categoryAnalytics.Add(new CategoryAnalyticsDto
+                {
+                    Name = hit.Category?.Name,
+                    Count = 1
+                });
+            else
+                hasCategory.Count++;
+        }
+
+        if (categoryAnalytics.Count is 0)
+            return NotFound();
+        
+        return Ok(categoryAnalytics);
     }
 
     [HttpPost]

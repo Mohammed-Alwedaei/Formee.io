@@ -33,6 +33,7 @@ services:
       - links.service
       - history.service
       - notifications.service
+      - monitoring.service
 
   analytics.service:
     image: analytics.service
@@ -48,7 +49,8 @@ services:
       ASPNETCORE_ENVIRONMENT: Development
       ConnectionStrings__DefaultConnection: Server=host.docker.internal, 1433;Database=Formee.Analytics;User Id=Admin;Password=Admin@123123;integrated security=false;TrustServerCertificate=True
       ServiceBus__ConnectionString: Endpoint=sb://formee.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=+prGrnIC0RwHSKHF3zJ/5HW35R08KH4wG+ASbPIkqlk=
-      ServiceBus__History: topic-history
+      ServiceBus__HistoryTopic: topic-history
+      ServiceBus__NotificationsTopic: topic-notifications
 
   containers.service:
     image: containers.service
@@ -165,13 +167,20 @@ services:
       AZURE_SERVICE_BUS: Endpoint=sb://formee.servicebus.windows.net/;SharedAccessKeyName=SharedAccessPolicy;SharedAccessKey=2zjgyBu0KGgdOiVx8rHy5GPnHBNvKoR9d+ASbDEu2fw=;EntityPath=topic-history
       MONGO_DB_HISTORY: mongodb://host.docker.internal/history
 
-  # monitoring.service:
-  #   image: monitoring.service
-  #   container_name: monitoring.service
-  #   build:
-  #     context: .
-  #     dockerfile: ./Services/Monitoring/Monitoring/Dockerfile
-  #   expose: 
-  #     - "80"
-  #   ports:
-  #     - "5009:3000"
+  monitoring.service:
+    image: monitoring.service
+    container_name: monitoring.service
+    build:
+      context: .
+      dockerfile: ./Services/Monitoring/Monitoring/Dockerfile
+    expose: 
+      - "80"
+    ports:
+      - "5009:80"
+    depends_on:
+      - containers.service
+      - forms.service
+      - identity.service
+      - links.service
+      - history.service
+      - notifications.service

@@ -6,7 +6,7 @@ using Syncfusion.Blazor.Inputs;
 namespace Clients.Web.Components.Pages.Dashboard.Identity;
 
 [Route("/dashboard/identity/upsert")]
-public partial class Upsert
+public partial class Upsert : IDisposable
 {
     [Inject]
     public IdentityService IdentityService { get; set; }
@@ -15,14 +15,14 @@ public partial class Upsert
     public NavigationManager NavigationManager { get; set; }
 
     [Inject]
-    public AppStateService AppStateService { get; set; }
+    public AppStateService AppState { get; set; }
 
     [Parameter]
-    [SupplyParameterFromQuery(Name = "userId")]
+    [SupplyParameterFromQuery(Name = "user_id")]
     public string UserId { get; set; }
 
     [Parameter]
-    [SupplyParameterFromQuery(Name = "type")]
+    [SupplyParameterFromQuery(Name = "upsert_type")]
     public string UpsertType { get; set; }
     
     [Parameter]
@@ -43,6 +43,8 @@ public partial class Upsert
     {
         _isDeleteUpsert = false;
         User.AuthId = AuthProviderId;
+
+        AppState.Identity.StateChanged += StateHasChanged;
     }
 
     private void HandleValidFormSubmit()
@@ -74,5 +76,10 @@ public partial class Upsert
     private void HandleActionReject()
     {
         _isVisibleConfirmationDialog = false;
+    }
+
+    public void Dispose()
+    {
+        AppState.Identity.StateChanged -= StateHasChanged;
     }
 }

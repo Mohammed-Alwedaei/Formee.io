@@ -1,33 +1,23 @@
-﻿using Client.Web.Utilities.Dtos.Analytics;
-using Client.Web.Utilities.Models;
-using System.Net.Http.Json;
+﻿using Microsoft.Extensions.Logging;
 
 namespace Client.Web.Utilities.Services;
 
 public class AnalyticsService
 {
-    //Raw data collections
-    public List<SiteDto> Sites;
-    public List<PageHitDto> Hits;
-
-    //Display collection
-    public List<DateChartModel> HitChartDataSeries;
-    public List<BarChartModel> TopPerformingCategories;
-
-    //Collection meta
-    public int HitsCount;
-    public bool IsFetching;
-
     //Dependency injection
     private readonly HttpClient _httpClient;
+    private readonly AppStateService _appState;
+    private readonly ILogger<AnalyticsService> _logger;
 
     /// <summary>
     /// Initialize constructor and add configure dependency injection
     /// </summary>
     /// <param name="httpClient"></param>
-    public AnalyticsService(HttpClient httpClient)
+    public AnalyticsService(HttpClient httpClient, AppStateService appState, ILogger<AnalyticsService> logger)
     {
         _httpClient = httpClient;
+        _appState = appState;
+        _logger = logger;
     }
 
     /// <summary>
@@ -35,19 +25,18 @@ public class AnalyticsService
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
-    public async Task<SiteDto> GetSiteByIdAsync(int id)
+    public async Task GetSiteByIdAsync(int id)
     {
+        _appState.Analytics.IsFetching = true;
+        
         var url = $"/api/sites/{id}";
 
         var response = await _httpClient
             .GetFromJsonAsync<SiteDto>(url);
 
-        if (response is not null)
-        {
-            return response;
-        }
-
-        return new SiteDto();
+        _appState.Analytics.Site = response ?? new SiteDto();
+        
+        _appState.Analytics.IsFetching = false;
     }
 
     /// <summary>
@@ -55,14 +44,25 @@ public class AnalyticsService
     /// </summary>
     /// <param name="containerId"></param>
     /// <returns></returns>
-    public async Task<List<SiteDto>> GetAllSitesAsync(string containerId)
+    public async Task GetAllSitesAsync(string containerId)
     {
+        _appState.Analytics.IsFetching = true;
+        
         var url = $"/api/sites/all/{containerId}";
 
         var response = await _httpClient
             .GetFromJsonAsync<List<SiteDto>>(url);
-
-        return response ?? new List<SiteDto>();
+        
+        if (response is not null)
+        {
+            _appState.Analytics.Sites = new List<SiteDto>();  
+            _appState.Analytics.Sites = response;
+        }
+        else
+            _appState.Analytics.Sites = new List<SiteDto>();
+        
+        
+        _appState.Analytics.IsFetching = false;
     }
 
     /// <summary>
@@ -75,6 +75,8 @@ public class AnalyticsService
     public async Task GetAllHitsInTimePeriodAsync
         (int siteId, DateTime startDate, DateTime endDate, string filter)
     {
+        _appState.Analytics.IsFetching = true;
+        
         var formattedStartDate = startDate.ToString("yyyy-MM-dd");
         var formattedEndDate = endDate.AddDays(1)
             .ToString("yyyy-MM-dd");
@@ -86,87 +88,36 @@ public class AnalyticsService
 
         if (response is not null)
         {
-            Hits = new List<PageHitDto>();
-
-            Hits = response;
-
-            HitsCount = Hits.Count;
+            _appState.Analytics.Hits = new List<PageHitDto>();
+            _appState.Analytics.Hits = response;
         }
+        else
+            _appState.Analytics.Hits = new List<PageHitDto>();
+        
+        
+        _appState.Analytics.IsFetching = false;
     }
 
     /// <summary>
-    /// Generate datetime chart type for hits 
+    /// Get the top performing categories
     /// </summary>
-    public void GenerateChartDataSeries()
+    /// <param name="siteId"></param>
+    public async Task GetTopPerformingCategories(int siteId)
     {
-        IsFetching = true;
-        var dataSeries = new List<DateChartModel>();
-        var counter = 0;
+        var url = $"/api/category/top/{siteId}";
 
-        foreach (var hit in Hits)
+        _appState.Analytics.IsFetching = true;
+        
+        var response = await _httpClient.GetFromJsonAsync<List<BarChartModel>>(url);
+        
+        if (response is not null)
         {
-            counter += 1;
-
-            var isAvailableDate = dataSeries
-                .FirstOrDefault(c => c.Date.Date
-                                     == hit.CreatedDate.Date 
-                                     && c.Date.Hour - hit.CreatedDate.Hour == 0);
-
-            if (isAvailableDate is not null)
-            {
-                isAvailableDate.Count++;
-            }
-            else
-            {
-                dataSeries.Add(new DateChartModel
-                {
-                    Id = hit.Id,
-                    Date = hit.CreatedDate,
-                    Count = 1
-                });
-            }
+            _appState.Analytics.TopPerformingCategories = new List<BarChartModel>();
+            _appState.Analytics.TopPerformingCategories = response;
         }
+        else
+            _appState.Analytics.TopPerformingCategories = new List<BarChartModel>();
 
-        HitChartDataSeries = new List<DateChartModel>();
-        HitChartDataSeries = dataSeries;
-
-        IsFetching = false;
-    }
-
-    /// <summary>
-    /// Generate top performing categories of a site 
-    /// </summary>
-    public void GenerateTopPerformingCategories()
-    {
-        IsFetching = true;
-
-        var dataSeries = new List<BarChartModel>();
-        var counter = 0;
-
-        foreach (var hit in Hits)
-        {
-            counter += 1;
-
-            var hasCategory = dataSeries
-                .FirstOrDefault(c => c.Name == hit.Category.Name);
-
-            if (hasCategory is not null)
-            {
-                hasCategory.Count++;
-            }
-            else
-            {
-                dataSeries.Add(new BarChartModel
-                {
-                    Name = hit.Category.Name,
-                    Count = 1
-                });
-            }
-        }
-
-        TopPerformingCategories = new List<BarChartModel>();
-        TopPerformingCategories = dataSeries;
-
-        IsFetching = false;
+        _appState.Analytics.IsFetching = false;
     }
 }

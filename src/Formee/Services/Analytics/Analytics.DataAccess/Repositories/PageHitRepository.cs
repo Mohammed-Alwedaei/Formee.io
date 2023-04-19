@@ -16,6 +16,7 @@ public class PageHitRepository : IPageHitRepository
     public async Task<List<PageHitDto>> GetAllBySiteId(int siteId)
     {
         var hits = await _db.PageHits
+            .Include(p => p.Category)
             .AsNoTracking()
             .Where(h => h.SiteId == siteId)
             .ToListAsync();

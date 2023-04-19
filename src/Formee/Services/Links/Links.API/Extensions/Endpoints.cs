@@ -27,16 +27,10 @@ public static class LinksEndpoints
                 id,
                 DateTime.Now);
 
-            if (id is 0)
-            {
-                throw new BadRequestException(ErrorMessages.BadRequest);
-            }
+            if (id is 0) throw new BadRequestException(ErrorMessages.BadRequest);
 
-            if (await linkRepository.GetLinkByIdAsync(id) is LinkEntity link)
-            {
-                return link;
-            }
-
+            if (await linkRepository.GetLinkByIdAsync(id) is LinkEntity link) return link;
+            
             throw new NotFoundException(ErrorMessages.NotFound);
         });
 
@@ -52,18 +46,14 @@ public static class LinksEndpoints
                 containerId,
                 DateTime.Now);
 
-            if (string.IsNullOrEmpty(containerId) || containerId.Length > 24)
-            {
+            if (string.IsNullOrEmpty(containerId) || containerId.Length > 24) 
                 throw new BadRequestException(ErrorMessages.BadRequest);
-            }
-
+            
             var results = await linkRepository
                 .GetAllLinksByContainerIdAsync(containerId);
 
-            if (results.Count is not 0)
-            {
-                return results;
-            }
+            if (results.Count is not 0) return results;
+            
 
             throw new NotFoundException(ErrorMessages.NotFound);
         });
@@ -92,16 +82,11 @@ public static class LinksEndpoints
                 return Results.Problem(statusCode: StatusCodes.Status403Forbidden);
 
             if (link is null)
-            {
                 throw new BadRequestException(ErrorMessages.BadRequest);
-            }
-
-            if (await linkRepository.CreateLinkAsync(link)
-                is LinkEntity createdLink)
-            {
+            
+            if (await linkRepository.CreateLinkAsync(link) is { } createdLink) 
                 return Results.Created("/", createdLink);
-            }
-
+            
             throw new Exception(ErrorMessages.ServerError);
         });
 
@@ -118,15 +103,9 @@ public static class LinksEndpoints
                 DateTime.Now);
 
             if (id is 0)
-            {
                 throw new BadRequestException(ErrorMessages.BadRequest);
-            }
-
-            if (await linkRepository.DeleteLinkAsync(id)
-                is DeleteLinkDto deletedLink)
-            {
-                return deletedLink;
-            }
+            
+            if (await linkRepository.DeleteLinkAsync(id) is { } deletedLink) return deletedLink;
 
             throw new NotFoundException(ErrorMessages.NotFound);
         });
@@ -144,19 +123,16 @@ public static class LinksEndpoints
                 DateTime.Now);
 
             if (string.IsNullOrEmpty(containerId) || containerId.Length > 24)
-            {
                 throw new BadRequestException(ErrorMessages.BadRequest);
-            }
+            
 
             var results = await linkRepository
                 .DeleteAllLinksByContainerIdAsync(containerId);
 
-            if (results.Count is not 0)
-            {
-                return results;
-            }
-
-            throw new NotFoundException(ErrorMessages.NotFound);
+            if (results.Count is 0)
+                throw new NotFoundException(ErrorMessages.NotFound);
+            
+            return results;
         });
 
         return app;
@@ -188,17 +164,13 @@ public static class LinksEndpoints
                 DateTime.Now);
 
             if (string.IsNullOrEmpty(targetUrl))
-            {
                 throw new BadRequestException(ErrorMessages.BadRequest);
-            }
+            
 
-            var result = await linkRepository
-                .GetRedirectLinkAsync(targetUrl);
+            var result = await linkRepository.GetRedirectLinkAsync(targetUrl);
 
-            if (result is null)
-            {
-                throw new NotFoundException(ErrorMessages.NotFound);
-            }
+            if (result is null) throw new NotFoundException(ErrorMessages.NotFound);
+            
 
             var hit = new LinkHitEntity
             {
@@ -222,19 +194,13 @@ public static class LinksEndpoints
                 linkId,
                 DateTime.Now);
 
-            if (linkId == 0)
-            {
-                throw new BadRequestException(ErrorMessages.BadRequest);
-            }
-
+            if (linkId == 0) throw new BadRequestException(ErrorMessages.BadRequest);
+            
             var result = await linkHitRepository
                 .GetAllByLinkIdAsync(linkId);
 
-            if (result is null)
-            {
-                throw new NotFoundException(ErrorMessages.NotFound);
-            }
-
+            if (result is null) throw new NotFoundException(ErrorMessages.NotFound);
+            
             return Results.Ok(result);
         });
 
@@ -250,18 +216,12 @@ public static class LinksEndpoints
                 startDate,
                 endDate);
 
-            if (string.IsNullOrEmpty(containerId))
-            {
-                throw new BadRequestException(ErrorMessages.BadRequest);
-            }
+            if (string.IsNullOrEmpty(containerId)) throw new BadRequestException(ErrorMessages.BadRequest);
 
             var result = await linkHitRepository
                 .GetAllByContainerIdAsync(containerId, startDate, endDate);
 
-            if (result is null)
-            {
-                throw new NotFoundException(ErrorMessages.NotFound);
-            }
+            if (result is null) throw new NotFoundException(ErrorMessages.NotFound);
 
             return Results.Ok(result);
         });

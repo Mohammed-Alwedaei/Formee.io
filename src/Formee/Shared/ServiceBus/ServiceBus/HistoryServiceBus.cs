@@ -21,11 +21,9 @@ public class HistoryServiceBus : IAzureServiceBus<HistoryMessage>
             TransportType = ServiceBusTransportType.AmqpWebSockets
         };
 
-        var connectionString = _configuration
-            .GetValue<string>("ServiceBus:ConnectionString");
+        var connectionString = _configuration.GetValue<string>("ServiceBus:ConnectionString");
 
-        var topic = _configuration
-            .GetValue<string>("ServiceBus:History");
+        var topic = _configuration.GetValue<string>("ServiceBus:HistoryTopic");
 
         _serviceBusClient = new ServiceBusClient(
             connectionString,

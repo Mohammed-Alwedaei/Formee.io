@@ -32,8 +32,8 @@ public static class ServicesExtensions
     public static IServiceCollection AddServiceHealthChecks(this IServiceCollection services)
     {
         var sqlServerConnectionString = _configuration?.GetConnectionString("DefaultConnection");
-        var serviceBusConnectionString = _configuration?.GetValue<string>("AzureServiceBus:ConnectionString");
-        var serviceBusHistoryTopic = _configuration?.GetValue<string>("AzureServiceBus:HistoryTopic");
+        var serviceBusConnectionString = _configuration?.GetValue<string>("ServiceBus:ConnectionString");
+        var serviceBusHistoryTopic = _configuration?.GetValue<string>("ServiceBus:HistoryTopic");
 
         services.AddHealthChecks()
             .AddSqlServer(sqlServerConnectionString)
@@ -85,6 +85,8 @@ public static class ServicesExtensions
         services.AddScoped<ICategoryRepository, CategoryRepository>();
         services.AddScoped<IPageHitRepository, PageHitRepository>();
         services.AddScoped<ISessionRepository, SessionsRepository>();
+        
+        services.AddServiceBusSender();
 
         services.AddSyncCommunication();
         

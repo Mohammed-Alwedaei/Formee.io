@@ -115,7 +115,7 @@
                                         <FmBody>
                                             <div>
                                                 <SfUploader AllowedExtensions=".png, .jpg, .jpeg">
-                                                    <UploaderAsyncSettings SaveUrl=@($"http://localhost:5000/api/identity/users/avatar/{AppStateService.User.Id}") />
+                                                    <UploaderAsyncSettings SaveUrl=@($"http://localhost:5000/api/identity/users/avatar/{AppState.Identity.User.Id}") />
                                                 </SfUploader>
 
                                                 <ValidationMessage For="() => User.LastName" />
