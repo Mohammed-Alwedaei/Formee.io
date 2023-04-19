@@ -13,6 +13,7 @@ steps:
 - task: DockerCompose@0
   displayName: Container registery login
   inputs:
+    containerregistrytype: 'Azure Container Registry'
     azureSubscription: 'sb-adopting-msa'
     azureContainerRegistry: 'formee'
     dockerComposeFile: 'src/Formee/docker-compose.yml'
@@ -20,6 +21,7 @@ steps:
 
 - task: DockerCompose@0
   inputs:
+    containerregistrytype: 'Azure Container Registry'
     azureSubscription: 'sb-adopting-msa'
     azureContainerRegistry: 'formee'
     dockerComposeFile: 'src/Formee/docker-compose.yml'
