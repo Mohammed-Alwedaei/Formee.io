@@ -15,7 +15,7 @@ steps:
   inputs:
     containerregistrytype: 'Azure Container Registry'
     azureSubscription: 'sb-adopting-msa'
-    azureContainerRegistry: 'formee'
+    azureContainerRegistry: 'formee.azurecr.io'
     dockerComposeFile: 'src/Formee/docker-compose.yml'
     action: Build services
 
@@ -23,7 +23,7 @@ steps:
   inputs:
     containerregistrytype: 'Azure Container Registry'
     azureSubscription: 'sb-adopting-msa'
-    azureContainerRegistry: 'formee'
+    azureContainerRegistry: 'formee.azurecr.io'
     dockerComposeFile: 'src/Formee/docker-compose.yml'
     action: Push services
     includeLatestTag: true
