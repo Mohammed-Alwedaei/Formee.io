@@ -1,7 +1,7 @@
 ﻿using Client.Web.Utilities.Dtos;
 using Microsoft.AspNetCore.SignalR.Client;
 
-namespace Clients.Web.Components.Pages.Dashboard.LiveChat;
+namespace Clients.Web.Components.Pages.Customers.Dashboard.LiveChat;
 
 [Route(Routes.LiveChat)]
 public partial class Index
@@ -16,14 +16,14 @@ public partial class Index
     {
         LiveChat = new LiveChatDto
         {
-            UserId = new Guid ()
+            UserId = new Guid()
         };
 
         HubConnection = new HubConnectionBuilder()
             .WithUrl("https://localhost:7270/hubs/livechat")
             .Build();
 
-        HubConnection.On<string, string>("ReceiveMessage", 
+        HubConnection.On<string, string>("ReceiveMessage",
             (user, message) =>
         {
             var encodedMsg = $"{user}: {message}";
@@ -39,7 +39,7 @@ public partial class Index
         if (HubConnection is not null)
         {
             await HubConnection.SendAsync("SendMessage",
-                LiveChat.UserId, 
+                LiveChat.UserId,
                 LiveChat.CurrentMessage);
         }
     }

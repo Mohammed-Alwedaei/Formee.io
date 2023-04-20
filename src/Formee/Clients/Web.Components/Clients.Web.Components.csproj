@@ -27,7 +27,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Client.Web.Utilities\Client.Web.Utilities.csproj" />
+	  <ProjectReference Include="..\Web.Utilities\Client.Web.Utilities.csproj" />
 	</ItemGroup>
 
 </Project>

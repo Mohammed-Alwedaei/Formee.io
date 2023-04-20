@@ -3,14 +3,14 @@ using Client.Web.Utilities.Dtos.Links;
 using Client.Web.Utilities.Models;
 using Client.Web.Utilities.Services;
 
-namespace Clients.Web.Components.Pages.Dashboard.Links;
+namespace Clients.Web.Components.Pages.Customers.Dashboard.Links;
 
 [Route(Routes.Links)]
 public partial class Index
 {
     [Inject]
     public LinksService LinksService { get; set; }
-    
+
     [Inject]
     public AppStateService AppState { get; set; }
 
@@ -30,7 +30,7 @@ public partial class Index
 
     private bool _isSuccessLinkFetch;
 
-    private readonly String[] _palettes = { "#9e8ddf" };
+    private readonly string[] _palettes = { "#9e8ddf" };
 
     protected override async Task OnParametersSetAsync()
     {

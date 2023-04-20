@@ -1,6 +1,6 @@
 ﻿using Client.Web.Utilities.Models;
 
-namespace Clients.Web.Components.Pages.Dashboard.Sites;
+namespace Clients.Web.Components.Pages.Customers.Dashboard.Sites;
 
 [Route(Routes.UpsertSites)]
 public partial class Upsert
@@ -17,9 +17,9 @@ public partial class Upsert
 
     private bool IsVisibleModal { get; set; }
 
-    private SiteDto Site { get; set; } = new ();
+    private SiteDto Site { get; set; } = new();
 
-    private SiteDto SitePreview { get; set; } = new ();
+    private SiteDto SitePreview { get; set; } = new();
 
     private List<IconModel> IconsList { get; set; } = new()
     {
@@ -37,7 +37,7 @@ public partial class Upsert
         // if not true then update a container
         if (string.IsNullOrEmpty(ContainerId) && UpsertType == "create")
         {
-           
+
         }
         else if (!string.IsNullOrEmpty(ContainerId)
                  && UpsertType == "update"
@@ -56,12 +56,12 @@ public partial class Upsert
     {
 
     }
-    
+
     private void HandleActionApprove()
     {
 
     }
-    
+
     private void HandleActionReject()
     {
 
@@ -72,7 +72,7 @@ public partial class Upsert
 
     private void HandleSiteIconPreviewChange(ChangeEventArgs args)
         => Site.Icon = args.Value?.ToString();
-    
+
     private void HandleSiteDescriptionPreviewChange
         (Syncfusion.Blazor.RichTextEditor.ChangeEventArgs args)
         => Site.Description = args.Value;

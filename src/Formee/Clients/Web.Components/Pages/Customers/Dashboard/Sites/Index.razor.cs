@@ -1,6 +1,6 @@
 ﻿using Client.Web.Utilities.Services;
 
-namespace Clients.Web.Components.Pages.Dashboard.Sites;
+namespace Clients.Web.Components.Pages.Customers.Dashboard.Sites;
 
 [Route(Routes.Sites)]
 public partial class Index

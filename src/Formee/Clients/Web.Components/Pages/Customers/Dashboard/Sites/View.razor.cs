@@ -1,7 +1,7 @@
 ﻿using Client.Web.Utilities.Dtos.Forms;
 using Client.Web.Utilities.Services;
 
-namespace Clients.Web.Components.Pages.Dashboard.Sites;
+namespace Clients.Web.Components.Pages.Customers.Dashboard.Sites;
 
 [Route(Routes.ViewSites)]
 public partial class View

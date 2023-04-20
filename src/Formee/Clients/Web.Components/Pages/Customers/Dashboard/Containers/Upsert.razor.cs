@@ -2,7 +2,7 @@
 using Client.Web.Utilities.Services;
 using Markdig;
 
-namespace Clients.Web.Components.Pages.Dashboard.Containers;
+namespace Clients.Web.Components.Pages.Customers.Dashboard.Containers;
 
 [Route(Routes.UpsertContainer)]
 public partial class Upsert
@@ -12,14 +12,14 @@ public partial class Upsert
 
     [Inject]
     public NavigationManager NavigationManager { get; set; }
-    
+
     [Inject]
     public AppStateService AppState { get; set; }
 
     [Parameter]
     [SupplyParameterFromQuery(Name = "user_id")]
     public string UserId { get; set; }
-    
+
     [Parameter]
     [SupplyParameterFromQuery(Name = "container_id")]
     public string ContainerId { get; set; }
@@ -77,8 +77,8 @@ public partial class Upsert
             _ => await ContainersService.CreateAsync(_container)
         };
 
-        var redirectUrl = !string.IsNullOrEmpty(response.Id) 
-            ? $"{Routes.Containers}?user_id={UserId}&container_id={response.Id}" 
+        var redirectUrl = !string.IsNullOrEmpty(response.Id)
+            ? $"{Routes.Containers}?user_id={UserId}&container_id={response.Id}"
             : "/";
 
         NavigationManager.NavigateTo(redirectUrl);

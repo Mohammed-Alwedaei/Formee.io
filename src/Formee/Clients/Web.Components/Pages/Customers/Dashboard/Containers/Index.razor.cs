@@ -2,7 +2,7 @@
 using Syncfusion.Blazor.Buttons;
 using Syncfusion.Blazor.SplitButtons;
 
-namespace Clients.Web.Components.Pages.Dashboard.Containers;
+namespace Clients.Web.Components.Pages.Customers.Dashboard.Containers;
 
 [Route(Routes.Containers)]
 public partial class Index : IDisposable
@@ -15,7 +15,7 @@ public partial class Index : IDisposable
 
     [Inject]
     public AnalyticsService AnalyticsService { get; set; }
-    
+
     [Inject]
     public AppStateService AppState { get; set; }
 
@@ -29,7 +29,7 @@ public partial class Index : IDisposable
         {
             await InvokeAsync(StateHasChanged);
         };
-        
+
         await ContainersService.GetAllByUserIdAsync(Guid.Parse(UserId));
     }
 
@@ -77,6 +77,6 @@ public partial class Index : IDisposable
     /// </summary>
     public void Dispose()
     {
-        AppState.Containers.StateChanged -=StateHasChanged;
+        AppState.Containers.StateChanged -= StateHasChanged;
     }
 }

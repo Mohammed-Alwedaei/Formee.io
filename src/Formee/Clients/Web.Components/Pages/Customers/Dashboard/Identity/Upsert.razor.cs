@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Forms;
 using Syncfusion.Blazor.Inputs;
 
-namespace Clients.Web.Components.Pages.Dashboard.Identity;
+namespace Clients.Web.Components.Pages.Customers.Dashboard.Identity;
 
 [Route("/dashboard/identity/upsert")]
 public partial class Upsert : IDisposable
@@ -28,7 +28,7 @@ public partial class Upsert : IDisposable
     [Parameter]
     [SupplyParameterFromQuery(Name = "upsert_type")]
     public string UpsertType { get; set; }
-    
+
     [Parameter]
     [SupplyParameterFromQuery(Name = "auth_provider_id")]
     public string AuthProviderId { get; set; }
@@ -46,9 +46,9 @@ public partial class Upsert : IDisposable
     protected override async Task OnParametersSetAsync()
     {
         _isDeleteUpsert = false;
-        
+
         var authState = await authenticationState;
-        
+
         var email = authState.User
                 .Claims
                 .FirstOrDefault(c => c.Type == "email")
@@ -88,7 +88,7 @@ public partial class Upsert : IDisposable
     {
         _isVisibleConfirmationDialog = false;
     }
-    
+
     public void Dispose()
     {
         AppState.Identity.StateChanged -= StateHasChanged;
