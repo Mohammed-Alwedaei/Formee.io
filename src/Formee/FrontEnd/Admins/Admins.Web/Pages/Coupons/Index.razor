@@ -1,15 +1,14 @@
-﻿@page "/subscriptions"
+﻿@page "/coupons"
 
 @inject IConfiguration Configuration
 @inject HttpClient HttpClient
 
 <div class="d-flex justify-content-between align-items-center">
-    <h3>All Active coupons</h3>
+    <h3>All Active Subscriptions</h3>
 
-    <a class="btn btn-primary" href="/subscriptions/upsert?subscription_id=0&upsert_type=create">
+    <a class="btn btn-primary" href="/coupons/upsert?coupon_id=0&upsert_type=create">
         Create
     </a>
-
 </div>
 
 @if (!_isFetching)
@@ -17,33 +16,35 @@
     <table class="table table-striped">
         <thead>
         <tr>
-            <th>Name</th>
-            <th>Price</th>
-            <th>Annual Price</th>
-            <th>Is Default</th>
-            <th>Created Data</th>
-            <th>Actions</th>
+            <td>Id</td>
+            <td>Name</td>
+            <td>AdminEmail</td>
+            <td>Discount</td>
+            <td>Description</td>
+            <td>CreatedDate</td>
+            <td>Actions</td>
         </tr>
         </thead>
         <tbody>
-        @if (_subscriptionsCollection is not null)
+        @if (_couponsCollection is not null)
         {
-            @foreach (var subscription in _subscriptionsCollection)
+            @foreach (var coupon in _couponsCollection)
             {
                 <tr>
-                    <td>@subscription.Name</td>
-                    <td>@subscription.Price</td>
-                    <td>@subscription.AnnualPrice</td>
-                    <td>@subscription.IsDefault</td>
-                    <td>@subscription.CreatedDate.ToString("f")</td>
+                    <td>@coupon.Id</td>
+                    <td>@coupon.Name</td>
+                    <td>@coupon.AdminEmail</td>
+                    <td>@coupon.Discount</td>
+                    <td>@coupon.Description</td>
+                    <td>@coupon.CreatedDate.ToString("f")</td>
                     <td>
                         <div class="btn-group">
                             <a class="btn btn-success"
-                               href="@($"/coupons/upsert?coupon_id={subscription.Id}&upsert_type=edit")">
+                               href="@($"/coupons/upsert?coupon_id={coupon.Id}&upsert_type=edit")">
                                 Edit
                             </a>
                             <a class="btn btn-danger"
-                               href="@($"/coupons/upsert?coupon_id={subscription.Id}&upsert_type=delete")">
+                               href="@($"/coupons/upsert?coupon_id={coupon.Id}&upsert_type=delete")">
                                 Delete
                             </a>
                         </div>
@@ -71,7 +72,7 @@ else
 }
 
 @code {
-    private List<SubscriptionDto>? _subscriptionsCollection;
+    private List<CouponDto>? _couponsCollection;
     private bool _isFetching;
 
     /// <summary>
@@ -84,23 +85,23 @@ else
 
         HttpClient.BaseAddress = baseUrl;
 
-        await GetAllSubscriptionsAsync();
+        await GetAllCouponsAsync();
     }
 
     /// <summary>
-    /// Fetch all coupons active
+    /// Fetch all subscriptions from
     /// </summary>
     /// <returns></returns>
-    private async Task GetAllSubscriptionsAsync()
+    private async Task GetAllCouponsAsync()
     {
         _isFetching = true;
 
         var response = await HttpClient
-            .GetAsync("/gateway/coupons/all");
+            .GetAsync("/gateway/coupons/all?filter=all");
 
         if (response.IsSuccessStatusCode)
-            _subscriptionsCollection = await response.Content
-                .ReadFromJsonAsync<List<SubscriptionDto>>();
+            _couponsCollection = await response.Content
+                .ReadFromJsonAsync<List<CouponDto>>();
     
         _isFetching = false;
     }

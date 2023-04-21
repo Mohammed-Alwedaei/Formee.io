@@ -18,6 +18,24 @@ public class CouponsController : ControllerBase
         _logger = logger;
     }
 
+    [HttpGet("all")]
+    public async Task<IActionResult> GetAllCoupons([FromQuery] string filter)
+    {
+        _logger.LogInformation("GET: request at /api/coupons/all?filter={filter} at {datetime}",
+            filter,
+            DateTime.Now);
+
+        var result = await _couponRepository
+            .GetAllCouponsByFilterAsync(filter);
+
+        if (result is null)
+        {
+            return NotFound();
+        }
+
+        return Ok(result);
+    }
+
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetCouponById(int id)
     {
@@ -61,7 +79,7 @@ public class CouponsController : ControllerBase
         return Ok(result);
     }
 
-    [HttpDelete]
+    [HttpDelete("{id:int}")]
     public async Task<IActionResult> DeleteCoupon(int id)
     {
         _logger.LogInformation("GET: request at /api/coupons/{id} at {datetime}",

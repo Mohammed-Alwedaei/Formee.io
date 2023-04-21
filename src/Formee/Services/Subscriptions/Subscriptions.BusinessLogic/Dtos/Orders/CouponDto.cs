@@ -2,7 +2,7 @@
 
 public class CouponDto : BaseDto
 {
-    public int CreatedBy { get; set; }
+    public string? AdminEmail { get; set; }
 
     public int Discount { get; set; }
 

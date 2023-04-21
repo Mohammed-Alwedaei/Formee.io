@@ -24,6 +24,25 @@ public class CouponRepository : ICouponRepository
         return _mapper.Map<CouponDto>(couponModelFromDb ?? new CouponModel());
     }
 
+    public async Task<List<CouponDto>> GetAllCouponsByFilterAsync(string filter)
+    {
+        var couponsModelFromDb = filter switch
+        {
+            "active" => await _context.Coupons
+                .Where(c => c.IsDeleted == false)
+                .ToListAsync(),
+
+            "deleted" => await _context.Coupons
+                .Where(c => c.IsDeleted == true)
+                .ToListAsync(),
+
+            _ => await _context.Coupons.ToListAsync()
+        };
+
+        return _mapper.Map<List<CouponDto>>(couponsModelFromDb)
+               ?? new List<CouponDto>();
+    }
+
     public async Task<CouponDto> CreateAsync(CouponDto couponDto)
     {
         var couponModel  = _mapper.Map<CouponModel>(couponDto);

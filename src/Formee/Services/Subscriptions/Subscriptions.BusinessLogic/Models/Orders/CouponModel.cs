@@ -1,10 +1,8 @@
-﻿using Subscriptions.BusinessLogic.Dtos.Orders;
-
-namespace Subscriptions.BusinessLogic.Models.Orders;
+﻿namespace Subscriptions.BusinessLogic.Models.Orders;
 
 public class CouponModel : BaseModel
 {
-    public int CreatedBy { get; set; }
+    public string? AdminEmail { get; set; }
 
     public int Discount { get; set; }
 

@@ -11,6 +11,8 @@ public interface IIdentityManager
 
     Task<UserDto> GetByAuthIdAsync(string authId);
 
+    Task<List<UserDto>> GetAllByFilterAsync(string filter);
+
     Task<UserDto> GetByIdAsync(Guid id);
 
     //Task<bool> RemoveRoleFromUser(AddRoleToUserModel users, string roleId);

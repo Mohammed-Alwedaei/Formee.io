@@ -1,4 +1,5 @@
-﻿using System.Net.Http.Json;
+﻿using System.Linq;
+using System.Net.Http.Json;
 using Azure.Storage.Blobs;
 using Identity.BusinessLogic.Contexts;
 using Identity.BusinessLogic.Dtos;
@@ -37,12 +38,7 @@ public class IdentityManager : IIdentityManager
         var response = await _httpClient
             .PostAsJsonAsync($"/api/v2/roles/{roleId}/users", users);
 
-        if (response.IsSuccessStatusCode)
-        {
-            return true;
-        }
-
-        return false;
+        return response.IsSuccessStatusCode;
     }
 
     public async Task<UserDto> GetByAuthIdAsync(string authId)
@@ -52,12 +48,32 @@ public class IdentityManager : IIdentityManager
             .Include(u => u.Avatar)
             .FirstOrDefaultAsync(u => u.AuthId == authId);
 
-        if (string.IsNullOrEmpty(userFromDb?.AuthId))
-        {
-            return new UserDto();
-        }
+        if (string.IsNullOrEmpty(userFromDb?.AuthId)) return new UserDto();
 
         return userFromDb;
+    }
+
+    public async Task<List<UserDto>> GetAllByFilterAsync(string filter)
+    {
+        var usersFromDb = filter switch
+        {
+            "active" => await _context.User.AsNoTracking()
+                .Include(u => u.Avatar)
+                .Where(u => u.IsDeleted != true)
+                .ToListAsync(),
+            "deleted" => await _context.User.AsNoTracking()
+                .Include(u => u.Avatar)
+                .Where(u => u.IsDeleted == true)
+                .ToListAsync(),
+            _ => await _context.User
+                .AsNoTracking()
+                .Include(u => u.Avatar)
+                .ToListAsync()
+        };
+
+        return usersFromDb
+            .Select<UserEntity, UserDto>(u => u)
+            .ToList();
     }
 
     public async Task<UserDto> GetByIdAsync(Guid id)

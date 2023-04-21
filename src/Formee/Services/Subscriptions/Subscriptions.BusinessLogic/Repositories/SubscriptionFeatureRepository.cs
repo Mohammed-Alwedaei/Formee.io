@@ -24,9 +24,9 @@ public class SubscriptionFeatureRepository : ISubscriptionFeatureRepository
         return _mapper.Map<SubscriptionFeatureDto>(featureModelFromDb);
     }
 
-    public async Task<IReadOnlyList<SubscriptionFeatureDto>> GetAllAsync()
+    public async Task<List<SubscriptionFeatureDto>> GetAllAsync()
     {
-        var featuresModelFromDb = _context.SubscriptionFeatures
+        var featuresModelFromDb = await _context.SubscriptionFeatures
             .Where(s => s.IsDeleted == false)
             .ToListAsync();
 

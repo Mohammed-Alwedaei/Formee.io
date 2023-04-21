@@ -39,7 +39,8 @@
 
             <InputText id="@nameof(_subscription.Name)"
                        class="form-control"
-                       @bind-Value="_subscription.Name"/>
+                       @bind-Value="_subscription.Name"
+                       disabled="@_isDisabledFields"/>
 
             <ValidationMessage For="() => _subscription.Name"/>
         </div>
@@ -53,7 +54,8 @@
             {
                 <InputSelect id="@nameof(_subscription.SubscriptionFeatures)"
                              class="form-control"
-                             @bind-Value="_subscription.SubscriptionFeaturesId">
+                             @bind-Value="_subscription.SubscriptionFeaturesId"
+                             disabled="@_isDisabledFields">
                     <option selected="selected">--Select an options--</option>
 
                     @foreach (var feature in _subscriptionFeatures)
@@ -75,7 +77,8 @@
 
             <InputTextArea id="@nameof(_subscription.Description)"
                            class="form-control"
-                           @bind-Value="_subscription.Description"/>
+                           @bind-Value="_subscription.Description"
+                           disabled="@_isDisabledFields" />
 
             <ValidationMessage For="() => _subscription.Description"/>
         </div>
@@ -91,7 +94,8 @@
 
             <InputNumber id="@nameof(_subscription.Price)"
                          class="form-control"
-                         @bind-Value="_subscription.Price"/>
+                         @bind-Value="_subscription.Price"
+                         disabled="@_isDisabledFields" />
 
             <ValidationMessage For="() => _subscription.Price"/>
         </div>
@@ -103,7 +107,8 @@
 
             <InputNumber id="@nameof(_subscription.AnnualPrice)"
                          class="form-control"
-                         @bind-Value="_subscription.AnnualPrice"/>
+                         @bind-Value="_subscription.AnnualPrice"
+                         disabled="@_isDisabledFields" />
 
             <ValidationMessage For="() => _subscription.AnnualPrice"/>
         </div>

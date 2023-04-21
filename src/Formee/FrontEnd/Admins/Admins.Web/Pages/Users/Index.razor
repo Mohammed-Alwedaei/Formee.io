@@ -1,0 +1,106 @@
+﻿@page "/users"
+
+@inject HttpClient HttpClient
+@inject IConfiguration Configuration
+
+<PageTitle>Users</PageTitle>
+
+<h3>All users</h3>
+
+@if (!_isFetching)
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <td>Id</td>
+                <td>UserName</td>
+                <td>Email</td>
+                <td>FirstName</td>
+                <td>LastName</td>
+                <td>Job</td>
+                <td>PhoneNumber</td>
+                <td>BirthDate</td>
+            </tr>
+        </thead>
+        <tbody>
+            @if (_usersCollection is not null)
+            {
+                @foreach (var user in _usersCollection)
+                {
+                    <tr>
+                        <td>@user.Id</td>
+                        <td>@user.UserName</td>
+                        <td>@user.Email</td>
+                        <td>@user.FirstName</td>
+                        <td>@user.LastName</td>
+                        <td>@user.Job</td>
+                        <td>@user.PhoneNumber</td>
+                        <td>@user.BirthDate?.ToString("f")</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td>----</td>
+                    <td>----</td>
+                    <td>----</td>
+                    <td>----</td>
+                    <td>----</td>
+                    <td>----</td>
+                    <td>----</td>
+                    <td>----</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="spinner-border"></div>
+}
+
+@code {
+    private List<UserDto>? _usersCollection;
+    private bool _isFetching;
+
+    /// <summary>
+    ///
+    /// </summary>
+    /// <returns></returns>
+    protected override async Task OnParametersSetAsync()
+    {
+        ConfigureHttpClient();
+
+        _isFetching = true;
+
+        _usersCollection = await GetAllUsersAsync("active");
+
+        _isFetching = false;
+    }
+
+    /// <summary>
+    ///
+    /// </summary>
+    private void ConfigureHttpClient()
+    {
+        var baseUrl = new Uri(Configuration.GetValue<string>("GatewayUrl"));
+
+        HttpClient.BaseAddress = baseUrl;
+    }
+
+    /// <summary>
+    ///
+    /// </summary>
+    /// <returns></returns>
+    private async Task<List<UserDto>?> GetAllUsersAsync(string filter)
+    {
+        var response = await HttpClient
+            .GetAsync($"/gateway/identity/users/all?filter={filter}");
+
+        if (response.IsSuccessStatusCode)
+            return await response.Content.ReadFromJsonAsync<List<UserDto>>();
+
+        return new List<UserDto>();
+    }
+}

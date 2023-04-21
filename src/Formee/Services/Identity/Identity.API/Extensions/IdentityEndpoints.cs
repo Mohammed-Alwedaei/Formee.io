@@ -32,6 +32,16 @@ public static class IdentityEndpoints
                 : Results.Ok(user);
         });
 
+        identity.MapGet("/users/all", async
+            (IIdentityManager identityManager, [FromQuery] string filter) =>
+        {
+            var user = await identityManager.GetAllByFilterAsync(filter);
+
+            return user.Count is 0
+                ? Results.NotFound()
+                : Results.Ok(user);
+        });
+
         //Assign Admin to a user
         identity.MapPost("/admin/{roleId}", async
             (IIdentityManager identityService, AddRoleToUseDto users, string roleId) =>

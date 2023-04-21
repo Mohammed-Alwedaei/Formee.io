@@ -1,0 +1,217 @@
+﻿@page "/coupons/upsert"
+
+@inject IConfiguration Configuration
+@inject HttpClient HttpClient
+@inject NavigationManager NavigationManager
+
+@attribute [Authorize]
+
+@if (!string.IsNullOrEmpty(UpsertType))
+{
+    <PageTitle>@UpsertType - coupons</PageTitle>
+}
+
+<h3 class="display-5 my-3">Upsert</h3>
+
+<EditForm Model="_coupon" OnValidSubmit="HandleValidFormSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <h4 class="display-6 my-3">Fixed Data</h4>
+
+    <div class="row g-5">
+        <div class="col-lg-6">
+            <label class="form-label" for="@nameof(_coupon.Id)">
+                @nameof(_coupon.Id)
+            </label>
+
+            <InputNumber id="@nameof(_coupon.Id)"
+                         class="form-control"
+                         @bind-Value="_coupon.Id"
+                         disabled="disabled" />
+
+            <ValidationMessage For="() => _coupon.Id" />
+        </div>
+
+        <div class="col-lg-6">
+            <label class="form-label" for="@nameof(_coupon.AdminEmail)">
+                Admin Email
+            </label>
+
+            <InputText id="@nameof(_coupon.AdminEmail)"
+                         class="form-control"
+                         @bind-Value="_coupon.AdminEmail"
+                         disabled="disabled" />
+
+            <ValidationMessage For="() => _coupon.AdminEmail" />
+        </div>
+    </div>
+
+    <h4 class="display-6 my-3">Details</h4>
+
+    <div class="row g-5">
+        <div class="col-lg-6">
+            <label class="form-label" for="@nameof(_coupon.Name)">
+                @nameof(_coupon.Name)
+            </label>
+
+            <InputText id="@nameof(_coupon.Name)"
+                       class="form-control"
+                       @bind-Value="_coupon.Name"
+                       disabled="@_isDisabledFields" />
+
+            <ValidationMessage For="() => _coupon.Name" />
+        </div>
+
+        <div class="col-lg-6">
+            <label class="form-label" for="@nameof(_coupon.Discount)">
+                @nameof(_coupon.Discount)
+            </label>
+
+            <InputNumber id="@nameof(_coupon.Discount)"
+                         class="form-control"
+                         @bind-Value="_coupon.Discount"
+                         disabled="@_isDisabledFields" />
+
+            <ValidationMessage For="() => _coupon.Discount" />
+        </div>
+    </div>
+
+    <h4 class="display-6 my-3">Meta</h4>
+
+    <div class="row g-5">
+        <div class="col-12">
+            <label class="form-label" for="@nameof(_coupon.Description)">
+                @nameof(_coupon.Description)
+            </label>
+
+            <InputTextArea id="@nameof(_coupon.Description)"
+                           class="form-control"
+                           @bind-Value="_coupon.Description"
+                           disabled="@_isDisabledFields" />
+
+            <ValidationMessage For="() => _coupon.Description" />
+        </div>
+
+        <div class="col-lg-6">
+            <label class="form-label" for="@nameof(_coupon.ExpireDate)">
+                Expire Date
+            </label>
+
+            <InputDate id="@nameof(_coupon.ExpireDate)"
+                         class="form-control"
+                         @bind-Value="_coupon.ExpireDate"
+                         disabled="@_isDisabledFields" />
+
+            <ValidationMessage For="() => _coupon.ExpireDate" />
+        </div>
+    </div>
+
+    <div class="mt-3">
+        @switch (UpsertType)
+        {
+            case "delete":
+                <button class="btn btn-danger" type="submit">
+                    Delete
+                </button>
+                break;
+            case "edit":
+                <button class="btn btn-info" type="submit">
+                    Update
+                </button>
+                break;
+            default:
+                <button class="btn btn-primary" type="submit">
+                    Create
+                </button>
+                break;
+        }
+    </div>
+</EditForm>
+
+@code {
+    [CascadingParameter]
+    public Task<AuthenticationState> authenticationState { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "coupon_id")]
+    public int Id { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "upsert_type")]
+    public string? UpsertType { get; set; }
+
+    private CouponDto? _coupon = new();
+
+    private bool _isFetching;
+    private bool _isDisabledFields;
+
+    /// <summary>
+    /// On page load configure the HTTP client and page data
+    /// </summary>
+    /// <returns></returns>
+    protected override async Task OnParametersSetAsync()
+    {
+        var baseUrl = new Uri(Configuration.GetValue<string>("GatewayUrl"));
+
+        HttpClient.BaseAddress = baseUrl;
+
+        _isFetching = true;
+
+        await AggregatePageData(Id);
+
+        _isFetching = false;
+    }
+
+    /// <summary>
+    /// Aggregate page data based on the id and upsert type
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    private async Task AggregatePageData(int id)
+    {
+        var upsertType = UpsertType.ToLower();
+
+        var authState = await authenticationState;
+
+        if (Id is 0 && upsertType == "create")
+        {
+            _coupon = new CouponDto();
+
+            _coupon.AdminEmail = authState.User.Identity?.Name;
+
+            return;
+        }
+
+        if (upsertType is "edit" or "delete" && id is not 0)
+        {
+            _coupon = await HttpClient
+                .GetFromJsonAsync<CouponDto>($"/gateway/coupons/{id}");
+        }
+
+        if (upsertType is "delete") _isDisabledFields = true;
+    }
+
+    /// <summary>
+    ///
+    /// </summary>
+    /// <returns></returns>
+    private async Task HandleValidFormSubmit()
+    {
+        _isFetching = true;
+
+        var upsertType = UpsertType.ToLower();
+
+        var response = upsertType switch
+        {
+            "edit" => await HttpClient.PutAsJsonAsync<CouponDto>("/gateway/coupons", _coupon),
+            "delete" => await HttpClient.DeleteAsync($"/gateway/coupons/{Id}"),
+            _ => await HttpClient.PostAsJsonAsync<CouponDto>("/gateway/coupons", _coupon)
+        };
+
+        if (response.IsSuccessStatusCode)
+            NavigationManager.NavigateTo("/coupons");
+
+        _isFetching = false;
+    }
+}
