@@ -1,4 +1,6 @@
-﻿namespace Subscriptions.BusinessLogic.Repositories.IRepository;
+﻿using Subscriptions.BusinessLogic.Dtos.Subscriptions;
+
+namespace Subscriptions.BusinessLogic.Repositories.IRepository;
 
 public interface ISubscriptionFeatureRepository
 {

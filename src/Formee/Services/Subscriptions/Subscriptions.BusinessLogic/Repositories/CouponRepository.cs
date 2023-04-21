@@ -1,39 +1,51 @@
-﻿namespace Subscriptions.BusinessLogic.Repositories;
+﻿using AutoMapper;
+using Subscriptions.BusinessLogic.Dtos.Orders;
+using Subscriptions.BusinessLogic.Models.Orders;
+
+namespace Subscriptions.BusinessLogic.Repositories;
 
 public class CouponRepository : ICouponRepository
 {
     private readonly ApplicationDbContext _context;
+    private readonly IMapper _mapper;
 
-    public CouponRepository(ApplicationDbContext context)
+    public CouponRepository(ApplicationDbContext context, IMapper mapper)
     {
         _context = context;
+        _mapper = mapper;
     }
 
     public async Task<CouponDto> GetByIdAsync(int id)
     {
-        return await _context.Coupons
-            .FirstOrDefaultAsync(c => c.Id == id 
-                                      && c.IsDeleted != true)
-               ?? new CouponModel();
+        var couponModelFromDb = await _context.Coupons
+            .FirstOrDefaultAsync(c => c.Id == id
+                                      && c.IsDeleted != true);
+
+        return _mapper.Map<CouponDto>(couponModelFromDb ?? new CouponModel());
     }
 
-    public async Task<CouponDto> CreateAsync(CouponDto coupon)
+    public async Task<CouponDto> CreateAsync(CouponDto couponDto)
     {
+        var couponModel  = _mapper.Map<CouponModel>(couponDto);
+
         var createdCoupon = await _context.Coupons
-            .AddAsync(coupon);
+            .AddAsync(couponModel);
 
         await _context.SaveChangesAsync();
 
-        return createdCoupon.Entity;
+        return _mapper.Map<CouponDto>(createdCoupon.Entity);
     }
 
-    public async Task<CouponDto> UpdateAsync(CouponDto coupon)
+    public async Task<CouponDto> UpdateAsync(CouponDto couponDto)
     {
-        var updatedCoupon = _context.Coupons.Update(coupon);
+        var couponModel = _mapper.Map<CouponModel>(couponDto);
+
+        var updatedCoupon = _context.Coupons.
+            Update(couponModel);
 
         await _context.SaveChangesAsync();
 
-        return updatedCoupon.Entity;
+        return _mapper.Map<CouponDto>(updatedCoupon.Entity);
     }
 
     public async Task<CouponDto> DeleteAsync(int id)
@@ -52,6 +64,6 @@ public class CouponRepository : ICouponRepository
 
         await _context.SaveChangesAsync();
 
-        return couponToDelete;
+        return _mapper.Map<CouponDto>(couponToDelete);
     }
 }

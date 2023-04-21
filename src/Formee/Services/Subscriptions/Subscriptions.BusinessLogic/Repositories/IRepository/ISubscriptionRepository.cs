@@ -1,4 +1,7 @@
-﻿namespace Subscriptions.BusinessLogic.Repositories.IRepository;
+﻿using Subscriptions.BusinessLogic.Dtos.Subscriptions;
+using Subscriptions.BusinessLogic.Models.Users;
+
+namespace Subscriptions.BusinessLogic.Repositories.IRepository;
 
 public interface ISubscriptionRepository
 {
@@ -8,7 +11,7 @@ public interface ISubscriptionRepository
 
     Task<List<SubscriptionDto>> GetAllAsync();
 
-    Task<List<SubscriptionDto>> GetAllByAdminIdAsync(int adminId);
+    Task<List<SubscriptionDto>> GetAllByAdminEmailAsync(string adminEmail);
 
     Task<SubscriptionDto> CreateAsync(SubscriptionDto subscription);
 

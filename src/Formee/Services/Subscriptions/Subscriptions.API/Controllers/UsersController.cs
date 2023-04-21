@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Subscriptions.BusinessLogic.Dtos;
-using Subscriptions.BusinessLogic.Models;
+using Subscriptions.BusinessLogic.Dtos.Users;
 using Subscriptions.BusinessLogic.Repositories.IRepository;
 
 namespace Subscriptions.API.Controllers;

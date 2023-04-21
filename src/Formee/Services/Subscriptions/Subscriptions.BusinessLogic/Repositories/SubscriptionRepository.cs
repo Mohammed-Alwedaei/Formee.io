@@ -1,12 +1,19 @@
-﻿namespace Subscriptions.BusinessLogic.Repositories;
+﻿using AutoMapper;
+using Subscriptions.BusinessLogic.Dtos.Subscriptions;
+using Subscriptions.BusinessLogic.Models.Subscriptions;
+using Subscriptions.BusinessLogic.Models.Users;
+
+namespace Subscriptions.BusinessLogic.Repositories;
 
 public class SubscriptionRepository : ISubscriptionRepository
 {
     private readonly ApplicationDbContext _context;
+    private readonly IMapper _mapper;
 
-    public SubscriptionRepository(ApplicationDbContext context)
+    public SubscriptionRepository(ApplicationDbContext context, IMapper mapper)
     {
         _context = context;
+        _mapper = mapper;
     }
 
     public async Task<SubscriptionDto> GetOneById(int id)
@@ -19,7 +26,8 @@ public class SubscriptionRepository : ISubscriptionRepository
         
         if (subscriptionFromDb is null) return new SubscriptionDto();
 
-        return subscriptionFromDb;
+        return _mapper.Map<SubscriptionDto>(subscriptionFromDb)
+               ?? new SubscriptionDto();
     }
 
     public async Task<SubscriptionDto> GetDefaultAsync()
@@ -30,9 +38,8 @@ public class SubscriptionRepository : ISubscriptionRepository
             .FirstOrDefaultAsync(s => s.IsDefault == true
                                       && s.IsDeleted != true);
 
-        if (subscriptionFromDb is null) return new SubscriptionDto();
-
-        return subscriptionFromDb;
+        return _mapper.Map<SubscriptionDto>(subscriptionFromDb) 
+               ?? new SubscriptionDto();
     }
 
     public async Task<List<SubscriptionDto>> GetAllAsync()
@@ -43,42 +50,44 @@ public class SubscriptionRepository : ISubscriptionRepository
             .Where(s => s.IsDeleted != true)
             .ToListAsync();
 
-        return listFromDb
-            .Select(a => (SubscriptionDto)a)
-            .ToList();
+        return _mapper.Map<List<SubscriptionDto>>(listFromDb.ToList());
     }
 
-    public async Task<List<SubscriptionDto>> GetAllByAdminIdAsync(int adminId)
+    public async Task<List<SubscriptionDto>> GetAllByAdminEmailAsync(string adminEmail)
     {
-        var listFromDb = await _context.Subscriptions
-            .Where(s => s.AdminId == adminId)
+        var subscriptionsFromDb = await _context.Subscriptions
+            .AsNoTracking()
+            .Where(s => s.AdminEmail == adminEmail)
             .ToListAsync();
 
-        return listFromDb
-            .Select(a => (SubscriptionDto)a)
-            .ToList();
+        return _mapper.Map<List<SubscriptionDto>>
+            (subscriptionsFromDb.ToList());
     }
 
-    public async Task<SubscriptionDto> CreateAsync
-        (SubscriptionDto subscription)
+    public async Task<SubscriptionDto> CreateAsync(SubscriptionDto subscriptionDto)
     {
+        var subscriptionModel = _mapper.Map<SubscriptionModel>(subscriptionDto);
+
         var createdSubscription = await _context.Subscriptions
-            .AddAsync(subscription);
+            .AddAsync(subscriptionModel);
 
         await _context.SaveChangesAsync();
 
-        return createdSubscription.Entity;
+        return _mapper.Map<SubscriptionDto>(createdSubscription.Entity);
     }
 
     public async Task<SubscriptionDto> UpdateAsync
-        (SubscriptionDto subscription)
+        (SubscriptionDto subscriptionDto)
     {
+        var subscriptionModel = _mapper.Map<SubscriptionModel>(subscriptionDto);
+
         var updatedSubscription = _context.Subscriptions
-            .Update(subscription);
+            .Update(subscriptionModel);
 
         await _context.SaveChangesAsync();
 
-        return updatedSubscription.Entity;
+        return _mapper.Map<SubscriptionDto>(updatedSubscription)
+                       ?? new SubscriptionDto();
     }
 
     public async Task<UserSubscriptionModel> UpsertSubscriptionToUserAsync
@@ -148,6 +157,6 @@ public class SubscriptionRepository : ISubscriptionRepository
 
         await _context.SaveChangesAsync();
 
-        return subscriptionFromDb;
+        return _mapper.Map<SubscriptionDto>(subscriptionFromDb);
     }
 }

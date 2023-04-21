@@ -1,14 +1,19 @@
 ﻿using System.Collections.Generic;
+using AutoMapper;
+using Subscriptions.BusinessLogic.Dtos.Orders;
+using Subscriptions.BusinessLogic.Models.Orders;
 
 namespace Subscriptions.BusinessLogic.Repositories;
 
 public class OrderRepository : IOrderRepository
 {
     private readonly ApplicationDbContext _context;
+    private readonly IMapper _mapper;
 
-    public OrderRepository(ApplicationDbContext context)
+    public OrderRepository(ApplicationDbContext context, IMapper mapper)
     {
         _context = context;
+        _mapper = mapper;
     }
 
     public async Task<OrderHeaderDto?> GetByIdAsync(int id)
@@ -17,25 +22,23 @@ public class OrderRepository : IOrderRepository
             .Include(o => o.OrderDetails)
             .FirstOrDefaultAsync(o => o.Id == id);
 
-        if(orderFromDb is null) return new OrderHeaderDto();
-
-        return orderFromDb;
+        return _mapper.Map<OrderHeaderDto>(orderFromDb ?? new OrderHeaderModel());
     }
 
     public async Task<List<OrderHeaderDto>> GetAllByUserIdAsync(int userId)
     {
-        return await _context.OrderHeaders
-                   .Include(o => o.OrderDetails)
-                   .Where(o => o.SubscribedUserId == userId)
-                   .Select(o => (OrderHeaderDto)o)
-                   .ToListAsync()
-               ?? new List<OrderHeaderDto>();
+        var orderHeaderFromDb = await _context.OrderHeaders
+            .Include(o => o.OrderDetails)
+            .Where(o => o.SubscribedUserId == userId)
+            .ToListAsync();
+
+        return _mapper.Map<List<OrderHeaderDto>>(orderHeaderFromDb);
     }
 
     public async Task<OrderHeaderDto?> CreateAsync
         (OrderDetailsDto orderDetails, int userId)
     {
-        var orderHeader = new OrderHeaderDto
+        var orderHeaderDto = new OrderHeaderDto
         {
             SubscribedUserId = userId,
             OrderDetails = orderDetails,
@@ -67,13 +70,15 @@ public class OrderRepository : IOrderRepository
                 : subscription.AnnualPrice;
         }
 
-        orderHeader.TotalPrice = subscription.Price;
-        orderHeader.TotalPriceAfterDiscount = priceAfterDiscount;
+        orderHeaderDto.TotalPrice = subscription.Price;
+        orderHeaderDto.TotalPriceAfterDiscount = priceAfterDiscount;
 
-        _context.OrderHeaders.Add(orderHeader);
+        var orderHeaderModel = _mapper.Map<OrderHeaderModel>(orderHeaderDto);
+
+        _context.OrderHeaders.Add(orderHeaderModel);
 
         await _context.SaveChangesAsync();
 
-        return orderHeader;
+        return orderHeaderDto;
     }
 }

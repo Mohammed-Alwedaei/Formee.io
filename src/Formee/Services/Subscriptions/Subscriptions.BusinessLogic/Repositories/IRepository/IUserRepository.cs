@@ -1,16 +1,19 @@
-﻿namespace Subscriptions.BusinessLogic.Repositories.IRepository;
+﻿using Subscriptions.BusinessLogic.Dtos.Users;
+using Subscriptions.BusinessLogic.Models.Users;
+
+namespace Subscriptions.BusinessLogic.Repositories.IRepository;
 
 public interface IUserRepository
 {
-    Task<List<UsersModel>> GetAllAsync();
+    Task<List<UserDto>> GetAllAsync();
 
-    Task<List<UsersModel>> GetAllSubscribedAsync();
+    Task<List<UserDto>> GetAllSubscribedAsync();
     
     Task<UserSubscriptionDto> GetSubscriptionByIdAsync(Guid userId);
 
-    Task<List<UsersModel>> GetAllInASubscriptionAsync(int subscriptionId);
+    Task<List<UserDto>> GetAllInASubscriptionAsync(int subscriptionId);
 
-    Task<UsersModel> CreateAsync(UserDto user);
+    Task<UserDto> CreateAsync(UserDto user);
 
-    Task<UsersModel> DeleteAsync(Guid userId);
+    Task<UserDto> DeleteAsync(Guid userId);
 }

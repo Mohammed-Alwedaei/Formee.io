@@ -1,4 +1,6 @@
-﻿namespace Subscriptions.BusinessLogic.Repositories.IRepository;
+﻿using Subscriptions.BusinessLogic.Dtos.Orders;
+
+namespace Subscriptions.BusinessLogic.Repositories.IRepository;
 
 public interface IOrderRepository
 {

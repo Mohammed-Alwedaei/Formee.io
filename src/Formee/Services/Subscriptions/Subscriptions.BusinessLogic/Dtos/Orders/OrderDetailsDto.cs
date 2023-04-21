@@ -1,4 +1,6 @@
-﻿namespace Subscriptions.BusinessLogic.Dtos;
+﻿using Subscriptions.BusinessLogic.Dtos.Subscriptions;
+
+namespace Subscriptions.BusinessLogic.Dtos.Orders;
 
 public class OrderDetailsDto : BaseDto
 {

@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+using Subscriptions.BusinessLogic;
 using Subscriptions.BusinessLogic.DbContexts;
 using Subscriptions.BusinessLogic.Repositories;
 using Subscriptions.BusinessLogic.Repositories.IRepository;
@@ -28,6 +27,8 @@ public static class RegisterServicesExtension
 
     public static IServiceCollection AddServicesDependencies(this IServiceCollection services)
     {
+        services.AddAutoMapper(typeof(MappingConfiguration));
+
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IOrderRepository, OrderRepository>();
         services.AddScoped<ICouponRepository, CouponRepository>();

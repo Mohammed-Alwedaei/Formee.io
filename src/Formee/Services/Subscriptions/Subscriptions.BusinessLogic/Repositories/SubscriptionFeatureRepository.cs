@@ -1,48 +1,62 @@
-﻿namespace Subscriptions.BusinessLogic.Repositories;
+﻿using AutoMapper;
+using Subscriptions.BusinessLogic.Dtos.Subscriptions;
+using Subscriptions.BusinessLogic.Models.Subscriptions;
+
+namespace Subscriptions.BusinessLogic.Repositories;
 
 public class SubscriptionFeatureRepository : ISubscriptionFeatureRepository
 {
     private readonly ApplicationDbContext _context;
+    private readonly IMapper _mapper;
 
-    public SubscriptionFeatureRepository(ApplicationDbContext context)
+    public SubscriptionFeatureRepository(ApplicationDbContext context, IMapper mapper)
     {
         _context = context;
+        _mapper = mapper;
     }
 
     public async Task<SubscriptionFeatureDto> GetOneByIdAsync(int id)
     {
-        return await _context.SubscriptionFeatures
-            .FirstOrDefaultAsync(s => s.Id == id && s.IsDeleted == false);
+        var featureModelFromDb = await _context.SubscriptionFeatures
+            .FirstOrDefaultAsync(s => s.Id == id 
+                                      && s.IsDeleted == false);
+
+        return _mapper.Map<SubscriptionFeatureDto>(featureModelFromDb);
     }
 
     public async Task<IReadOnlyList<SubscriptionFeatureDto>> GetAllAsync()
     {
-        return await _context.SubscriptionFeatures
+        var featuresModelFromDb = _context.SubscriptionFeatures
             .Where(s => s.IsDeleted == false)
-            .Select(s => (SubscriptionFeatureDto)s)
             .ToListAsync();
+
+        return _mapper.Map<List<SubscriptionFeatureDto>>(featuresModelFromDb);
     }
 
     public async Task<SubscriptionFeatureDto> CreateAsync
-        (SubscriptionFeatureDto feature)
+        (SubscriptionFeatureDto featureDto)
     {
+        var featureModel = _mapper.Map<SubscriptionFeatureModel>(featureDto);
+
         var createdFeature = await _context.SubscriptionFeatures
-            .AddAsync(feature);
+            .AddAsync(featureModel);
 
         await _context.SaveChangesAsync();
 
-        return createdFeature.Entity;
+        return _mapper.Map<SubscriptionFeatureDto>(createdFeature.Entity);
     }
 
     public async Task<SubscriptionFeatureDto> UpdateAsync
-        (SubscriptionFeatureDto feature)
+        (SubscriptionFeatureDto featureDto)
     {
+        var featureModel = _mapper.Map<SubscriptionFeatureModel>(featureDto);
+
         var updatedFeature = _context.SubscriptionFeatures
-            .Update(feature);
+            .Update(featureModel);
 
         await _context.SaveChangesAsync();
 
-        return updatedFeature.Entity;
+        return _mapper.Map<SubscriptionFeatureDto>(updatedFeature.Entity);
     }
 
     public async Task<SubscriptionFeatureDto> DeleteAsync
@@ -64,6 +78,6 @@ public class SubscriptionFeatureRepository : ISubscriptionFeatureRepository
 
         await _context.SaveChangesAsync();
 
-        return featureToDelete;
+        return _mapper.Map<SubscriptionFeatureDto>(featureToDelete);
     }
 }

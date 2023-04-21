@@ -14,6 +14,8 @@
 <h3 class="display-5 my-3">Upsert</h3>
 
 <EditForm Model="_subscription" OnValidSubmit="HandleValidFormSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
     <h4 class="display-6 my-3">Details</h4>
 
     <div class="row g-5">
@@ -25,9 +27,9 @@
             <InputNumber id="@nameof(_subscription.Id)"
                          class="form-control"
                          @bind-Value="_subscription.Id"
-                         disabled="disabled" />
+                         disabled="disabled"/>
 
-            <ValidationMessage For="() => _subscription.Id" />
+            <ValidationMessage For="() => _subscription.Id"/>
         </div>
 
         <div class="col-lg-6">
@@ -37,11 +39,11 @@
 
             <InputText id="@nameof(_subscription.Name)"
                        class="form-control"
-                       @bind-Value="_subscription.Name" />
+                       @bind-Value="_subscription.Name"/>
 
-            <ValidationMessage For="() => _subscription.Name" />
+            <ValidationMessage For="() => _subscription.Name"/>
         </div>
-        
+
         <div class="col-lg-6">
             <label class="form-label" for="@nameof(_subscription.SubscriptionFeatures)">
                 Subscription Feature
@@ -63,7 +65,7 @@
                 </InputSelect>
             }
 
-            <ValidationMessage For="() => _subscription.Description" />
+            <ValidationMessage For="() => _subscription.Description"/>
         </div>
 
         <div class="col-12">
@@ -73,9 +75,9 @@
 
             <InputTextArea id="@nameof(_subscription.Description)"
                            class="form-control"
-                           @bind-Value="_subscription.Description" />
+                           @bind-Value="_subscription.Description"/>
 
-            <ValidationMessage For="() => _subscription.Description" />
+            <ValidationMessage For="() => _subscription.Description"/>
         </div>
     </div>
 
@@ -89,9 +91,9 @@
 
             <InputNumber id="@nameof(_subscription.Price)"
                          class="form-control"
-                         @bind-Value="_subscription.Price" />
+                         @bind-Value="_subscription.Price"/>
 
-            <ValidationMessage For="() => _subscription.Price" />
+            <ValidationMessage For="() => _subscription.Price"/>
         </div>
 
         <div class="col-lg-6">
@@ -101,9 +103,9 @@
 
             <InputNumber id="@nameof(_subscription.AnnualPrice)"
                          class="form-control"
-                         @bind-Value="_subscription.AnnualPrice" />
+                         @bind-Value="_subscription.AnnualPrice"/>
 
-            <ValidationMessage For="() => _subscription.AnnualPrice" />
+            <ValidationMessage For="() => _subscription.AnnualPrice"/>
         </div>
     </div>
 
@@ -130,6 +132,9 @@
 </EditForm>
 
 @code {
+
+    [CascadingParameter]
+    public Task<AuthenticationState> authenticationState { get; set; }
 
     [Parameter]
     [SupplyParameterFromQuery(Name = "subscription_id")]
@@ -173,9 +178,13 @@
     {
         var upsertType = UpsertType.ToLower();
 
+        var authState = await authenticationState;
+
         if (Id is 0 && upsertType == "create")
         {
             _subscription = new SubscriptionDto();
+
+            _subscription.AdminEmail = authState.User.Identity?.Name;
 
             return;
         }

@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Subscriptions.BusinessLogic.Dtos;
+using Subscriptions.BusinessLogic.Dtos.Subscriptions;
 using Subscriptions.BusinessLogic.Repositories.IRepository;
 
 namespace Subscriptions.API.Controllers;
@@ -69,15 +69,15 @@ public class SubscriptionsController : ControllerBase
         return Ok(result);
     }
 
-    [HttpGet("all/{adminId:int}")]
-    public async Task<IActionResult> GetAllSubscriptionByAdminId(int adminId)
+    [HttpGet("all/{adminEmail}")]
+    public async Task<IActionResult> GetAllSubscriptionByAdminId(string adminEmail)
     {
-        _logger.LogInformation("GET: request at /api/subscriptions/all at {datetime}",
-
+        _logger.LogInformation("GET: request at /api/subscriptions/all/{adminEmail} at {datetime}",
+            adminEmail,
             DateTime.Now);
 
         var result = await _subscriptionRepository
-            .GetAllByAdminIdAsync(adminId);
+            .GetAllByAdminEmailAsync(adminEmail);
 
         if (!result.Any())
         {
@@ -93,11 +93,6 @@ public class SubscriptionsController : ControllerBase
     {
         _logger.LogInformation("POST: request at /api/subscriptions at {datetime}",
             DateTime.Now);
-
-        if (!ModelState.IsValid)
-        {
-            return BadRequest();
-        }
 
         var result = await _subscriptionRepository
             .CreateAsync(subscription);

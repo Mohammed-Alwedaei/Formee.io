@@ -1,12 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Subscriptions.BusinessLogic.Dtos.Subscriptions;
 
-namespace Admins.Web.Dtos.Subscriptions;
+namespace Subscriptions.BusinessLogic.Models.Subscriptions;
 
-public class SubscriptionDto : BaseDto
+public class SubscriptionModel : BaseModel
 {
     [Required]
     [MaxLength(255)]
-    public string? AdminEmail { get; set; }
+    public string AdminEmail { get; set; }
 
     [Required]
     [MaxLength(50)]
@@ -33,5 +34,5 @@ public class SubscriptionDto : BaseDto
     [Required]
     public int SubscriptionFeaturesId { get; set; }
 
-    public SubscriptionFeatureDto SubscriptionFeatures { get; set; }
+    public SubscriptionFeatureModel? SubscriptionFeatures { get; set; }
 }
