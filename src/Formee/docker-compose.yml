@@ -5,7 +5,7 @@ services:
     container_name: client.web
     build:
       context: .
-      dockerfile: "./Clients/Client.Web/Dockerfile"
+      dockerfile: "./FrontEnd/Users/Client.Web/Dockerfile"
     expose:
       - "80"
     ports:

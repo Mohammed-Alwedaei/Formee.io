@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace Subscriptions.BusinessLogic.Dtos;
+﻿namespace Subscriptions.BusinessLogic.Dtos;
 
 public class SubscriptionDto : BaseDto
 {

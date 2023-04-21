@@ -1,0 +1,223 @@
+﻿@page "/subscriptions/upsert"
+
+@attribute [Authorize]
+
+@if (!string.IsNullOrEmpty(UpsertType))
+{
+    <PageTitle>@UpsertType - Subscriptions</PageTitle>
+}
+
+@inject IConfiguration Configuration
+@inject HttpClient HttpClient
+@inject NavigationManager NavigationManager
+
+<h3 class="display-5 my-3">Upsert</h3>
+
+<EditForm Model="_subscription" OnValidSubmit="HandleValidFormSubmit">
+    <h4 class="display-6 my-3">Details</h4>
+
+    <div class="row g-5">
+        <div class="col-lg-6">
+            <label class="form-label" for="@nameof(_subscription.Id)">
+                @nameof(_subscription.Id)
+            </label>
+
+            <InputNumber id="@nameof(_subscription.Id)"
+                         class="form-control"
+                         @bind-Value="_subscription.Id"
+                         disabled="disabled" />
+
+            <ValidationMessage For="() => _subscription.Id" />
+        </div>
+
+        <div class="col-lg-6">
+            <label class="form-label" for="@nameof(_subscription.Name)">
+                @nameof(_subscription.Name)
+            </label>
+
+            <InputText id="@nameof(_subscription.Name)"
+                       class="form-control"
+                       @bind-Value="_subscription.Name" />
+
+            <ValidationMessage For="() => _subscription.Name" />
+        </div>
+        
+        <div class="col-lg-6">
+            <label class="form-label" for="@nameof(_subscription.SubscriptionFeatures)">
+                Subscription Feature
+            </label>
+
+            @if (_subscriptionFeatures is not null)
+            {
+                <InputSelect id="@nameof(_subscription.SubscriptionFeatures)"
+                             class="form-control"
+                             @bind-Value="_subscription.SubscriptionFeaturesId">
+                    <option selected="selected">--Select an options--</option>
+
+                    @foreach (var feature in _subscriptionFeatures)
+                    {
+                        <option value="@feature.Id">
+                            @feature.Name
+                        </option>
+                    }
+                </InputSelect>
+            }
+
+            <ValidationMessage For="() => _subscription.Description" />
+        </div>
+
+        <div class="col-12">
+            <label class="form-label" for="@nameof(_subscription.Description)">
+                @nameof(_subscription.Description)
+            </label>
+
+            <InputTextArea id="@nameof(_subscription.Description)"
+                           class="form-control"
+                           @bind-Value="_subscription.Description" />
+
+            <ValidationMessage For="() => _subscription.Description" />
+        </div>
+    </div>
+
+    <h4 class="display-6 my-3">Price</h4>
+
+    <div class="row g-5">
+        <div class="col-lg-6">
+            <label class="form-label" for="@nameof(_subscription.Price)">
+                @nameof(_subscription.Price)
+            </label>
+
+            <InputNumber id="@nameof(_subscription.Price)"
+                         class="form-control"
+                         @bind-Value="_subscription.Price" />
+
+            <ValidationMessage For="() => _subscription.Price" />
+        </div>
+
+        <div class="col-lg-6">
+            <label class="form-label" for="@nameof(_subscription.AnnualPrice)">
+                @nameof(_subscription.AnnualPrice)
+            </label>
+
+            <InputNumber id="@nameof(_subscription.AnnualPrice)"
+                         class="form-control"
+                         @bind-Value="_subscription.AnnualPrice" />
+
+            <ValidationMessage For="() => _subscription.AnnualPrice" />
+        </div>
+    </div>
+
+    <div class="mt-3">
+        @switch (UpsertType)
+        {
+            case "delete":
+                <button class="btn btn-danger" type="submit">
+                    Delete
+                </button>
+                break;
+            case "edit":
+                <button class="btn btn-info" type="submit">
+                    Update
+                </button>
+                break;
+            default:
+                <button class="btn btn-primary" type="submit">
+                    Create
+                </button>
+                break;
+        }
+    </div>
+</EditForm>
+
+@code {
+
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "subscription_id")]
+    public int Id { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "upsert_type")]
+    public string? UpsertType { get; set; }
+
+    private SubscriptionDto? _subscription = new();
+    private List<SubscriptionFeatureDto>? _subscriptionFeatures;
+
+    private bool _isFetching;
+    private bool _isDisabledFields;
+
+    /// <summary>
+    /// On page load configure the HTTP client and page data
+    /// </summary>
+    /// <returns></returns>
+    protected override async Task OnParametersSetAsync()
+    {
+        var baseUrl = new Uri(Configuration.GetValue<string>("GatewayUrl"));
+
+        HttpClient.BaseAddress = baseUrl;
+
+        _isFetching = true;
+
+        await AggregatePageData(Id);
+
+        await GetAllSubscriptionFeaturesAsync();
+
+        _isFetching = false;
+    }
+
+    /// <summary>
+    /// Aggregate page data based on the id and upsert type
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    private async Task AggregatePageData(int id)
+    {
+        var upsertType = UpsertType.ToLower();
+
+        if (Id is 0 && upsertType == "create")
+        {
+            _subscription = new SubscriptionDto();
+
+            return;
+        }
+
+        if (upsertType is "edit" or "delete" && id is not 0)
+        {
+            _subscription = await HttpClient
+                .GetFromJsonAsync<SubscriptionDto>($"/gateway/subscriptions/{id}");
+        }
+
+        if (upsertType is "delete") _isDisabledFields = true;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
+    private async Task HandleValidFormSubmit()
+    {
+        _isFetching = true;
+
+        var upsertType = UpsertType.ToLower();
+
+        var response = upsertType switch
+        {
+            "edit" => await HttpClient.PutAsJsonAsync<SubscriptionDto>("/gateway/subscriptions", _subscription),
+            "delete" => await HttpClient.DeleteAsync($"/gateway/subscriptions/{Id}"),
+            _ => await HttpClient.PostAsJsonAsync<SubscriptionDto>("/gateway/subscriptions", _subscription)
+        };
+
+
+        if (response.IsSuccessStatusCode)
+            NavigationManager.NavigateTo("/subscriptions");
+
+        _isFetching = false;
+    }
+
+    private async Task GetAllSubscriptionFeaturesAsync()
+    {
+        const string urlRoute = "/gateway/subscriptions/features/all";
+
+        _subscriptionFeatures = await HttpClient
+            .GetFromJsonAsync<List<SubscriptionFeatureDto>>(urlRoute);
+    }
+}

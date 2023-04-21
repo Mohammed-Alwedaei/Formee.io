@@ -12,6 +12,8 @@ public class SubscriptionRepository : ISubscriptionRepository
     public async Task<SubscriptionDto> GetOneById(int id)
     {
         var subscriptionFromDb = await _context.Subscriptions
+            .AsNoTracking()
+            .Include(s => s.SubscriptionFeatures)
             .FirstOrDefaultAsync(s => s.Id == id
                                       && s.IsDeleted != true);
         
@@ -35,7 +37,11 @@ public class SubscriptionRepository : ISubscriptionRepository
 
     public async Task<List<SubscriptionDto>> GetAllAsync()
     {
-        var listFromDb = await _context.Subscriptions.ToListAsync();
+        var listFromDb = await _context.Subscriptions
+            .AsNoTracking()
+            .Include(s => s.SubscriptionFeatures)
+            .Where(s => s.IsDeleted != true)
+            .ToListAsync();
 
         return listFromDb
             .Select(a => (SubscriptionDto)a)

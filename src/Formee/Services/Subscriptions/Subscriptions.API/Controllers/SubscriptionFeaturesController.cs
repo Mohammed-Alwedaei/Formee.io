@@ -20,7 +20,7 @@ public class SubscriptionFeaturesController : ControllerBase
         _logger = logger;
     }
 
-    [HttpGet]
+    [HttpGet("{id:int}")]
     public async Task<IActionResult> GetUserSubscriptionById(int id)
     {
         _logger.LogInformation("GET: request at /api/subscriptions/features/{id} at {datetime}",
@@ -36,7 +36,7 @@ public class SubscriptionFeaturesController : ControllerBase
         return Ok(result);
     }
 
-    /*[HttpGet]
+    [HttpGet("all")]
     public async Task<IActionResult> GetAll()
     {
         _logger.LogInformation("GET: request at /api/subscriptions/features at {datetime}",
@@ -50,7 +50,7 @@ public class SubscriptionFeaturesController : ControllerBase
         }
 
         return Ok(result);
-    }*/
+    }
 
     [HttpPost]
     public async Task<IActionResult> CreateFeature
