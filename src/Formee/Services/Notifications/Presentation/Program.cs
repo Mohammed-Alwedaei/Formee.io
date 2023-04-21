@@ -1,11 +1,11 @@
 using Application.Hubs;
 using Infrastructure.Extensions;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Newtonsoft.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
@@ -54,5 +54,7 @@ app.MapHub<NotificationsHub>("/hubs/notifications");
 //{
 //    context.Database.Migrate();
 //}
+
+app.UseHealthMonitoring();
 
 app.Run();

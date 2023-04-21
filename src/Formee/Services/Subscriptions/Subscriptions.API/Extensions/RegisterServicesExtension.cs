@@ -18,7 +18,7 @@ public static class RegisterServicesExtension
     public static IServiceCollection AddEndpointsAndDocumentation(this IServiceCollection services)
     {
         services.AddControllers();
-        
+
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
 

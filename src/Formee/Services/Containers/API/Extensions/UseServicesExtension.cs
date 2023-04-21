@@ -1,4 +1,7 @@
-﻿namespace API.Extensions;
+﻿using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+
+namespace API.Extensions;
 
 public static class UseServicesExtension
 {
@@ -34,9 +37,14 @@ public static class UseServicesExtension
 
         app.UseAuthentication()
             .UseAuthorization();
-            
-        app.UseContainerEndpoints()
-            .MapHealthChecks("/hc");
+
+        app.UseContainerEndpoints();
+
+        app.MapHealthChecks("/healthcheck", new HealthCheckOptions
+        {
+            Predicate = _ => true,
+            ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+        });
 
         return app;
     }

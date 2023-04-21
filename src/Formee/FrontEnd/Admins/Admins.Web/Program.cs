@@ -50,7 +50,7 @@ app.MapHealthChecks("/healthcheck", new HealthCheckOptions
 {
     Predicate = _ => true,
     ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-});
+}).AllowAnonymous();
 
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");

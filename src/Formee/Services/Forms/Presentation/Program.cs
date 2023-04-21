@@ -1,4 +1,6 @@
+using HealthChecks.UI.Client;
 using Infrastructure;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Presentation;
 using Presentation.Middlewares;
 

@@ -26,6 +26,9 @@ public static class ServicesConfiguration
         services.Configure<BlobStorageConfiguration>(
             configuration.GetSection("AzureStorage"));
 
+        services.AddHealthChecks()
+            .AddSqlServer(configuration.GetConnectionString("DefaultConnection"));
+
         services.AddScoped<IIdentityManager, IdentityManager>();
 
         services.AddHttpClient<IIdentityManager, IdentityManager>(options =>

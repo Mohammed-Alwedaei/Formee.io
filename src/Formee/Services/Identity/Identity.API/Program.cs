@@ -1,5 +1,7 @@
+using HealthChecks.UI.Client;
 using Identity.API.Extensions;
 using Identity.BusinessLogic.Contexts;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -47,6 +49,11 @@ if (context.Database.GetPendingMigrations().Any())
     context.Database.Migrate();
 }
 
+app.MapHealthChecks("/healthcheck", new HealthCheckOptions
+{
+    Predicate = _ => true,
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+});
 
 app.Run();
 

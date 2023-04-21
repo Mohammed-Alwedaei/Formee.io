@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Presentation.Middlewares;
 
 namespace Presentation;
@@ -30,6 +32,9 @@ public static class DependencyInjection
     public static IServiceCollection AddIdentityManagement(
         this IServiceCollection services, IConfiguration config)
     {
+        services.AddHealthChecks()
+            .AddSqlServer(config.GetConnectionString("DefaultConnection"));
+
         services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme =
@@ -71,6 +76,12 @@ public static class DependencyInjection
         app.UseMiddleware<GlobalExceptionHandler>();
         app.UseAuthentication();
         app.UseAuthorization();
+
+        app.MapHealthChecks("/healthcheck", new HealthCheckOptions
+        {
+            Predicate = _ => true,
+            ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+        });
 
         return app;
     }

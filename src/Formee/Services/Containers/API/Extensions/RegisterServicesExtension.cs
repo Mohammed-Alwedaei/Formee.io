@@ -25,8 +25,8 @@ public static class RegisterServicesExtension
     public static IServiceCollection AddMonitoring(this IServiceCollection services)
     {
         var mongoDbConnectionString = _configuration?.GetValue<string>("ContainersDatabase:ConnectionString");
-        var serviceBusConnectionString = _configuration?.GetValue<string>("AzureServiceBus:ConnectionString");
-        var serviceBusHistoryTopic = _configuration?.GetValue<string>("AzureServiceBus:HistoryTopic");
+        var serviceBusConnectionString = _configuration?.GetValue<string>("ServiceBus:ConnectionString");
+        var serviceBusHistoryTopic = _configuration?.GetValue<string>("ServiceBus:HistoryTopic");
 
         services.AddHealthChecks()
             .AddMongoDb(mongoDbConnectionString)

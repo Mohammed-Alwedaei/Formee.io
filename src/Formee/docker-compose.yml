@@ -12,6 +12,18 @@ services:
       - "8080:80"
     depends_on:
       - gateway.core
+
+  admin.web:
+    container_name: admin.web
+    build:
+      context: .
+      dockerfile: "./FrontEnd/Admins/Admins.Web/Dockerfile"
+    expose:
+      - "80"
+    ports:
+      - "8081:80"
+    depends_on:
+      - gateway.core
       
   gateway.core:
     container_name: gateway.core
@@ -81,6 +93,7 @@ services:
       - "5003:80"
     environment:
       ASPNETCORE_ENVIRONMENT: development
+      ConnectionStrings__DefaultConnection: Server=host.docker.internal, 1433;Database=Formee.Forms;User Id=Admin;Password=Admin@123123;integrated security=false;TrustServerCertificate=True
   
   identity.service:
     container_name: identity.service
