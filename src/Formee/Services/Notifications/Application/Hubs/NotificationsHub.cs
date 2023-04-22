@@ -1,9 +1,11 @@
 ﻿using Domain.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 
 namespace Application.Hubs;
 
+[AllowAnonymous]
 public class NotificationsHub : Hub
 {
     private readonly INotificationsManager _notificationsManager;

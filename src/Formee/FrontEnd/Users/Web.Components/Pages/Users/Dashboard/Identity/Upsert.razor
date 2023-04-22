@@ -4,339 +4,338 @@
     <Breadcrumbs>
         <BreadcrumbItem IconCss="fa-solid fa-house"
                         Text="Dashboard"
-                        Url="@Routes.Home"/>
+                        Url="@Routes.Home" />
 
         <BreadcrumbItem IconCss="fa-solid fa-arrow-up-right-from-square"
                         Disabled="true"
                         Text="Identity"
-                        Url="@Routes.Links"/>
+                        Url="@Routes.Links" />
 
         @switch (UpsertType)
         {
             case "update":
                 <BreadcrumbItem IconCss="fa-solid fa-edit"
-                                Text="Update"
-                                Url="/upsert"/>
+                        Text="Update"
+                        Url="/upsert" />
                 break;
             case "delete":
                 <BreadcrumbItem IconCss="fa-solid fa-trash"
-                                Text="Delete"
-                                Url="/upsert"/>
+                        Text="Delete"
+                        Url="/upsert" />
                 break;
             default:
                 <BreadcrumbItem IconCss="fa-solid fa-plus-circle"
-                                Text="Create"
-                                Url="/upsert"/>
+                        Text="Create"
+                        Url="/upsert" />
                 break;
         }
     </Breadcrumbs>
 </FmPageIntro>
 
-<FmSpacer/>
-
+<FmSpacer />
 
 <EditForm Model="User" OnValidSubmit="HandleValidFormSubmit">
-<Grid Gap="@GridGap.Large">
-<Items>
-<GridItem ColumnSize="@GridSize.GridIteLarge">
-<Child>
-<Grid Gap="@GridGap.Large">
-<Items>
-<GridItem ColumnSize="@GridSize.GridItemXLarge">
-    <Child>
-        <FmCard Classes="p-2" IsHoverable="false">
-            <FmHeader>
-                <FmTypography Type="@Typography.LevelTwo"
-                              Text="Basic Info"
-                              TextAlign="left"
-                              Icon="fa-solid fa-plus-circle"
-                              IconSize="1.5rem"/>
-            </FmHeader>
-            <FmBody>
-                <Grid Gap="@GridGap.Large">
-                    <Items>
-                        <GridItem ColumnSize="@GridSize.GridItemMedium">
-                            <Child>
-                                <label for="@nameof(User.UserName)">
-                                    Username
-                                </label>
+    <Grid Gap="@GridGap.Large">
+        <Items>
+            <GridItem ColumnSize="@GridSize.GridIteLarge">
+                <Child>
+                    <Grid Gap="@GridGap.Large">
+                        <Items>
+                            <GridItem ColumnSize="@GridSize.GridItemXLarge">
+                                <Child>
+                                    <FmCard Classes="p-2" IsHoverable="false">
+                                        <FmHeader>
+                                            <FmTypography Type="@Typography.LevelTwo"
+                                                          Text="Basic Info"
+                                                          TextAlign="left"
+                                                          Icon="fa-solid fa-plus-circle"
+                                                          IconSize="1.5rem" />
+                                        </FmHeader>
+                                        <FmBody>
+                                            <Grid Gap="@GridGap.Large">
+                                                <Items>
+                                                    <GridItem ColumnSize="@GridSize.GridItemMedium">
+                                                        <Child>
+                                                            <label for="@nameof(User.UserName)">
+                                                                Username
+                                                            </label>
 
-                                <SfTextBox ID="@nameof(User.UserName)"
-                                           @bind-Value="User.UserName"
-                                           Readonly="_isDeleteUpsert"/>
+                                                            <SfTextBox ID="@nameof(User.UserName)"
+                                                                       @bind-Value="User.UserName"
+                                                                       Readonly="_isDeleteUpsert" />
 
-                                <ValidationMessage For="() => User.UserName"/>
-                            </Child>
-                        </GridItem>
+                                                            <ValidationMessage For="() => User.UserName" />
+                                                        </Child>
+                                                    </GridItem>
 
-                        <GridItem ColumnSize="@GridSize.GridItemMedium">
-                            <Child>
-                                <label for="@nameof(User.FirstName)">
-                                    FirstName
-                                </label>
+                                                    <GridItem ColumnSize="@GridSize.GridItemMedium">
+                                                        <Child>
+                                                            <label for="@nameof(User.FirstName)">
+                                                                FirstName
+                                                            </label>
 
-                                <SfTextBox ID="@nameof(User.FirstName)"
-                                           @bind-Value="User.FirstName"
-                                           Readonly="_isDeleteUpsert"/>
+                                                            <SfTextBox ID="@nameof(User.FirstName)"
+                                                                       @bind-Value="User.FirstName"
+                                                                       Readonly="_isDeleteUpsert" />
 
-                                <ValidationMessage For="() => User.FirstName"/>
-                            </Child>
-                        </GridItem>
+                                                            <ValidationMessage For="() => User.FirstName" />
+                                                        </Child>
+                                                    </GridItem>
 
-                        <GridItem ColumnSize="@GridSize.GridItemMedium">
-                            <Child>
-                                <label for="@nameof(User.LastName)">
-                                    LastName
-                                </label>
+                                                    <GridItem ColumnSize="@GridSize.GridItemMedium">
+                                                        <Child>
+                                                            <label for="@nameof(User.LastName)">
+                                                                LastName
+                                                            </label>
 
-                                <SfTextBox ID="@nameof(User.LastName)"
-                                           @bind-Value="User.LastName"
-                                           Readonly="_isDeleteUpsert"/>
+                                                            <SfTextBox ID="@nameof(User.LastName)"
+                                                                       @bind-Value="User.LastName"
+                                                                       Readonly="_isDeleteUpsert" />
 
-                                <ValidationMessage For="() => User.LastName"/>
-                            </Child>
-                        </GridItem>
+                                                            <ValidationMessage For="() => User.LastName" />
+                                                        </Child>
+                                                    </GridItem>
 
-                        <GridItem ColumnSize="@GridSize.GridItemMedium">
-                            <Child>
-                                <label for="@nameof(User.Email)">
-                                    Email
-                                </label>
+                                                    <GridItem ColumnSize="@GridSize.GridItemMedium">
+                                                        <Child>
+                                                            <label for="@nameof(User.Email)">
+                                                                Email
+                                                            </label>
 
-                                <SfTextBox ID="@nameof(User.Email)"
-                                           @bind-Value="User.Email"
-                                           Readonly="_isDeleteUpsert"/>
+                                                            <SfTextBox ID="@nameof(User.Email)"
+                                                                       @bind-Value="User.Email"
+                                                                       Readonly="_isDeleteUpsert" />
 
-                                <ValidationMessage For="() => User.Email"/>
-                            </Child>
-                        </GridItem>
-                    </Items>
-                </Grid>
-            </FmBody>
-        </FmCard>
-    </Child>
-</GridItem>
+                                                            <ValidationMessage For="() => User.Email" />
+                                                        </Child>
+                                                    </GridItem>
+                                                </Items>
+                                            </Grid>
+                                        </FmBody>
+                                    </FmCard>
+                                </Child>
+                            </GridItem>
 
-<GridItem ColumnSize="@GridSize.GridItemXLarge">
-    <Child>
-        <FmCard Classes="p-2" IsHoverable="false">
-            <FmHeader>
-                <FmTypography Type="@Typography.LevelTwo"
-                              Text="Details"
-                              TextAlign="left"
-                              Icon="fa-solid fa-plus-circle"
-                              IconSize="1.5rem"/>
-            </FmHeader>
-            <FmBody>
-                <Grid Gap="@GridGap.Large">
-                    <Items>
-                        <GridItem ColumnSize="@GridSize.GridItemMedium">
-                            <Child>
-                                <label for="@nameof(User.PhoneNumber)">
-                                    Phone Number
-                                </label>
+                            <GridItem ColumnSize="@GridSize.GridItemXLarge">
+                                <Child>
+                                    <FmCard Classes="p-2" IsHoverable="false">
+                                        <FmHeader>
+                                            <FmTypography Type="@Typography.LevelTwo"
+                                                          Text="Details"
+                                                          TextAlign="left"
+                                                          Icon="fa-solid fa-plus-circle"
+                                                          IconSize="1.5rem" />
+                                        </FmHeader>
+                                        <FmBody>
+                                            <Grid Gap="@GridGap.Large">
+                                                <Items>
+                                                    <GridItem ColumnSize="@GridSize.GridItemMedium">
+                                                        <Child>
+                                                            <label for="@nameof(User.PhoneNumber)">
+                                                                Phone Number
+                                                            </label>
 
-                                <SfTextBox ID="@nameof(User.PhoneNumber)"
-                                           @bind-Value="User.PhoneNumber"
-                                           Readonly="_isDeleteUpsert"/>
+                                                            <SfTextBox ID="@nameof(User.PhoneNumber)"
+                                                                       @bind-Value="User.PhoneNumber"
+                                                                       Readonly="_isDeleteUpsert" />
 
-                                <ValidationMessage For="() => User.PhoneNumber"/>
-                            </Child>
-                        </GridItem>
-                        
-                        <GridItem ColumnSize="@GridSize.GridItemMedium">
-                            <Child>
-                                <label for="@nameof(User.Job)">
-                                    Current Role
-                                </label>
+                                                            <ValidationMessage For="() => User.PhoneNumber" />
+                                                        </Child>
+                                                    </GridItem>
 
-                                <SfTextBox ID="@nameof(User.Job)"
-                                           @bind-Value="User.Job"
-                                           Readonly="_isDeleteUpsert"/>
+                                                    <GridItem ColumnSize="@GridSize.GridItemMedium">
+                                                        <Child>
+                                                            <label for="@nameof(User.Job)">
+                                                                Current Role
+                                                            </label>
 
-                                <ValidationMessage For="() => User.Job"/>
-                            </Child>
-                        </GridItem>
+                                                            <SfTextBox ID="@nameof(User.Job)"
+                                                                       @bind-Value="User.Job"
+                                                                       Readonly="_isDeleteUpsert" />
 
-                        <GridItem ColumnSize="@GridSize.GridItemMedium">
-                            <Child>
-                                <label for="@nameof(User.BirthDate)">
-                                    Birth Date
-                                </label>
+                                                            <ValidationMessage For="() => User.Job" />
+                                                        </Child>
+                                                    </GridItem>
 
-                                <SfDatePicker TValue="DateTime?" @bind-Value="User.BirthDate" />
+                                                    <GridItem ColumnSize="@GridSize.GridItemMedium">
+                                                        <Child>
+                                                            <label for="@nameof(User.BirthDate)">
+                                                                Birth Date
+                                                            </label>
 
-                                <ValidationMessage For="() => User.BirthDate"/>
-                            </Child>
-                        </GridItem>
-                    </Items>
-                </Grid>
-            </FmBody>
-        </FmCard>
-    </Child>
-</GridItem>
+                                                            <SfDatePicker TValue="DateTime?" @bind-Value="User.BirthDate" />
 
-<GridItem ColumnSize="@GridSize.GridItemXLarge">
-    <Child>
-        <FmCard Classes="p-2" IsHoverable="false">
-            <FmHeader>
-                <FmTypography Type="@Typography.LevelTwo"
-                              Text="Details"
-                              TextAlign="left"
-                              Icon="fa-solid fa-plus-circle"
-                              IconSize="1.5rem"/>
-            </FmHeader>
-            <FmBody>
-                <Grid Gap="@GridGap.Large">
-                    <Items>
-                        <GridItem ColumnSize="@GridSize.GridItemXLarge">
-                            <Child>
-                                <label for="@nameof(User.Bio)">
-                                    Bio
-                                </label>
+                                                            <ValidationMessage For="() => User.BirthDate" />
+                                                        </Child>
+                                                    </GridItem>
+                                                </Items>
+                                            </Grid>
+                                        </FmBody>
+                                    </FmCard>
+                                </Child>
+                            </GridItem>
 
-                                <SfRichTextEditor @bind-Value="@User.Bio"
-                                                  EditorMode="@EditorMode.Markdown"
-                                                  Readonly="_isDeleteUpsert">
-                                    <RichTextEditorEvents  />
-                                </SfRichTextEditor>
-                                
-                                <ValidationMessage For="() => User.Bio"/>
-                            </Child>
-                        </GridItem>
-                    </Items>
-                </Grid>
-            </FmBody>
-        </FmCard>
-    </Child>
-</GridItem>
+                            <GridItem ColumnSize="@GridSize.GridItemXLarge">
+                                <Child>
+                                    <FmCard Classes="p-2" IsHoverable="false">
+                                        <FmHeader>
+                                            <FmTypography Type="@Typography.LevelTwo"
+                                                          Text="Details"
+                                                          TextAlign="left"
+                                                          Icon="fa-solid fa-plus-circle"
+                                                          IconSize="1.5rem" />
+                                        </FmHeader>
+                                        <FmBody>
+                                            <Grid Gap="@GridGap.Large">
+                                                <Items>
+                                                    <GridItem ColumnSize="@GridSize.GridItemXLarge">
+                                                        <Child>
+                                                            <label for="@nameof(User.Bio)">
+                                                                Bio
+                                                            </label>
 
-<GridItem ColumnSize="@GridSize.GridItemXLarge">
-    <Child>
-        <FmCard Classes="p-2"
-                IsHoverable="false">
-            <FmHeader>
-                <FmTypography Type="@Typography.LevelTwo"
-                              Text="Upload Avatar"
-                              TextAlign="left"
-                              Icon="fa-solid fa-file-image"
-                              IconSize="1.5rem"/>
-            </FmHeader>
-            <FmBody>
-                <div>
-                    <SfUploader AllowedExtensions=".png, .jpg, .jpeg">
-                        <UploaderAsyncSettings SaveUrl=@($"http://localhost:5000/api/identity/users/avatar/{AppState.Identity.User.Id}")/>
-                    </SfUploader>
+                                                            <SfRichTextEditor @bind-Value="@User.Bio"
+                                                                              EditorMode="@EditorMode.Markdown"
+                                                                              Readonly="_isDeleteUpsert">
+                                                                <RichTextEditorEvents />
+                                                            </SfRichTextEditor>
 
-                    <ValidationMessage For="() => User.LastName"/>
-                </div>
-            </FmBody>
-        </FmCard>
-    </Child>
-</GridItem>
+                                                            <ValidationMessage For="() => User.Bio" />
+                                                        </Child>
+                                                    </GridItem>
+                                                </Items>
+                                            </Grid>
+                                        </FmBody>
+                                    </FmCard>
+                                </Child>
+                            </GridItem>
 
-<GridItem ColumnSize="@GridSize.GridItemXLarge">
-    <Child>
-        <FmCard Classes="p-2"
-                IsHoverable="false">
-            <FmHeader>
-                <FmTypography Type="@Typography.LevelTwo"
-                              Text="Create"
-                              TextAlign="left"
-                              Icon="fa-solid fa-plus-circle"
-                              IconSize="1.5rem"/>
-            </FmHeader>
-            <FmBody>
-                <div>
-                    @if (UpsertType == "update")
-                    {
-                        <SfButton CssClass="e-primary"
-                                  IconCss="fa-solid fa-trash"
-                                  IconPosition="IconPosition.Right"
-                                  IsPrimary="true">
-                            @UpsertType.ToUpper()
-                        </SfButton>
-                    }
-                    else if (UpsertType == "delete")
-                    {
-                        <SfButton CssClass="e-primary"
-                                  IconCss="fa-solid fa-trash"
-                                  IconPosition="IconPosition.Right"
-                                  IsPrimary="true">
-                            @UpsertType.ToUpper()
-                        </SfButton>
-                    }
-                    else
-                    {
-                        <SfButton CssClass="e-primary"
-                                  IconCss="fa-solid fa-trash"
-                                  IconPosition="IconPosition.Right"
-                                  IsPrimary="true">
-                            @UpsertType.ToUpper()
-                        </SfButton>
-                    }
-                </div>
-            </FmBody>
-        </FmCard>
-    </Child>
-</GridItem>
-</Items>
-</Grid>
-</Child>
-</GridItem>
+                            <GridItem ColumnSize="@GridSize.GridItemXLarge">
+                                <Child>
+                                    <FmCard Classes="p-2"
+                                            IsHoverable="false">
+                                        <FmHeader>
+                                            <FmTypography Type="@Typography.LevelTwo"
+                                                          Text="Upload Avatar"
+                                                          TextAlign="left"
+                                                          Icon="fa-solid fa-file-image"
+                                                          IconSize="1.5rem" />
+                                        </FmHeader>
+                                        <FmBody>
+                                            <div>
+                                                <SfUploader AllowedExtensions=".png, .jpg, .jpeg">
+                                                    <UploaderAsyncSettings SaveUrl=@($"http://localhost:5000/api/identity/users/avatar/{AppState.Identity.User.Id}") />
+                                                </SfUploader>
 
-<GridItem ColumnSize="@GridSize.GridItemSmall">
-    <Child>
-        <div>
-            <FmCard Classes="p-2 mb-3"
-                    IsHoverable="false">
-                <FmHeader>
-                    <FmTypography Type="@Typography.LevelTwo"
-                                  Text="Preview"
-                                  TextAlign="left"
-                                  Icon="fa-solid fa-check"
-                                  IconSize="1.5rem"/>
-                </FmHeader>
-                <FmBody>
+                                                <ValidationMessage For="() => User.LastName" />
+                                            </div>
+                                        </FmBody>
+                                    </FmCard>
+                                </Child>
+                            </GridItem>
 
-                </FmBody>
-            </FmCard>
+                            <GridItem ColumnSize="@GridSize.GridItemXLarge">
+                                <Child>
+                                    <FmCard Classes="p-2"
+                                            IsHoverable="false">
+                                        <FmHeader>
+                                            <FmTypography Type="@Typography.LevelTwo"
+                                                          Text="Create"
+                                                          TextAlign="left"
+                                                          Icon="fa-solid fa-plus-circle"
+                                                          IconSize="1.5rem" />
+                                        </FmHeader>
+                                        <FmBody>
+                                            <div>
+                                                @if (UpsertType == "update")
+                                                {
+                                                    <SfButton CssClass="e-primary"
+                                                          IconCss="fa-solid fa-trash"
+                                                          IconPosition="IconPosition.Right"
+                                                          IsPrimary="true">
+                                                        @UpsertType.ToUpper()
+                                                    </SfButton>
+                                                }
+                                                else if (UpsertType == "delete")
+                                                {
+                                                    <SfButton CssClass="e-primary"
+                                                          IconCss="fa-solid fa-trash"
+                                                          IconPosition="IconPosition.Right"
+                                                          IsPrimary="true">
+                                                        @UpsertType.ToUpper()
+                                                    </SfButton>
+                                                }
+                                                else
+                                                {
+                                                    <SfButton CssClass="e-primary"
+                                                          IconCss="fa-solid fa-trash"
+                                                          IconPosition="IconPosition.Right"
+                                                          IsPrimary="true">
+                                                        @UpsertType.ToUpper()
+                                                    </SfButton>
+                                                }
+                                            </div>
+                                        </FmBody>
+                                    </FmCard>
+                                </Child>
+                            </GridItem>
+                        </Items>
+                    </Grid>
+                </Child>
+            </GridItem>
 
-            <FmCard Classes="p-2"
-                    IsHoverable="false">
-                <FmHeader>
-                    <FmTypography Type="@Typography.LevelTwo"
-                                  Text="Form Validation"
-                                  TextAlign="left"
-                                  Icon="fa-solid fa-check"
-                                  IconSize="1.5rem"/>
-                </FmHeader>
-                <FmBody>
-                    <DataAnnotationsValidator/>
-                    <ValidationSummary/>
-                </FmBody>
-            </FmCard>
-        </div>
-    </Child>
-</GridItem>
-</Items>
-</Grid>
+            <GridItem ColumnSize="@GridSize.GridItemSmall">
+                <Child>
+                    <div>
+                        <FmCard Classes="p-2 mb-3"
+                                IsHoverable="false">
+                            <FmHeader>
+                                <FmTypography Type="@Typography.LevelTwo"
+                                              Text="Preview"
+                                              TextAlign="left"
+                                              Icon="fa-solid fa-check"
+                                              IconSize="1.5rem" />
+                            </FmHeader>
+                            <FmBody>
+
+                            </FmBody>
+                        </FmCard>
+
+                        <FmCard Classes="p-2"
+                                IsHoverable="false">
+                            <FmHeader>
+                                <FmTypography Type="@Typography.LevelTwo"
+                                              Text="Form Validation"
+                                              TextAlign="left"
+                                              Icon="fa-solid fa-check"
+                                              IconSize="1.5rem" />
+                            </FmHeader>
+                            <FmBody>
+                                <DataAnnotationsValidator />
+                                <ValidationSummary />
+                            </FmBody>
+                        </FmCard>
+                    </div>
+                </Child>
+            </GridItem>
+        </Items>
+    </Grid>
 </EditForm>
 
 <SfDialog Width="600px"
           @bind-Visible="_isVisibleConfirmationDialog"
           AllowPrerender="true"
           IsModal="true">
-    <DialogAnimationSettings Effect="DialogEffect.SlideBottom" Duration=400/>
+    <DialogAnimationSettings Effect="DialogEffect.SlideBottom" Duration=400 />
 
     @if (_isSendingRequest)
     {
         <DialogTemplates>
             <Header>Your request is being processed</Header>
             <Content>
-                <FmSpacer/>
-                <SfSpinner Size="50" Visible="true"/>
-                <FmSpacer/>
+                <FmSpacer />
+                <SfSpinner Size="50" Visible="true" />
+                <FmSpacer />
             </Content>
         </DialogTemplates>
     }
@@ -360,12 +359,12 @@
                       IsPrimary="true"
                       IconPosition="IconPosition.Right"
                       Disabled="_isSendingRequest"
-                      OnClick="HandleActionApprove"/>
+                      OnClick="HandleActionApprove" />
 
         <DialogButton Content="Cancel"
                       IconCss="fa-solid fa-xmark"
                       IconPosition="IconPosition.Right"
                       Disabled="_isSendingRequest"
-                      OnClick="HandleActionReject"/>
+                      OnClick="HandleActionReject" />
     </DialogButtons>
 </SfDialog>

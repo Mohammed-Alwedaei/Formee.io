@@ -1,6 +1,5 @@
 ﻿using Identity.BusinessLogic.Dtos;
 using Identity.BusinessLogic.Services.IServices;
-using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Identity.API.Extensions;
@@ -10,7 +9,7 @@ public static class IdentityEndpoints
     public static WebApplication UseIdentityEndpoints(this WebApplication app)
     {
         var identity = app.MapGroup("/api/identity")
-                .RequireAuthorization(policyNames: "users")
+                .RequireAuthorization()
                 .WithTags("Users");
 
         identity.MapGet("/users/{userId:Guid}", async
@@ -31,7 +30,7 @@ public static class IdentityEndpoints
             return string.IsNullOrEmpty(user.AuthId)
                 ? Results.NotFound()
                 : Results.Ok(user);
-        });
+        }).AllowAnonymous(); 
 
         identity.MapGet("/users/all", async
             (IIdentityManager identityManager, [FromQuery] string filter) =>

@@ -2,6 +2,7 @@
 using Client.Web.Utilities.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.Extensions.Logging;
 
 namespace Clients.Web.Components.Pages.Users.Dashboard.Identity;
 
@@ -17,6 +18,9 @@ public partial class Upsert : IDisposable
 
     [Inject]
     public AppStateService AppState { get; set; }
+
+    [Inject]
+    public ILogger<Upsert> Logger { get; set; }
 
     [CascadingParameter]
     private Task<AuthenticationState> authenticationState { get; set; }

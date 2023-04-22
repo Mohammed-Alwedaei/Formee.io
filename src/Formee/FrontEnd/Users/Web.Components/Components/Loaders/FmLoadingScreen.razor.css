@@ -1,0 +1,22 @@
+.fm-loading__screen {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.fm-loading__screen p{
+    animation: loading-text-animation 1s ease-in-out alternate infinite;
+}
+
+@keyframes loading-text-animation {
+    0% {
+        opacity: 0;
+    }
+    50% {
+        opacity: 0.9;
+    }
+    100% {
+        opacity: 0.75;
+    }
+}

@@ -10,7 +10,7 @@ public class IdentityService
     private readonly AppStateService _appState;
     private readonly ILogger<IdentityService> _logger;
 
-    public IdentityService(IHttpClientFactory httpClientFactory,
+    public IdentityService(HttpClient httpClient,
         IConfiguration configuration,
         AppStateService appState, 
         ILogger<IdentityService> logger)
@@ -18,7 +18,7 @@ public class IdentityService
         _appState = appState;
         _logger = logger;
         _configuration = configuration;
-        _httpClient = httpClientFactory.CreateClient("ServerApi");
+        _httpClient = httpClient;
     }
 
     public async Task GetByAuthIdAsync(string authProviderId)

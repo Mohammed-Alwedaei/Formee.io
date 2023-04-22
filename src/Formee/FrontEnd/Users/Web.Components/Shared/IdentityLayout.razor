@@ -1,5 +1,16 @@
 ﻿@inherits LayoutComponentBase
 
+@inject NavigationManager NavigationManager
+
+<SfButton OnClick="BeginSignOut">logout</SfButton>
+
 <main>
     @Body
 </main>
+
+@code {
+    private async Task BeginSignOut(MouseEventArgs args)
+    {
+        NavigationManager.NavigateTo("authentication/logout");
+    }
+}

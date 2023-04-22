@@ -4,6 +4,7 @@ using Identity.BusinessLogic.Services;
 using Identity.BusinessLogic.Services.IServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using SynchronousCommunication.Extensions;
 
 namespace Identity.API.Extensions;
@@ -33,7 +34,7 @@ public static class ServicesConfiguration
 
         services.AddHttpClient<IIdentityManager, IdentityManager>(options =>
             options.BaseAddress = new
-                Uri(configuration.GetValue<string>("Identity:APIUrl")));
+                Uri(configuration.GetValue<string>("Auth0:APIUrl")));
 
         return services;
     }
@@ -53,23 +54,25 @@ public static class ServicesConfiguration
     public static IServiceCollection AddIdentityManagement
         (this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddAuthentication(options =>
-        {
-            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-        }).AddJwtBearer(options =>
-        {
-            options.Authority = configuration["Auth0:Authority"];
-            options.Audience = configuration["Auth0:Audience"];
-        });
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, JwtBearerDefaults.AuthenticationScheme, c =>
+            {
+                c.Authority = $"https://{configuration["Auth0:Domain"]}";
+                c.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidAudience = configuration["Auth0:Audience"],
+                    ValidIssuer = $"https://{configuration["Auth0:Domain"]}"
+                };
+            });
 
         services.AddAuthorization(options =>
         {
             options.AddPolicy("users", policy =>
             {
-                policy.RequireClaim("user:read");
+                policy.RequireClaim("scope", "user:read");
             });
         });
+
 
         return services;
     }

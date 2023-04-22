@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.SignalR.Client;
+﻿using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
+using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Configuration;
 
 namespace Client.Web.Utilities.Services;
@@ -36,12 +37,19 @@ public class NotificationsService : IAsyncDisposable
 
         var url = $"/api/notifications/all/{userId}/{numberOfRecords}";
 
-        var response = await _httpClient
-            .GetFromJsonAsync<List<NotificationDto>>(url);
+        try
+        {
 
-        _appState.Notifications.SetNotificationCollectionState(response ?? new List<NotificationDto>());
+            var response = await _httpClient
+                .GetFromJsonAsync<List<NotificationDto>>(url);
+            _appState.Notifications.SetNotificationCollectionState(response ?? new List<NotificationDto>());
 
-        _appState.Notifications.InvertFetchingState();
+            _appState.Notifications.InvertFetchingState();
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
     }
 
     public async Task MarkNotificationAsReadAsync

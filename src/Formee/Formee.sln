@@ -86,7 +86,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Users", "Users", "{650D27A9
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Admins", "Admins", "{6186C973-9068-4201-A0BC-5D27A746AA8D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Admins.Web", "FrontEnd\Admins\Admins.Web\Admins.Web.csproj", "{45B0E021-0FEF-494A-AD25-9A503B2FE18A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Admins.Web", "FrontEnd\Admins\Admins.Web\Admins.Web.csproj", "{45B0E021-0FEF-494A-AD25-9A503B2FE18A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Client.Web", "FrontEnd\Users\Client.Web\Client.Web.csproj", "{CD967751-68D9-4E07-8E8C-10E469D4DD77}"
 EndProject

@@ -1,4 +1,4 @@
-using Client.Web;
+﻿using Client.Web;
 using Client.Web.Utilities.Services;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
@@ -21,6 +21,9 @@ builder.Services.AddHttpClient("ServerApi", client =>
         .GetValue<string>("GatewayUrl")!);
 }).AddHttpMessageHandler<BaseAddressAuthorizationMessageHandler>();
 
+builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>()
+    .CreateClient("ServerApi"));
+
 builder.Services.AddScoped<ContainersService>();
 builder.Services.AddScoped<IdentityService>();
 builder.Services.AddScoped<AnalyticsService>();
@@ -28,16 +31,12 @@ builder.Services.AddScoped<FormsService>();
 builder.Services.AddScoped<HistoryService>();
 builder.Services.AddScoped<LinksService>();
 builder.Services.AddScoped<NotificationsService>();
-
-builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>()
-    .CreateClient("ServerApi"));
-
+    
 builder.Services.AddOidcAuthentication(options =>
 {
-    builder.Configuration.Bind("Auth0", options.ProviderOptions);
-    options.ProviderOptions.ResponseType = "code";
-    options.ProviderOptions.AdditionalProviderParameters
-        .Add("audience", builder.Configuration["Auth0:Audience"]);
+  builder.Configuration.Bind("Auth0", options.ProviderOptions);
+  options.ProviderOptions.ResponseType = "code";
+  options.ProviderOptions.AdditionalProviderParameters.Add("audience", builder.Configuration["Auth0:Audience"]);
 });
 
 builder.Services.AddSingleton<AppStateService>();

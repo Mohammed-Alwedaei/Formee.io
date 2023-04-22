@@ -6,6 +6,7 @@ services:
     build:
       context: .
       dockerfile: "./FrontEnd/Users/Client.Web/Dockerfile"
+    profiles: [ "client" ]
     expose:
       - "80"
     ports:
@@ -18,6 +19,7 @@ services:
     build:
       context: .
       dockerfile: "./FrontEnd/Admins/Admins.Web/Dockerfile"
+    profiles: [ "client" ]
     expose:
       - "80"
     ports:
@@ -30,6 +32,7 @@ services:
     build: 
       context: .
       dockerfile: ./Gateways/Gateway.Core/Dockerfile
+    profiles: [ "service", "gateway" ]
     expose:
       - "80"
     ports:
@@ -51,6 +54,7 @@ services:
     build: 
       context: .
       dockerfile: ./Services/Analytics/Analytics.API/Dockerfile
+    profiles: [ "service" ]
     expose:
       - "80"
     ports:
@@ -67,6 +71,7 @@ services:
     build:
       context: .
       dockerfile: ./Services/Containers/API/Dockerfile
+    profiles: [ "service" ]
     expose:
       - "80"
     ports:
@@ -87,6 +92,7 @@ services:
     build:
       context: .
       dockerfile: ./Services/Forms/Presentation/Dockerfile
+    profiles: [ "service" ]
     expose:
       - "80"
     ports:
@@ -100,6 +106,7 @@ services:
     build:
       context: .
       dockerfile: ./Services/Identity/Identity.API/Dockerfile
+    profiles: [ "service" ]
     expose:
       - "80"
     ports:
@@ -119,6 +126,7 @@ services:
     build:
       context: .
       dockerfile: ./Services/Links/Links.API/Dockerfile
+    profiles: [ "service" ]
     expose:
       - "80"
     ports:
@@ -132,6 +140,7 @@ services:
     build:
       context: .
       dockerfile: ./Services/Notifications/Presentation/Dockerfile
+    profiles: [ "service" ]
     expose:
       - "80"
     ports:
@@ -150,6 +159,7 @@ services:
     build:
       context: .
       dockerfile: ./Services/Subscriptions/Subscriptions.API/Dockerfile
+    profiles: [ "service" ]
     expose:
       - "80"
     ports:
@@ -163,6 +173,7 @@ services:
     build:
       context: .
       dockerfile: ./Services/History/Dockerfile
+    profiles: [ "service" ]
     expose: 
       - "3000"
     ports:
@@ -173,6 +184,7 @@ services:
 
   monitoring.service:
     container_name: monitoring.service
+    profiles: [ "service" ]
     build:
       context: .
       dockerfile: ./Services/Monitoring/Monitoring/Dockerfile

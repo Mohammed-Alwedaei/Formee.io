@@ -31,10 +31,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors("cors");
-
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseCors("cors");
 
 app.UseIdentityEndpoints();
 
