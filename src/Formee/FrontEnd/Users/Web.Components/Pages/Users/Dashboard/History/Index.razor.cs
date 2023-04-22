@@ -1,9 +1,11 @@
 ﻿using Client.Web.Utilities.Services;
+using Microsoft.AspNetCore.Authorization;
 using Syncfusion.Blazor.Navigations;
 
 namespace Clients.Web.Components.Pages.Users.Dashboard.History;
 
 [Route(Routes.History)]
+[Authorize(Policy = "users")]
 public partial class Index : IDisposable
 {
     [Inject]

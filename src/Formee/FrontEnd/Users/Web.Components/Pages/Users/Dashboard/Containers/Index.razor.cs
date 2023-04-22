@@ -1,10 +1,12 @@
 ﻿using Client.Web.Utilities.Services;
+using Microsoft.AspNetCore.Authorization;
 using Syncfusion.Blazor.Buttons;
 using Syncfusion.Blazor.SplitButtons;
 
 namespace Clients.Web.Components.Pages.Users.Dashboard.Containers;
 
 [Route(Routes.Containers)]
+[Authorize(Policy = "users")]
 public partial class Index : IDisposable
 {
     [Inject]

@@ -1,9 +1,11 @@
 ﻿using Client.Web.Utilities.Dtos.Forms;
 using Client.Web.Utilities.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Clients.Web.Components.Pages.Users.Dashboard.Sites;
 
 [Route(Routes.ViewSites)]
+[Authorize(Policy = "users")]
 public partial class View
 {
     [Inject]

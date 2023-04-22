@@ -2,10 +2,12 @@
 using Client.Web.Utilities.Dtos.Links;
 using Client.Web.Utilities.Models;
 using Client.Web.Utilities.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Clients.Web.Components.Pages.Users.Dashboard.Links;
 
 [Route(Routes.Links)]
+[Authorize(Policy = "users")]
 public partial class Index
 {
     [Inject]

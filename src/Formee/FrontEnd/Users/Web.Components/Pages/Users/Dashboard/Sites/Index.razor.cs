@@ -1,8 +1,10 @@
 ﻿using Client.Web.Utilities.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Clients.Web.Components.Pages.Users.Dashboard.Sites;
 
 [Route(Routes.Sites)]
+[Authorize(Policy = "users")]
 public partial class Index
 {
     [Inject]

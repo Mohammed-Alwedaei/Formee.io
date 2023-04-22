@@ -1,12 +1,12 @@
 ﻿using Client.Web.Utilities.Dtos.Identity;
 using Client.Web.Utilities.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Components.Forms;
-using Syncfusion.Blazor.Inputs;
 
 namespace Clients.Web.Components.Pages.Users.Dashboard.Identity;
 
 [Route("/dashboard/identity/upsert")]
+[Authorize(Policy = "users")]
 public partial class Upsert : IDisposable
 {
     [Inject]

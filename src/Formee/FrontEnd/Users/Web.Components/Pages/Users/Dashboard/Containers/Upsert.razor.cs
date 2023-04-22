@@ -1,10 +1,12 @@
 ﻿using Client.Web.Utilities.Dtos;
 using Client.Web.Utilities.Services;
 using Markdig;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Clients.Web.Components.Pages.Users.Dashboard.Containers;
 
 [Route(Routes.UpsertContainer)]
+[Authorize(Policy = "users")]
 public partial class Upsert
 {
     [Inject]
