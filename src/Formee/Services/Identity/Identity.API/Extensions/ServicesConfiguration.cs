@@ -55,20 +55,21 @@ public static class ServicesConfiguration
     {
         services.AddAuthentication(options =>
         {
-            options.DefaultAuthenticateScheme = 
-                JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultChallengeScheme = 
-                JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
         }).AddJwtBearer(options =>
         {
-            options.Authority = configuration.
-                GetValue<string>("Identity:Authority");
-
-            options.Audience = configuration
-                .GetValue<string>("Identity:Audience");
+            options.Authority = configuration["Auth0:Authority"];
+            options.Audience = configuration["Auth0:Audience"];
         });
 
-        services.AddAuthorization();
+        services.AddAuthorization(options =>
+        {
+            options.AddPolicy("users", policy =>
+            {
+                policy.RequireClaim("user:read");
+            });
+        });
 
         return services;
     }

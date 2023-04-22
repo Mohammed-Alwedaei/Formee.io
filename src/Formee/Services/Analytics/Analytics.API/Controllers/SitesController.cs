@@ -1,4 +1,5 @@
 ﻿using Analytics.Utilities.Dtos.Site;
+using Microsoft.AspNetCore.Authorization;
 using ServiceBus.Messages;
 using ServiceBus.Models;
 using ServiceBus.ServiceBus;
@@ -8,6 +9,7 @@ namespace Analytics.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize(Policy = "users")]
 public class SitesController : ControllerBase
 {
     private readonly ILogger<SitesController> _logger;

@@ -2,11 +2,13 @@
 using Application.FormResponse.Query.GetAllByFormId;
 using Application.FormResponse.Commands.DeleteFormResponse;
 using Application.FormResponse.Query.GetFormResponseById;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Presentation.Controllers;
 
-[Route("api/[controller]/")]
 [ApiController]
+[Authorize(Policy = "users")]
+[Route("api/[controller]/")]
 public class FormResponseController : ControllerBase
 {
     private readonly IMediator _mediator;

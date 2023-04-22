@@ -3,10 +3,12 @@ using Application.Fields.Commands.DeleteById;
 using Application.Fields.Commands.UpdateById;
 using Application.Fields.Queries.GetAllByUserId;
 using Application.Fields.Queries.GetById;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Presentation.Controllers;
 
 [ApiController]
+[Authorize(Policy = "users")]
 [Route("api/[controller]/")]
 public class FieldsController : ControllerBase
 {

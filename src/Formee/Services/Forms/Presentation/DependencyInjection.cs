@@ -36,23 +36,22 @@ public static class DependencyInjection
             .AddSqlServer(config.GetConnectionString("DefaultConnection"));
 
         services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme =
-                    JwtBearerDefaults.AuthenticationScheme;
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        }).AddJwtBearer(options =>
+        {
+            options.Authority = config["Auth0:Authority"];
+            options.Audience = config["Auth0:Audience"];
+        });
 
-                options.DefaultChallengeScheme =
-                    JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(options =>
+        services.AddAuthorization(options =>
+        {
+            options.AddPolicy("users", policy =>
             {
-                options.Authority = config
-                    .GetSection("IdentityManagement")
-                    .GetValue<string>("Authority"); ;
-
-                options.Audience = config
-                    .GetSection("IdentityManagement")
-                    .GetValue<string>("Audience"); ;
+                policy.RequireClaim("user:read");
             });
+        });
 
         services.AddAuthorization(options =>
         {

@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Subscriptions.BusinessLogic.Dtos.Subscriptions;
 using Subscriptions.BusinessLogic.Repositories.IRepository;
 
 namespace Subscriptions.API.Controllers;
 
 [ApiController]
+[Authorize(Policy = "users")]
 [Route("api/subscriptions/features")]
 public class SubscriptionFeaturesController : ControllerBase
 {

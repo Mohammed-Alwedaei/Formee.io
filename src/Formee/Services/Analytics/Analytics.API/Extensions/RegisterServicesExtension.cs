@@ -2,6 +2,7 @@
 using Analytics.BusinessLogic.Contexts;
 using Analytics.BusinessLogic.Mapper;
 using Analytics.BusinessLogic.Repositories;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using ServiceBus;
 using SynchronousCommunication.Extensions;
@@ -100,9 +101,24 @@ public static class ServicesExtensions
     /// <returns>IServiceCollection</returns>
     public static IServiceCollection AddServiceSecurity(this IServiceCollection services)
     {
-        services.AddAuthentication();
-        services.AddAuthorization();
-        
+        services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        }).AddJwtBearer(options =>
+        {
+            options.Authority = _configuration["Auth0:Authority"];
+            options.Audience = _configuration["Auth0:Audience"];
+        });
+
+        services.AddAuthorization(options =>
+        {
+            options.AddPolicy("users", policy =>
+            {
+                policy.RequireClaim("user:read");
+            });
+        });
+
         services.AddCors(options =>
         {
             options.AddPolicy("cors", policy =>

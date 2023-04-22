@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Subscriptions.BusinessLogic;
 using Subscriptions.BusinessLogic.DbContexts;
 using Subscriptions.BusinessLogic.Repositories;
@@ -73,6 +74,24 @@ public static class RegisterServicesExtension
     /// <returns>IServiceCollection</returns>
     public static IServiceCollection AddIdentityAndSecurity(this IServiceCollection services)
     {
+        services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        }).AddJwtBearer(options =>
+        {
+            options.Authority = _configuration["Auth0:Authority"];
+            options.Audience = _configuration["Auth0:Audience"];
+        });
+
+        services.AddAuthorization(options =>
+        {
+            options.AddPolicy("users", policy =>
+            {
+                policy.RequireClaim("user:read");
+            });
+        });
+
         services.AddCors(options =>
         {
             options.AddPolicy("cors", policy =>

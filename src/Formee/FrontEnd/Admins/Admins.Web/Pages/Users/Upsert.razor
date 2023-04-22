@@ -1,0 +1,65 @@
+﻿@page "/users/upsert"
+
+@attribute [Authorize]
+
+@inject IConfiguration Configuration
+@inject HttpClient HttpClient
+@inject NavigationManager NavigationManager
+
+<h3>Upsert</h3>
+
+<EditForm Model="_userRoleModel" OnValidSubmit="HandleValidFormSubmit">
+    <div class="row g-5">
+        <div class="col-lg-6">
+            <label class="form-label" for="@nameof(_userRoleModel.RoleId)">
+                Role to Assign
+            </label>
+
+            <InputText id="@nameof(_userRoleModel.RoleId)"
+                       class="form-control"
+                       @bind-Value="_userRoleModel.RoleId" />
+
+            <ValidationMessage For="() => _userRoleModel.RoleId" />
+        </div>
+        
+        <div class="col-lg-6">
+            <label class="form-label" for="@nameof(_userRoleModel.UserId)">
+                User to Update
+            </label>
+
+            <InputText id="@nameof(_userRoleModel.UserId)"
+                       class="form-control"
+                       @bind-Value="_userRoleModel.UserId" />
+
+            <ValidationMessage For="() => _userRoleModel.UserId" />
+        </div>
+    </div>
+    
+    <div class="mt-3">
+        <button class="btn btn-primary" type="submit">Submit</button>
+    </div>
+</EditForm>
+
+@code {
+    private AddRoleToUser _userRoleModel = new();
+    private bool _isFetching;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var baseUrl = new Uri(Configuration.GetValue<string>("GatewayUrl"));
+
+        HttpClient.BaseAddress = baseUrl;
+    }
+
+    private async Task HandleValidFormSubmit()
+    {
+        _isFetching = true;
+
+        var response = await HttpClient.PostAsJsonAsync($"/gateway/identity/admins/{_userRoleModel.RoleId}", _userRoleModel);
+
+        if (response.IsSuccessStatusCode)
+            NavigationManager.NavigateTo("/users");
+
+        _isFetching = false;
+    }
+}

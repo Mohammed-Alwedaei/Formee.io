@@ -3,11 +3,13 @@ using Application.Forms.Commands.Create;
 using Application.Forms.Commands.DeleteById;
 using Application.Forms.Commands.UpdateById;
 using Application.Forms.Queries.GetAllBySiteId;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Presentation.Controllers;
 
 [ApiController]
 [Tags("Forms")]
+[Authorize(Policy = "users")]
 [Route("api/[controller]/")]
 public class FormsController : ControllerBase
 {

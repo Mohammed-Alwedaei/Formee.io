@@ -10,7 +10,8 @@ public static class IdentityEndpoints
     public static WebApplication UseIdentityEndpoints(this WebApplication app)
     {
         var identity = app.MapGroup("/api/identity")
-            .WithTags("Users");
+                .RequireAuthorization(policyNames: "users")
+                .WithTags("Users");
 
         identity.MapGet("/users/{userId:Guid}", async
             (IIdentityManager identityManager, Guid userId) =>
@@ -43,12 +44,12 @@ public static class IdentityEndpoints
         });
 
         //Assign Admin to a user
-        identity.MapPost("/admin/{roleId}", async
+        identity.MapPost("/admins/{roleId}", async
             (IIdentityManager identityService, AddRoleToUseDto users, string roleId) =>
         {
             var result = await identityService.AssignRoleToUser(users, roleId);
 
-            return Results.Ok(result);
+            return result ? Results.Ok(result) : Results.BadRequest();
         }).WithTags("Admins");
 
         identity.MapPost("/users", async 

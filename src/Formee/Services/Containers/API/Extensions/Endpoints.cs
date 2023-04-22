@@ -6,7 +6,8 @@ public static class Endpoints
 {
     public static WebApplication UseContainerEndpoints(this WebApplication app)
     {
-        var containersRouteGroup = app.MapGroup("/api/containers");
+        var containersRouteGroup = app.MapGroup("/api/containers")
+            .RequireAuthorization(policyNames: "users");
 
         /*
          * Route: /api/container/

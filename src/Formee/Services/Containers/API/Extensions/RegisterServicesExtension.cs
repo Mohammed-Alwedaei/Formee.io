@@ -1,4 +1,6 @@
-﻿namespace API.Extensions;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+
+namespace API.Extensions;
 
 public static class RegisterServicesExtension
 {
@@ -58,8 +60,23 @@ public static class RegisterServicesExtension
     /// <returns>IServiceCollection</returns>
     public static IServiceCollection AddIdentityAndSecurity(this IServiceCollection services)
     {
-        services.AddAuthentication();
-        services.AddAuthorization();
+        services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        }).AddJwtBearer(options =>
+        {
+            options.Authority = _configuration["Auth0:Authority"];
+            options.Audience = _configuration["Auth0:Audience"];
+        });
+
+        services.AddAuthorization(options =>
+        {
+            options.AddPolicy("users", policy =>
+            {
+                policy.RequireClaim("user:read");
+            });
+        });
         
         services.AddCors(options =>
         {

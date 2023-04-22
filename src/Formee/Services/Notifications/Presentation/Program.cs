@@ -1,7 +1,6 @@
 using Application.Hubs;
 using Infrastructure.Extensions;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Newtonsoft.Json;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +11,24 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddInfrastructure(builder.Configuration);
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    options.Authority = builder.Configuration["Auth0:Authority"];
+    options.Audience = builder.Configuration["Auth0:Audience"];
+}); 
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("users", policy =>
+    {
+        policy.RequireClaim("user:read");
+    });
+});
 
 builder.Services.AddCors(options =>
 {
@@ -37,6 +54,8 @@ if (app.Environment.IsDevelopment())
 app.UseCors("cors");
 
 //app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

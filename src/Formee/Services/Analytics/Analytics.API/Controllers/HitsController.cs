@@ -1,9 +1,12 @@
 ﻿using Analytics.Utilities.Dtos.PageHit;
 using Analytics.Utilities.Dtos.Session;
+using Microsoft.AspNetCore.Authorization;
+
 namespace Analytics.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize(Policy = "users")]
 public class HitsController : ControllerBase
 {
     private readonly IPageHitRepository _hitRepository;

@@ -11,7 +11,8 @@ public static class LinksEndpoints
     public static WebApplication UseLinksEndpoints
         (this WebApplication app)
     {
-        var links = app.MapGroup("/api/links");
+        var links = app.MapGroup("/api/links")
+            .RequireAuthorization(policyNames: "users");
 
         var logger = app.Logger;
 
@@ -142,10 +143,12 @@ public static class LinksEndpoints
         (this WebApplication app)
     {
         var redirectLinks = app
-            .MapGroup("/api/links/redirects/");
+            .MapGroup("/api/links/redirects/")
+            .RequireAuthorization(policyNames: "users");
 
         var hits = app
-            .MapGroup("/api/links/hits/");
+            .MapGroup("/api/links/hits/")
+            .RequireAuthorization(policyNames: "users");
 
         var logger = app.Logger;
 

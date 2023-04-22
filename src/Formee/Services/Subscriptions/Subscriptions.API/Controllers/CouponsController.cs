@@ -1,11 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Subscriptions.BusinessLogic.Dtos.Orders;
 using Subscriptions.BusinessLogic.Repositories.IRepository;
 
 namespace Subscriptions.API.Controllers;
 
-[Route("api/[controller]")]
 [ApiController]
+[Authorize(Policy = "users")]
+[Route("api/[controller]")]
 public class CouponsController : ControllerBase
 {
     private readonly ICouponRepository _couponRepository;

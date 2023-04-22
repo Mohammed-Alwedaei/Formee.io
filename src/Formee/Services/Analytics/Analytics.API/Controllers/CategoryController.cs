@@ -1,4 +1,5 @@
 ﻿using Analytics.Utilities.Dtos.Category;
+using Microsoft.AspNetCore.Authorization;
 using ServiceBus.Constants;
 using ServiceBus.Messages;
 using ServiceBus.Models;
@@ -8,6 +9,7 @@ namespace Analytics.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize(Policy = "users")]
 public class CategoryController : ControllerBase
 {
     private readonly ICategoryRepository _categoryRepository;

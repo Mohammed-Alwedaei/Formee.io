@@ -1,15 +1,15 @@
 ﻿@page "/subscriptions/upsert"
 
+@inject IConfiguration Configuration
+@inject HttpClient HttpClient
+@inject NavigationManager NavigationManager
+
 @attribute [Authorize]
 
 @if (!string.IsNullOrEmpty(UpsertType))
 {
     <PageTitle>@UpsertType - Subscriptions</PageTitle>
 }
-
-@inject IConfiguration Configuration
-@inject HttpClient HttpClient
-@inject NavigationManager NavigationManager
 
 <h3 class="display-5 my-3">Upsert</h3>
 

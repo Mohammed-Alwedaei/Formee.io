@@ -1,10 +1,12 @@
-﻿using Domain.Dtos;
-using Domain.Interfaces;
+﻿using Domain.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Presentation.Controllers;
-[Route("api/[controller]")]
+
 [ApiController]
+[Authorize(Policy = "users")]
+[Route("api/[controller]")]
 public class NotificationsController : ControllerBase
 {
     private readonly INotificationsManager _notificationsManager;

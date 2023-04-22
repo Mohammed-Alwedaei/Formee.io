@@ -3,6 +3,7 @@ using Links.API.Middlewares;
 using Links.BusinessLogic.Contexts;
 using Links.BusinessLogic.Repositories;
 using Links.BusinessLogic.Repositories.IRepository;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using SynchronousCommunication.Extensions;
 
 namespace Links.API.Extensions;
@@ -66,6 +67,29 @@ public static class RegisterServices
     public static IServiceCollection AddExceptionHandling(this IServiceCollection services)
     {
         services.AddTransient<GlobalExceptionHandlerMiddleware>();
+
+        return services;
+    }
+
+    public static IServiceCollection AddIdentityManagement(this IServiceCollection services)
+    {
+        services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        }).AddJwtBearer(options =>
+        {
+            options.Authority = _configuration["Auth0:Authority"];
+            options.Audience = _configuration["Auth0:Audience"];
+        });
+
+        services.AddAuthorization(options =>
+        {
+            options.AddPolicy("users", policy =>
+            {
+                policy.RequireClaim("user:read");
+            });
+        });
 
         return services;
     }
