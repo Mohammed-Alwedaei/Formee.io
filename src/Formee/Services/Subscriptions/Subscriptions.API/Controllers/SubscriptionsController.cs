@@ -37,7 +37,8 @@ public class SubscriptionsController : ControllerBase
 
         return Ok(result);
     }
-    
+
+    [AllowAnonymous]
     [HttpGet("default")]
     public async Task<IActionResult> GetDefaultSubscription()
     {

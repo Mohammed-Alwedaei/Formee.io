@@ -1,18 +1,24 @@
 ﻿using Client.Web.Utilities.Dtos.Identity;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 namespace Client.Web.Utilities.Services;
 public class IdentityService
 {
     private readonly HttpClient _httpClient;
+    private readonly IConfiguration _configuration;
     private readonly AppStateService _appState;
     private readonly ILogger<IdentityService> _logger;
 
-    public IdentityService(HttpClient httpClient, AppStateService appState, ILogger<IdentityService> logger)
+    public IdentityService(IHttpClientFactory httpClientFactory,
+        IConfiguration configuration,
+        AppStateService appState, 
+        ILogger<IdentityService> logger)
     {
-        _httpClient = httpClient;
         _appState = appState;
         _logger = logger;
+        _configuration = configuration;
+        _httpClient = httpClientFactory.CreateClient("ServerApi");
     }
 
     public async Task GetByAuthIdAsync(string authProviderId)

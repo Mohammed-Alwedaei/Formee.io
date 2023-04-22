@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace Clients.Web.Components.Pages.Users.Dashboard.Sites;
 
 [Route(Routes.UpsertSites)]
-[Authorize(Policy = "users")]
+[Authorize]
 public partial class Upsert
 {
     [Parameter]

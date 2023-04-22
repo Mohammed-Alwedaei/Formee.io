@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace Clients.Web.Components.Pages.Users.Dashboard.Identity;
 
 [Route(Routes.Identity)]
-[Authorize(Policy = "users")]
+[Authorize]
 public partial class Index : IDisposable
 {
     [Inject]

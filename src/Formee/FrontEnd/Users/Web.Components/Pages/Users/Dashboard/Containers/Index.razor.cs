@@ -6,7 +6,7 @@ using Syncfusion.Blazor.SplitButtons;
 namespace Clients.Web.Components.Pages.Users.Dashboard.Containers;
 
 [Route(Routes.Containers)]
-[Authorize(Policy = "users")]
+[Authorize]
 public partial class Index : IDisposable
 {
     [Inject]

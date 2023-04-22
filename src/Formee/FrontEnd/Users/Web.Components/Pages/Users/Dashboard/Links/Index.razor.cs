@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace Clients.Web.Components.Pages.Users.Dashboard.Links;
 
 [Route(Routes.Links)]
-[Authorize(Policy = "users")]
+[Authorize]
 public partial class Index
 {
     [Inject]

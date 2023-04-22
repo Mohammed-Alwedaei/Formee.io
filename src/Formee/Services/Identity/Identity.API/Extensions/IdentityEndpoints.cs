@@ -58,7 +58,7 @@ public static class IdentityEndpoints
             var result = await identityManager.CreateAsync(user);
 
             return Results.Ok(result);
-        });
+        }).AllowAnonymous();
 
         identity.MapPost("/users/avatar/{userId:Guid}", async
             (IIdentityManager identityService, IFormFileCollection avatar, Guid userId)

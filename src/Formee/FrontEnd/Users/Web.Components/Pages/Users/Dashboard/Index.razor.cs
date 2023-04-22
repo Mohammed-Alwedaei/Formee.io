@@ -1,9 +1,9 @@
 ﻿using Client.Web.Utilities.Services;
 using Microsoft.AspNetCore.Authorization;
 
-namespace Clients.Web.Components.Pages;
+namespace Clients.Web.Components.Pages.Users.Dashboard;
 
-[Authorize(Policy = "users")]
+[Authorize]
 public partial class Index : IDisposable
 {
     [Inject]

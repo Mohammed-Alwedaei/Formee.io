@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace Clients.Web.Components.Pages.Users.Dashboard.Sites;
 
 [Route(Routes.ViewSites)]
-[Authorize(Policy = "users")]
+[Authorize]
 public partial class View
 {
     [Inject]

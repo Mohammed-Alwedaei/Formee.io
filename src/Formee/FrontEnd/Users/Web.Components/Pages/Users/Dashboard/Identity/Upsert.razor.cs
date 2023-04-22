@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 namespace Clients.Web.Components.Pages.Users.Dashboard.Identity;
 
 [Route("/dashboard/identity/upsert")]
-[Authorize(Policy = "users")]
+[Authorize]
 public partial class Upsert : IDisposable
 {
     [Inject]

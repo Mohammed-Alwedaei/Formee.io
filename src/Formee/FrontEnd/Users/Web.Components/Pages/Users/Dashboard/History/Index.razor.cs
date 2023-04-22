@@ -5,7 +5,7 @@ using Syncfusion.Blazor.Navigations;
 namespace Clients.Web.Components.Pages.Users.Dashboard.History;
 
 [Route(Routes.History)]
-[Authorize(Policy = "users")]
+[Authorize]
 public partial class Index : IDisposable
 {
     [Inject]
