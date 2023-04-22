@@ -4,6 +4,7 @@ using Links.BusinessLogic.Contexts;
 using Links.BusinessLogic.Repositories;
 using Links.BusinessLogic.Repositories.IRepository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using SynchronousCommunication.Extensions;
 
 namespace Links.API.Extensions;
@@ -73,23 +74,18 @@ public static class RegisterServices
 
     public static IServiceCollection AddIdentityManagement(this IServiceCollection services)
     {
-        services.AddAuthentication(options =>
-        {
-            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-        }).AddJwtBearer(options =>
-        {
-            options.Authority = _configuration["Auth0:Authority"];
-            options.Audience = _configuration["Auth0:Audience"];
-        });
-
-        services.AddAuthorization(options =>
-        {
-            options.AddPolicy("users", policy =>
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, JwtBearerDefaults.AuthenticationScheme, c =>
             {
-                policy.RequireClaim("user:read");
+                c.Authority = $"https://{_configuration["Auth0:Domain"]}";
+                c.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidAudience = _configuration["Auth0:Audience"],
+                    ValidIssuer = $"https://{_configuration["Auth0:Domain"]}"
+                };
             });
-        });
+
+        services.AddAuthorization();
 
         return services;
     }

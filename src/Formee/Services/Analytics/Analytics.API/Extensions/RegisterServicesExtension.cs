@@ -4,6 +4,7 @@ using Analytics.BusinessLogic.Mapper;
 using Analytics.BusinessLogic.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using ServiceBus;
 using SynchronousCommunication.Extensions;
 
@@ -101,23 +102,18 @@ public static class ServicesExtensions
     /// <returns>IServiceCollection</returns>
     public static IServiceCollection AddServiceSecurity(this IServiceCollection services)
     {
-        services.AddAuthentication(options =>
-        {
-            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-        }).AddJwtBearer(options =>
-        {
-            options.Authority = _configuration["Auth0:Authority"];
-            options.Audience = _configuration["Auth0:Audience"];
-        });
-
-        services.AddAuthorization(options =>
-        {
-            options.AddPolicy("users", policy =>
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, JwtBearerDefaults.AuthenticationScheme, c =>
             {
-                policy.RequireClaim("user:read");
+                c.Authority = $"https://{_configuration["Auth0:Domain"]}";
+                c.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidAudience = _configuration["Auth0:Audience"],
+                    ValidIssuer = $"https://{_configuration["Auth0:Domain"]}"
+                };
             });
-        });
+
+        services.AddAuthorization();
 
         services.AddCors(options =>
         {

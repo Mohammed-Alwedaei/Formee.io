@@ -1,6 +1,7 @@
 ﻿using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.IdentityModel.Tokens;
 using Presentation.Middlewares;
 
 namespace Presentation;
@@ -30,36 +31,23 @@ public static class DependencyInjection
     /// <param name="services"></param>
     /// <returns>The IServiceCollection</returns>
     public static IServiceCollection AddIdentityManagement(
-        this IServiceCollection services, IConfiguration config)
+        this IServiceCollection services, IConfiguration configuration)
     {
         services.AddHealthChecks()
-            .AddSqlServer(config.GetConnectionString("DefaultConnection"));
+            .AddSqlServer(configuration.GetConnectionString("DefaultConnection"));
 
-        services.AddAuthentication(options =>
-        {
-            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-        }).AddJwtBearer(options =>
-        {
-            options.Authority = config["Auth0:Authority"];
-            options.Audience = config["Auth0:Audience"];
-        });
-
-        services.AddAuthorization(options =>
-        {
-            options.AddPolicy("users", policy =>
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, JwtBearerDefaults.AuthenticationScheme, c =>
             {
-                policy.RequireClaim("user:read");
+                c.Authority = $"https://{configuration["Auth0:Domain"]}";
+                c.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidAudience = configuration["Auth0:Audience"],
+                    ValidIssuer = $"https://{configuration["Auth0:Domain"]}"
+                };
             });
-        });
 
-        services.AddAuthorization(options =>
-        {
-            options.AddPolicy("IsUser", policy =>
-            {
-                policy.RequireClaim("role", "user");
-            });
-        });
+        services.AddAuthorization();
 
         return services;
     }

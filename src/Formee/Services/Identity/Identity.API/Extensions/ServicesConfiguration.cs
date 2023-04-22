@@ -65,13 +65,7 @@ public static class ServicesConfiguration
                 };
             });
 
-        services.AddAuthorization(options =>
-        {
-            options.AddPolicy("users", policy =>
-            {
-                policy.RequireClaim("scope", "user:read");
-            });
-        });
+        services.AddAuthorization();
 
 
         return services;

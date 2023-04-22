@@ -23,13 +23,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("users", policy =>
-    {
-        policy.RequireClaim("scope", "user:read");
-    });
-});
+builder.Services.AddAuthorization();
 
 builder.Services.AddCors(options =>
 {
