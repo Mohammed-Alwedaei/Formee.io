@@ -15,4 +15,6 @@ public class AppStateService
     public readonly LinksState Links = new();
     
     public readonly NotificationsState Notifications = new();
+
+    public readonly SubscriptionsState Subscriptions = new();
 }

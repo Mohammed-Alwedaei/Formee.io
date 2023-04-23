@@ -37,7 +37,7 @@ public partial class Upsert : IDisposable
     [SupplyParameterFromQuery(Name = "auth_provider_id")]
     public string AuthProviderId { get; set; }
 
-    private CreateUserDto User { get; set; } = new();
+    private UpdateUserDto User { get; set; } = new();
 
     private bool _isVisibleConfirmationDialog;
 
@@ -62,6 +62,31 @@ public partial class Upsert : IDisposable
         User.AuthId = AuthProviderId;
 
         AppState.Identity.StateChanged += StateHasChanged;
+
+        if (Guid.Parse(UserId) != Guid.Empty)
+        {
+            await IdentityService.GetByIdAsync(Guid.Parse(UserId));
+
+            User = new UpdateUserDto
+            {
+                Id = AppState.Identity.User.Id,
+                Email = AppState.Identity.User.Email,
+                UserName = AppState.Identity.User.UserName,
+                FirstName = AppState.Identity.User.FirstName,
+                LastName = AppState.Identity.User.LastName,
+                AuthId = AppState.Identity.User.AuthId,
+                Job = AppState.Identity.User.Job,
+                Bio = AppState.Identity.User.Bio,
+                PhoneNumber = AppState.Identity.User.PhoneNumber,
+                BirthDate = AppState.Identity.User.BirthDate,
+            };
+        }
+        else
+        {
+            User = new UpdateUserDto();
+        }
+
+        await InvokeAsync(StateHasChanged);
     }
 
     private void HandleValidFormSubmit()
@@ -75,17 +100,10 @@ public partial class Upsert : IDisposable
     {
         _isSendingRequest = true;
 
-        var createdUser = await IdentityService.CreateAsync(User);
-
-        if (createdUser != null)
-        {
-            _isSendingRequest = false;
-            _isSuccessRequest = true;
-
-            await Task.Delay(2500);
-
-            NavigationManager.NavigateTo("/");
-        }
+        if(UpsertType is "update")
+            await IdentityService.UpdateAsync(User);
+        else
+            await IdentityService.CreateAsync(User);
     }
 
     private void HandleActionReject()

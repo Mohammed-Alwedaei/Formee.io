@@ -1,19 +1,13 @@
-﻿@if (!string.IsNullOrEmpty(_avatarUrl))
+﻿@if (!string.IsNullOrEmpty(Url))
 {
-    <img src="@_avatarUrl" class="@Classes" alt="Avatar" >
+    <img src="@Url" class="@Classes" alt="Avatar">
 }
 
 @code {
     [Parameter]
-    public string Name { get; set; }
+    public string Url { get; set; }
     
     [Parameter]
     public string Classes { get; set; }
 
-    private string _avatarUrl;
-
-    protected override void OnParametersSet()
-    {
-        _avatarUrl = $"https://adoptingmsastorage.blob.core.windows.net/accountavatars/{Name}";
-    }
 }

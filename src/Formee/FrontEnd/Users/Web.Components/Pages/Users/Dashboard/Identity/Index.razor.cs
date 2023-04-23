@@ -16,6 +16,9 @@ public partial class Index : IDisposable
     [Inject]
     public NavigationManager NavigationManager { get; set; }
 
+    [Inject]
+    public SubscriptionsService SubscriptionsService { get; set; }
+
     [Parameter]
     [SupplyParameterFromQuery(Name = "user_id")]
     public string UserId { get; set; }
@@ -27,12 +30,17 @@ public partial class Index : IDisposable
 
         if (string.IsNullOrEmpty(UserId))
             NavigationManager.NavigateTo("/error/notfound");
+
+        var subscriptionId = AppState.Identity.User.SubscriptionId;
+
+        await AggregatePageData(Guid.Parse(UserId), subscriptionId);
     }
 
-    private async Task AggregatePageData(Guid userId)
+    private async Task AggregatePageData(Guid userId, int subcriptionId)
     {
         AppState.Identity.StateChanged += StateHasChanged;
         await IdentityService.GetByIdAsync(userId);
+        await SubscriptionsService.GetUserSubscriptionAsync(subcriptionId);
     }
 
     public void Dispose()

@@ -1,4 +1,6 @@
-﻿using Client.Web.Utilities.Dtos.Identity;
+﻿using Client.Web.Utilities.Constants;
+using Client.Web.Utilities.Dtos.Identity;
+using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
@@ -7,22 +9,25 @@ public class IdentityService : BaseService
 {
     private readonly AppStateService _appState;
     private readonly ILogger<IdentityService> _logger;
+    private readonly NavigationManager _navigationManager;
 
     public IdentityService(IHttpClientFactory httpClient,
         IConfiguration configuration,
-        AppStateService appState, 
-        ILogger<IdentityService> logger) : base(httpClient, configuration)
+        AppStateService appState,
+        ILogger<IdentityService> logger,
+        NavigationManager navigationManager) : base(httpClient, configuration)
     {
         _appState = appState;
         _logger = logger;
+        _navigationManager = navigationManager;
     }
 
     public async Task GetByAuthIdAsync(string authProviderId)
     {
         _appState.Identity.IsFetching = true;
-        
+
         var url = $"/api/identity/users/{authProviderId}";
-        
+
         _logger.LogInformation("FETCHING: api request to route {url} at {date}", url, DateTime.UtcNow);
 
         var client = await HttpClient();
@@ -35,13 +40,13 @@ public class IdentityService : BaseService
 
             _appState.Identity.SetUserState(new UserDto());
         }
-        
+
         _logger.LogInformation("SUCCESS: fetch request to route: {url} succeeded", url);
         _appState.Identity.SetUserState(response);
-            
+
         _appState.Identity.IsFetching = false;
     }
-    
+
     public async Task GetByIdAsync(Guid userId)
     {
         var url = $"/api/identity/users/{userId}";
@@ -56,26 +61,53 @@ public class IdentityService : BaseService
         {
             _logger.LogError("ERROR: could not fetch route: {url} with status code of {statusCode}", url);
 
-            _appState.Identity.SetUserState(response);
+            _appState.Identity.SetUserState(new UserDto());
         }
-        
+
         _logger.LogInformation("SUCCESS: fetch request to route: {url} succeeded", url);
-        _appState.Identity.SetUserState(new UserDto());
-            
+        _appState.Identity.SetUserState(response);
+
         _appState.Identity.IsFetching = false;
     }
 
-    public async Task<CreateUserDto?> CreateAsync(CreateUserDto user)
+    public async Task CreateAsync(UpdateUserDto user)
     {
-        const string url = "/api/identity/users";
+        try
+        {
+            const string url = "/api/identity/users";
 
-        var client = await HttpClient();
+            var client = await HttpClient();
 
-        var response = await client.PostAsJsonAsync(url, user);
+            var response = await client.PostAsJsonAsync(url, user);
 
-        if (response.IsSuccessStatusCode)
-            return await response.Content.ReadFromJsonAsync<CreateUserDto>();
+            if (response.IsSuccessStatusCode)
+                _navigationManager.NavigateTo($"/{Routes.Identity}?user_id={_appState.Identity.User.Id}");
 
-        return new CreateUserDto();
+            throw new Exception();
+        }
+        catch (Exception ex)
+        {
+            _navigationManager.NavigateTo($"/dashboard/error?error_code=500&error_message=something_wrong");
+        }
+    }
+
+    public async Task UpdateAsync(UpdateUserDto user)
+    {
+        try
+        {
+            const string url = "/api/identity/users";
+            var client = await HttpClient();
+
+            var response = await client.PutAsJsonAsync(url, user);
+
+            if (response.IsSuccessStatusCode)
+                _navigationManager.NavigateTo($"/{Routes.Identity}?user_id={_appState.Identity.User.Id}");
+            else
+                throw new Exception();
+        }
+        catch (Exception ex)
+        {
+            _navigationManager.NavigateTo("/dashboard/error?error_code=500&error_message=something_wrong");
+        }
     }
 }

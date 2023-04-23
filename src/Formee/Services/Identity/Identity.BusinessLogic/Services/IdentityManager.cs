@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Net.Http.Json;
+﻿using System.Net.Http.Json;
 using Azure.Storage.Blobs;
 using Identity.BusinessLogic.Contexts;
 using Identity.BusinessLogic.Dtos;
@@ -11,7 +10,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
+using Polly;
 using SynchronousCommunication.HttpClients;
 
 namespace Identity.BusinessLogic.Services;
@@ -145,6 +144,33 @@ public class IdentityManager : IIdentityManager
         await _context.SaveChangesAsync();
 
         return createdUser.Entity;
+    }
+
+    public async Task<UserDto> UpdateAsync(UpsertUserDto user)
+    {
+        var oldUser = await _context.User
+            .FirstOrDefaultAsync(u => u.Id == user.Id);
+
+        if (oldUser is null)
+            return new UserDto();
+
+        //Fields to update
+        oldUser.Email = user.Email;
+        oldUser.UserName = user.UserName;
+        oldUser.FirstName = user.FirstName;
+        oldUser.LastName = user.LastName;
+        oldUser.Job = user.Job;
+        oldUser.Bio = user.Bio;
+        oldUser.PhoneNumber = user.PhoneNumber;
+        oldUser.BirthDate = user.BirthDate;
+        oldUser.IsModified = true;
+        oldUser.LastModifiedDate = DateTime.UtcNow;
+
+        _context.User.Update(oldUser);
+
+        await _context.SaveChangesAsync();
+
+        return oldUser;
     }
 
     public async Task<AvatarDto> UploadUserAvatar(IFormFileCollection avatar, Guid userId)

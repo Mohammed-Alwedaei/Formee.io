@@ -1,43 +1,65 @@
-﻿<FmPageIntro Heading="Links">
+﻿<FmPageIntro Heading="My Profile">
     <Breadcrumbs>
         <BreadcrumbItem IconCss="fa-solid fa-house"
                         Text="Dashboard"
-                        Url="@Routes.Home"/>
+                        Url="@Routes.Home" />
 
-        <BreadcrumbItem IconCss="fa-solid fa-arrow-up-right-from-square"
-                        Disabled="true"
+        <BreadcrumbItem IconCss="fa-solid fa-user"
                         Text="Identity"
-                        Url="/dashboard/{}"/>
+                        Url="/dashboard/{identity}" />
+
+        @if (AppState.Identity.User is not null)
+        {
+            <BreadcrumbItem IconCss="fa-solid fa-i"
+                        Disabled="true"
+                        Text="Me"
+                        Url="@($"/dashboard/identity?user_id={AppState.Identity.User}")" />
+        }
+        else
+        {
+            <SfSpinner Visible="true" />
+        }
     </Breadcrumbs>
 </FmPageIntro>
 
-<FmSpacer/>
+<FmSpacer />
 
-
-@if (AppState.Identity.User is not null)
+@if (AppState.Identity.User is not null && AppState.Subscriptions.Subscription is not null)
 {
     <SfDashboardLayout Columns="4"
-                       CellSpacing="@(new double[] {40, 40})"
-                       AllowResizing="false"
-                       AllowDragging="false"
-                       AllowFloating="false">
+                   CellSpacing="@(new double[] {40, 40})"
+                   AllowResizing="false"
+                   AllowDragging="false"
+                   AllowFloating="false">
         <DashboardLayoutPanels>
             <DashboardLayoutPanel Column="0"
-                                  Row="0"
-                                  SizeX="3"
-                                  SizeY="1">
+                              Row="0"
+                              SizeX="3"
+                              SizeY="1">
                 <Header>
                     <FmTypography Text="My Profile"
-                                  Type="@Typography.LevelTwo"/>
+                              Type="@Typography.LevelTwo" />
                 </Header>
                 <ContentTemplate>
-
                     <Grid>
                         <Items>
                             <GridItem ColumnSize="@GridSize.GridItemSmall">
                                 <Child>
-                                    <FmAvatar Name="@AppState.Identity.User.Avatar.Name"
-                                              Classes="e-avatar fm-avatar__profile"/>
+                                    @if (AppState.Identity.User.Avatar is not null &&
+                                   !string.IsNullOrEmpty(AppState.Identity.User.Avatar.Name))
+                                    {
+                                        var avatarName = AppState.Identity.User.Avatar.Name;
+
+                                        var avatarUrl = $"https://adoptingmsastorage.blob.core.windows.net/accountavatars/{avatarName}";
+
+                                        <FmAvatar Url="@avatarUrl"
+                                          Classes="e-avatar fm-avatar__profile" />
+                                    }
+                                    else
+                                    {
+                                        <FmAvatar Url="_content/Clients.Web.Components/images/avatar.jpg"
+                                          Classes="e-avatar fm-avatar__profile" />
+                                    }
 
                                 </Child>
                             </GridItem>
@@ -48,37 +70,37 @@
                                         <div class="d-flex align-items-center justify-content-between">
                                             <div>
                                                 <FmTypography Text="Username"
-                                                              Type="@Typography.LevelTwo"/>
-                                                <FmSpacer/>
+                                                          Type="@Typography.LevelTwo" />
+                                                <FmSpacer />
                                                 <FmTypography Text="@AppState.Identity.User.UserName"
-                                                              Type="@Typography.LevelTwo"/>
+                                                          Type="@Typography.LevelTwo" />
                                             </div>
 
                                             <div>
                                                 <FmTypography Text="FirstName"
-                                                              Type="@Typography.LevelTwo"/>
-                                                <FmSpacer/>
+                                                          Type="@Typography.LevelTwo" />
+                                                <FmSpacer />
                                                 <FmTypography Text="@AppState.Identity.User.FirstName"
-                                                              Type="@Typography.LevelTwo"/>
+                                                          Type="@Typography.LevelTwo" />
                                             </div>
 
                                             <div>
                                                 <FmTypography Text="LastName"
-                                                              Type="@Typography.LevelTwo"/>
-                                                <FmSpacer/>
+                                                          Type="@Typography.LevelTwo" />
+                                                <FmSpacer />
                                                 <FmTypography Text="@AppState.Identity.User.FirstName"
-                                                              Type="@Typography.LevelTwo"/>
+                                                          Type="@Typography.LevelTwo" />
                                             </div>
                                         </div>
 
-                                        <FmSpacer/>
+                                        <FmSpacer />
 
                                         <div>
                                             <FmTypography Text="LastName"
-                                                          Type="@Typography.LevelTwo"/>
-                                            <FmSeperator/>
+                                                      Type="@Typography.LevelTwo" />
+                                            <FmSeperator />
                                             <FmTypography Text="@AppState.Identity.User.CreatedDate.ToString("f")"
-                                                          Type="@Typography.LevelTwo"/>
+                                                      Type="@Typography.LevelTwo" />
                                         </div>
                                     </div>
                                 </Child>
@@ -87,34 +109,118 @@
                     </Grid>
                 </ContentTemplate>
             </DashboardLayoutPanel>
-            
+
             <DashboardLayoutPanel Column="4"
-                                  Row="0"
-                                  SizeX="1"
-                                  SizeY="2">
+                              Row="0"
+                              SizeX="1"
+                              SizeY="2">
                 <Header>
                     <FmTypography Text="Bio"
-                                  Type="@Typography.LevelTwo"/>
+                              Type="@Typography.LevelTwo" />
                 </Header>
                 <ContentTemplate>
                     <FmTypography Text="A great bio"
-                                  Type="@Typography.LevelTwo"/>
+                              Type="@Typography.LevelTwo" />
                 </ContentTemplate>
             </DashboardLayoutPanel>
-            
+
             <DashboardLayoutPanel Column="0"
-                                              Row="1"
-                                              SizeX="3"
-                                              SizeY="1">
-                            <Header>
-                                <FmTypography Text="Subscription Info"
-                                              Type="@Typography.LevelTwo"/>
-                            </Header>
-                            <ContentTemplate>
-                                <FmTypography Text="Subscription info goes here"
-                                                                  Type="@Typography.LevelTwo"/>
-                            </ContentTemplate>
-                        </DashboardLayoutPanel>
+                              Row="1"
+                              SizeX="3"
+                              SizeY="1">
+                <Header>
+                    <FmTypography Text="Subscription Info"
+                              Type="@Typography.LevelTwo" />
+                </Header>
+                <ContentTemplate>
+                    <div>
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <FmTypography Text="Subscription Name"
+                                          Type="@Typography.LevelTwo" />
+                                <FmSpacer />
+
+                                <FmTypography Text="@AppState.Subscriptions.Subscription.Name"
+                                          Type="@Typography.LevelTwo" />
+                            </div>
+
+                            <div>
+                                <FmTypography Text="Monthly cost"
+                                          Type="@Typography.LevelTwo" />
+                                <FmSpacer />
+                                <FmTypography Text="@AppState.Subscriptions.Subscription.Price.ToString()"
+                                          Type="@Typography.LevelTwo" />
+                            </div>
+
+                            <div>
+                                <FmTypography Text="Annual Cost"
+                                          Type="@Typography.LevelTwo" />
+                                <FmSpacer />
+
+                                <FmTypography Text="@AppState.Subscriptions.Subscription.AnnualPrice.ToString()"
+                                          Type="@Typography.LevelTwo" />
+                            </div>
+                        </div>
+
+                        <FmSeperator />
+
+                        <div>
+                            <FmTypography Text="@AppState.Subscriptions.Subscription.Description"
+                                      Type="@Typography.LevelTwo" />
+                        </div>
+
+                        <FmSeperator />
+
+                        <div>
+                            <FmTypography Text="Features"
+                                      Type="@Typography.LevelTwo" />
+                            <FmSpacer />
+
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div>
+                                    <FmTypography Text="Number of Container"
+                                              Type="@Typography.LevelThree" />
+                                    <FmSpacer />
+
+                                    <FmTypography Text="@AppState.Subscriptions.Subscription.SubscriptionFeatures.NumberOfContainers.ToString()"
+                                              Classes="fm-typography__lead" />
+                                </div>
+
+                                <div>
+                                    <FmTypography Text="Number of Sites"
+                                              Type="@Typography.LevelThree" />
+                                    <FmSpacer />
+
+                                    <FmTypography Text="@AppState.Subscriptions.Subscription.SubscriptionFeatures.NumberOfSites.ToString()"
+                                              Classes="fm-typography__lead" />
+                                </div>
+
+                                <div>
+                                    <FmTypography Text="Number of Forms"
+                                              Type="@Typography.LevelThree" />
+                                    <FmSpacer />
+
+                                    <FmTypography Text="@AppState.Subscriptions.Subscription.SubscriptionFeatures.NumberOfForms.ToString()"
+                                              Classes="fm-typography__lead" />
+                                </div>
+
+                                <div>
+                                    <FmTypography Text="Number of Links"
+                                              Type="@Typography.LevelThree" />
+                                    <FmSpacer />
+
+                                    <FmTypography Text="@AppState.Subscriptions.Subscription.SubscriptionFeatures.NumberOfLinks.ToString()"
+                                              Classes="fm-typography__lead" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </ContentTemplate>
+            </DashboardLayoutPanel>
         </DashboardLayoutPanels>
     </SfDashboardLayout>
+}
+else
+{
+    <SfSpinner Visible="true" />
 }

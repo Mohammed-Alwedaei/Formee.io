@@ -13,42 +13,40 @@
 
 <FmSpacer />
 
-<FmLoader>
-    <Content>
-        <Grid Gap="@GridGap.Large">
-            <Items>
-                @foreach (var site in Sites)
-                {
-                    <GridItem ColumnSize="@GridSize.GridItemMedium">
-                        <Child>
-                            <FmCard>
-                                <FmBody>
-                                    <h1>@site.Name</h1>
 
-                                    <FmLink Route="@(Routes.ViewSites + "?id=" + site.Id)" Text="view site" />
-                                </FmBody>
-                            </FmCard>
-                        </Child>
-                    </GridItem>
-                }
 
-                <GridItem ColumnSize="@GridSize.GridItemXLarge">
-                    <Child>
-                        <FmCard Classes="py-4 fm-card__border-dashed"
-                                IsHoverable="true" OnClick="NavigateToUpsertSite">
-                            <FmBody>
-                                <div class="d-flex align-items-center justify-content-center">
-                                    <FmTypography Type="@Typography.LevelTwo"
-                                                  Text="Create new Site"
-                                                  TextAlign="center"
-                                                  Icon="fa-solid fa-plus-circle"
-                                                  IconSize="1.5rem" />
-                                </div>
-                            </FmBody>
-                        </FmCard>
-                    </Child>
-                </GridItem>
-            </Items>
-        </Grid>
-    </Content>
-</FmLoader>
+<Grid Gap="@GridGap.Large">
+    <Items>
+        @foreach (var site in Sites)
+        {
+            <GridItem ColumnSize="@GridSize.GridItemMedium">
+                <Child>
+                    <FmCard>
+                        <FmBody>
+                            <h1>@site.Name</h1>
+
+                            <FmLink Route="@(Routes.ViewSites + "?id=" + site.Id)" Text="view site" />
+                        </FmBody>
+                    </FmCard>
+                </Child>
+            </GridItem>
+        }
+
+        <GridItem ColumnSize="@GridSize.GridItemXLarge">
+            <Child>
+                <FmCard Classes="py-4 fm-card__border-dashed"
+                        IsHoverable="true" OnClick="NavigateToUpsertSite">
+                    <FmBody>
+                        <div class="d-flex align-items-center justify-content-center">
+                            <FmTypography Type="@Typography.LevelTwo"
+                                          Text="Create new Site"
+                                          TextAlign="center"
+                                          Icon="fa-solid fa-plus-circle"
+                                          IconSize="1.5rem" />
+                        </div>
+                    </FmBody>
+                </FmCard>
+            </Child>
+        </GridItem>
+    </Items>
+</Grid>

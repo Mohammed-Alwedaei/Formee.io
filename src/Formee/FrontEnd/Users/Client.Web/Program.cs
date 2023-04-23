@@ -32,6 +32,7 @@ builder.Services.AddScoped<FormsService>();
 builder.Services.AddScoped<HistoryService>();
 builder.Services.AddScoped<LinksService>();
 builder.Services.AddScoped<NotificationsService>();
+builder.Services.AddScoped<SubscriptionsService>();
     
 builder.Services.AddOidcAuthentication(options =>
 {

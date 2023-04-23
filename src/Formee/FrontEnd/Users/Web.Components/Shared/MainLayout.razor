@@ -37,7 +37,7 @@
 
                 <SfTooltip Position="Syncfusion.Blazor.Popups.Position.RightCenter"
                            Content="My Sites">
-                    <FmLink Route="@Routes.Sites"
+                    <FmLink Route="@($"{Routes.Sites}?user_id={AppState.Identity.User.Id}")"
                             ActiveClass="fm-link__active"
                             MatchRoute="NavLinkMatch.Prefix"
                             Text="Sites"

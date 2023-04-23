@@ -49,7 +49,8 @@ public class UserEntity
 
     public int? AvatarId { get; set; }
 
-    public AvatarEntity? Avatar { get; set; } = new ();
+    [ForeignKey(nameof(AvatarId))]
+    public AvatarEntity? Avatar { get; set; } = new();
 
     [Required]
     public int SubscriptionId { get; set; }
@@ -86,7 +87,7 @@ public class UserEntity
         };
     }
 
-    public static implicit operator UserEntity(CreateUserDto user)
+    public static implicit operator UserEntity(UpsertUserDto user)
     {
         return new UserEntity
         {

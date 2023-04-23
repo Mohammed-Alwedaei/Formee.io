@@ -21,5 +21,7 @@ public interface IIdentityManager
 
     Task<UserDto> CreateAsync(UserEntity user);
 
+    Task<UserDto> UpdateAsync(UpsertUserDto user);
+
     Task<AvatarDto> UploadUserAvatar(IFormFileCollection avatar, Guid userId);
 }

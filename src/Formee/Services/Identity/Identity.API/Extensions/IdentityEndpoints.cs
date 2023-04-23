@@ -56,7 +56,7 @@ public static class IdentityEndpoints
         identity.MapPost("/users", async
             (IIdentityManager identityManager, 
                 ISubscriptionsClient subscriptionsClient, 
-                CreateUserDto user) =>
+                UpsertUserDto user) =>
         {
             var result = await identityManager.CreateAsync(user);
 
@@ -72,7 +72,23 @@ public static class IdentityEndpoints
                 ? Results.Ok(result) 
                 : Results.BadRequest();
         }).AllowAnonymous();
-        
+
+        identity.MapPut("/users", async
+        (IIdentityManager identityManager, UpsertUserDto user) =>
+        {
+            if (user == null)
+            {
+                return Results.BadRequest();
+            }
+
+            var result = await identityManager.UpdateAsync(user);
+
+            return result == null 
+                ? Results.Problem(statusCode: StatusCodes.Status500InternalServerError)
+                : Results.Ok(result);
+        }).AllowAnonymous();
+
+
         //Get token
         identity.MapGet("/users/token", async
             (IIdentityManager identityManager) =>
@@ -85,7 +101,7 @@ public static class IdentityEndpoints
         identity.MapPost("/users/avatar/{userId:Guid}", async
             (IIdentityManager identityService, IFormFileCollection avatar, Guid userId)
             => Results.Ok(await identityService
-                .UploadUserAvatar(avatar, userId)));
+                .UploadUserAvatar(avatar, userId))).AllowAnonymous();
 
         return app;
     }

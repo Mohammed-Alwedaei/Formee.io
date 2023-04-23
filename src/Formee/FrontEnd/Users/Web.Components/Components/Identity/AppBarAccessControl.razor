@@ -48,6 +48,9 @@
                 <FmSpacer/>
 
                 <FmTypography Text="@_appState.Identity.User.FirstName"/>
+                
+                <FmLink Text="Update Profile" 
+                        Route="@($"{Routes.IdentityUpsert}?user_id={_appState.Identity.User.Id}&upsert_type=update")" />
             </Content>
 
             <Footer>

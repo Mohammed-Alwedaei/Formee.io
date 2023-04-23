@@ -130,7 +130,7 @@ public class ContainersService : BaseService
         }
         catch (Exception exception)
         {
-            _navigationManager.NavigateTo($"/dashboard/error?error_code=500&error_message=something_wrong");
+            _navigationManager.NavigateTo("/dashboard/error?error_code=500&error_message=something_wrong");
         }
         finally
         {

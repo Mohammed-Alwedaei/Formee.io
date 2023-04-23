@@ -184,7 +184,7 @@ services:
 
   monitoring.service:
     container_name: monitoring.service
-    profiles: [ "service" ]
+    profiles: [ "client" ]
     build:
       context: .
       dockerfile: ./Services/Monitoring/Monitoring/Dockerfile

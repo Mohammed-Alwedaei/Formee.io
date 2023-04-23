@@ -1,9 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Identity.BusinessLogic.Dtos;
+namespace Client.Web.Utilities.Dtos.Identity;
 
-public class CreateUserDto
+public class UpdateUserDto
 {
+    public Guid? Id { get; set; }
+
     [Required]
     [EmailAddress]
     [MaxLength(50)]
