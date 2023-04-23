@@ -6,6 +6,8 @@ public class IdentityState
 {
     public UserDto User;
 
+    public string AuthId;
+
     public bool IsFetching;
     
     public event Action StateChanged;
@@ -19,5 +21,9 @@ public class IdentityState
     {
         User = user;
         StateChanged.Invoke();
+    }
+    public void SetAuthId(string authId)
+    {
+        AuthId = authId;
     }
 }

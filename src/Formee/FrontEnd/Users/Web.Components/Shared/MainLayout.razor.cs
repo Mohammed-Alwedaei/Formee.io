@@ -1,6 +1,4 @@
 ﻿using Client.Web.Utilities.Services;
-using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.Extensions.Logging;
 
 namespace Clients.Web.Components.Shared;
 

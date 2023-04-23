@@ -47,7 +47,7 @@
 
                 <SfTooltip Position="Syncfusion.Blazor.Popups.Position.RightCenter"
                            Content="My Links">
-                    <FmLink Route="@Routes.Links"
+                    <FmLink Route="@($"{Routes.Links}?user_id={AppState.Identity.User.Id}")"
                             ActiveClass="fm-link__active"
                             Text="Links"
                             Classes="fm-link d-flex justify-content-center mb-3"

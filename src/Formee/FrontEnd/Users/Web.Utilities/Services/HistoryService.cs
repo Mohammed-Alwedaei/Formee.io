@@ -9,7 +9,7 @@ public class HistoryService : BaseService
 
     public HistoryService(IHttpClientFactory httpClient,
         AppStateService appState,
-        IConfiguration configuration) : base(httpClient, configuration)
+        IConfiguration configuration) : base(httpClient, configuration, appState)
     {
         _appState = appState;
     }

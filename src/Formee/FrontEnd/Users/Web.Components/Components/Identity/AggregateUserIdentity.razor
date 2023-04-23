@@ -33,6 +33,8 @@
                 .Claims
                 .FirstOrDefault(c => c.Type == "sub")
                 ?.Value;
+
+            _appState.Identity.SetAuthId(authProviderId);
             
             _logger.LogInformation("AUTH: user is authenticated");
 

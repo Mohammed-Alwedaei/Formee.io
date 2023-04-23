@@ -90,10 +90,10 @@ public static class IdentityEndpoints
 
 
         //Get token
-        identity.MapGet("/users/token", async
-            (IIdentityManager identityManager) =>
+        identity.MapGet("/users/token/{userId}", async
+            (IJwtManager jwtManager, string userId) =>
         {
-            var result = await identityManager.GetTokenAsync();
+            var result = await jwtManager.GetAsync(userId);
 
             return Results.Ok(result);
         }).AllowAnonymous();

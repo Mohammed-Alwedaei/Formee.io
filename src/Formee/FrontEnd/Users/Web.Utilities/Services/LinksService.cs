@@ -9,7 +9,7 @@ public class LinksService : BaseService
 
     public LinksService(IHttpClientFactory httpClient,
         AppStateService appState,
-        IConfiguration configuration) : base(httpClient, configuration)
+        IConfiguration configuration) : base(httpClient, configuration, appState)
     {
         _appState = appState;
     }

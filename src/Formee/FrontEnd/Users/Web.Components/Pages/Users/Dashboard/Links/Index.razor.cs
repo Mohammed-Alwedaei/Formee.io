@@ -8,7 +8,7 @@ namespace Clients.Web.Components.Pages.Users.Dashboard.Links;
 
 [Route(Routes.Links)]
 [Authorize]
-public partial class Index
+public partial class Index : IDisposable
 {
     [Inject]
     public LinksService LinksService { get; set; }
@@ -37,6 +37,8 @@ public partial class Index
     protected override async Task OnParametersSetAsync()
     {
         var userId = new Guid("3fa85f64-5717-4562-b3fc-2c963f66afa6");
+
+        AppState.Containers.StateChanged += StateHasChanged;
 
         await AggregateLinksPageData(userId);
 
@@ -79,5 +81,10 @@ public partial class Index
         }
 
         _isSuccessLinkFetch = false;
+    }
+
+    public void Dispose()
+    {
+        AppState.Containers.StateChanged -= StateHasChanged;
     }
 }

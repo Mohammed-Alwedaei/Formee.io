@@ -15,7 +15,7 @@ public class NotificationsService : BaseService, IAsyncDisposable
     public NotificationsService(IHttpClientFactory httpClient,
         AppStateService appState,
         IConfiguration configuration, 
-        ILogger<NotificationsService> logger) : base(httpClient, configuration)
+        ILogger<NotificationsService> logger) : base(httpClient, configuration, appState)
     {
         _appState = appState;
         _configuration = configuration;

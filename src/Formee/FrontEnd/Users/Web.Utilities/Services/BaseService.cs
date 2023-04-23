@@ -8,14 +8,17 @@ public class BaseService
 {
     public IHttpClientFactory HttpClientFactory { get; set; }
     public IConfiguration Configuration { get; set; }
+    public AppStateService AppStateService { get; set; }
 
     private readonly HttpClient _httpClient;
 
     public BaseService(IHttpClientFactory httpClientFactory, 
-        IConfiguration configuration)
+        IConfiguration configuration,
+        AppStateService appStateService)
     {
         HttpClientFactory = httpClientFactory;
         Configuration = configuration;
+        AppStateService = appStateService;
 
         _httpClient = HttpClientFactory.CreateClient("ServerApi");
 
@@ -25,22 +28,23 @@ public class BaseService
         {
             _httpClient.BaseAddress = new Uri(baseAddress);
         }
+        
     }
 
     public async Task<HttpClient> HttpClient()
     {
-        var accessToken = await GetAccessTokenAsync();
+        var accessToken = 
+            await GetAccessTokenAsync(AppStateService.Identity.AuthId);
 
         _httpClient.DefaultRequestHeaders.Authorization = new
-            AuthenticationHeaderValue(accessToken.TokenType, 
-                accessToken.Token);
+            AuthenticationHeaderValue("Bearer", accessToken);
 
         return _httpClient;
     }
 
-    private async Task<TokenDto?> GetAccessTokenAsync()
+    private async Task<string?> GetAccessTokenAsync(string authId)
     {
         return await _httpClient
-            .GetFromJsonAsync<TokenDto>("/gateway/identity/users/token");
+            .GetFromJsonAsync<string>($"/gateway/identity/users/{authId}");
     }
 }

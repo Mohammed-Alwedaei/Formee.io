@@ -16,7 +16,7 @@ public class AnalyticsService : BaseService
     public AnalyticsService(IHttpClientFactory httpClient,
         AppStateService appState,
         ILogger<AnalyticsService> logger,
-        IConfiguration configuration) : base(httpClient, configuration)
+        IConfiguration configuration) : base(httpClient, configuration, appState)
     {
         _appState = appState;
         _logger = logger;

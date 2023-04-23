@@ -58,12 +58,14 @@ public partial class Upsert : IDisposable
                 .FirstOrDefault(c => c.Type == "email")
                 ?.Value;
 
+        
+
         User.Email = email;
         User.AuthId = AuthProviderId;
 
         AppState.Identity.StateChanged += StateHasChanged;
 
-        if (Guid.Parse(UserId) != Guid.Empty)
+        if (string.IsNullOrEmpty(UserId) != true && Guid.Parse(UserId) != Guid.Empty)
         {
             await IdentityService.GetByIdAsync(Guid.Parse(UserId));
 

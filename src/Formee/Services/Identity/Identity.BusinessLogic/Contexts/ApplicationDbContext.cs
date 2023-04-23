@@ -14,4 +14,6 @@ public class ApplicationDbContext : DbContext
     public DbSet<UserEntity> User { get; set; }
 
     public DbSet<AvatarEntity> Avatar { get; set; }
+
+    public DbSet<AccessTokenEntity> AccessToken { get; set; }
 }

@@ -8,7 +8,7 @@ public class FormsService : BaseService
     private readonly AppStateService _appState;
     public FormsService(IHttpClientFactory httpClient,
         AppStateService appState,
-        IConfiguration configuration) : base(httpClient, configuration)
+        IConfiguration configuration) : base(httpClient, configuration, appState)
     {
         _appState = appState;
     }

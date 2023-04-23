@@ -7,7 +7,8 @@ builder.Services
     .AddExceptionHandling()
     .AddDocumentation()
     .AddPersistant()
-    .AddHealthMonitoring();
+    .AddHealthMonitoring()
+    .AddIdentityManagement();
 
 var app = builder.Build();
 

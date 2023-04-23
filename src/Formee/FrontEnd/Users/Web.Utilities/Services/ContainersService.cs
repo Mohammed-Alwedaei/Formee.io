@@ -13,7 +13,7 @@ public class ContainersService : BaseService
     public ContainersService(IHttpClientFactory httpClient, 
         AppStateService appState,
         IConfiguration configuration, 
-        NavigationManager navigationManager) : base(httpClient, configuration)
+        NavigationManager navigationManager) : base(httpClient, configuration, appState)
     {
         _appState = appState;
         _navigationManager = navigationManager;

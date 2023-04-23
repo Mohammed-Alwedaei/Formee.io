@@ -31,6 +31,7 @@ public static class ServicesConfiguration
             .AddSqlServer(configuration.GetConnectionString("DefaultConnection"));
 
         services.AddScoped<IIdentityManager, IdentityManager>();
+        services.AddScoped<IJwtManager, JwtManager>();
 
         services.AddHttpClient<IIdentityManager, IdentityManager>(options =>
             options.BaseAddress = new
