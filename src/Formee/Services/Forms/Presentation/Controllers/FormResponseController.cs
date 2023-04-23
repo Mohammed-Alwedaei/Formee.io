@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace Presentation.Controllers;
 
 [ApiController]
-[Authorize(Policy = "users")]
+[Authorize]
 [Route("api/[controller]/")]
 public class FormResponseController : ControllerBase
 {

@@ -20,7 +20,7 @@ builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("users", policy =>
     {
-        policy.RequireClaim("scope", "user:read");
+        policy.RequireClaim("https://claims.formee.com/permission", "user:read-access");
     });
 });
 

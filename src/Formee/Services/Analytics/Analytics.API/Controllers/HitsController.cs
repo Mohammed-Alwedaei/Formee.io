@@ -6,7 +6,7 @@ namespace Analytics.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize(Policy = "users")]
+[Authorize]
 public class HitsController : ControllerBase
 {
     private readonly IPageHitRepository _hitRepository;

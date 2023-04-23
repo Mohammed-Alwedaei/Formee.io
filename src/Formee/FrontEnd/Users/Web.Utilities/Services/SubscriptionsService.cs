@@ -1,12 +1,16 @@
-﻿namespace Client.Web.Utilities.Services;
+﻿using Microsoft.Extensions.Configuration;
 
-public class SubscriptionsService
+namespace Client.Web.Utilities.Services;
+
+public class SubscriptionsService : BaseService
 {
-    private HttpClient _httpClient;
+    private readonly AppStateService _appState;
 
-    public SubscriptionsService(HttpClient httpClient)
+    public SubscriptionsService(IHttpClientFactory httpClient,
+        AppStateService appState,
+        IConfiguration configuration) : base(httpClient, configuration)
     {
-        _httpClient = httpClient;
+        _appState = appState;
     }
 
     public async Task CreateSubscriptionsAsync()

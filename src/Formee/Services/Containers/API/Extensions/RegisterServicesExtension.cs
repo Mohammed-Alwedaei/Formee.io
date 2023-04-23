@@ -73,7 +73,7 @@ public static class RegisterServicesExtension
             });
 
         services.AddAuthorization();
-        
+
         services.AddCors(options =>
         {
             options.AddPolicy("cors", policy =>

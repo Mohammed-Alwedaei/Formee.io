@@ -1,11 +1,11 @@
-﻿using Client.Web.Utilities.Dtos;
-
-namespace Client.Web.Utilities.StateManagement;
+﻿namespace Client.Web.Utilities.StateManagement;
 
 public class ContainersState
 {
     public List<ContainerDto> ContainersCollection;
     public ContainerDto Container;
+
+    public bool ReachedMaxSubFeatures;
 
     public bool IsFetching;
 
@@ -21,5 +21,10 @@ public class ContainersState
     {
         Container = container;
         StateChanged.Invoke();
+    }
+
+    public void SetFeaturesState(bool status)
+    {
+        ReachedMaxSubFeatures = status;
     }
 }

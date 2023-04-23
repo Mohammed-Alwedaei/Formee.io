@@ -1,6 +1,7 @@
 ﻿using Identity.BusinessLogic.Dtos;
 using Identity.BusinessLogic.Services.IServices;
 using Microsoft.AspNetCore.Mvc;
+using SynchronousCommunication.HttpClients;
 
 namespace Identity.API.Extensions;
 
@@ -51,10 +52,32 @@ public static class IdentityEndpoints
             return result ? Results.Ok(result) : Results.BadRequest();
         }).WithTags("Admins");
 
-        identity.MapPost("/users", async 
-            (IIdentityManager identityManager, CreateUserDto user) =>
+        //Create user
+        identity.MapPost("/users", async
+            (IIdentityManager identityManager, 
+                ISubscriptionsClient subscriptionsClient, 
+                CreateUserDto user) =>
         {
             var result = await identityManager.CreateAsync(user);
+
+            if (result == null)
+            {
+                return Results.BadRequest();
+            }
+
+            var createUserResponse = await subscriptionsClient
+                .CreateUserAndAssignSubscriptionAsync(result.Id, result.Email);
+
+            return createUserResponse.SubscriptionId != 0 
+                ? Results.Ok(result) 
+                : Results.BadRequest();
+        }).AllowAnonymous();
+        
+        //Get token
+        identity.MapGet("/users/token", async
+            (IIdentityManager identityManager) =>
+        {
+            var result = await identityManager.GetTokenAsync();
 
             return Results.Ok(result);
         }).AllowAnonymous();

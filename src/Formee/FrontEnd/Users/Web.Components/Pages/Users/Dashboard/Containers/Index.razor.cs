@@ -40,7 +40,7 @@ public partial class Index : IDisposable
     /// </summary>
     public void NavigateToNewContainer()
     {
-        NavigationManager.NavigateTo($"{Routes.UpsertContainer}?type=create");
+        NavigationManager.NavigateTo($"{Routes.UpsertContainer}?user_id={UserId}&upsert_type=create");
     }
 
     /// <summary>

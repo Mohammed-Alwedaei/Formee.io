@@ -6,7 +6,7 @@ using Subscriptions.BusinessLogic.Repositories.IRepository;
 namespace Subscriptions.API.Controllers;
 
 [ApiController]
-[Authorize(Policy = "users")]
+[Authorize]
 [Route("api/[controller]")]
 public class SubscriptionsController : ControllerBase
 {
@@ -121,17 +121,17 @@ public class SubscriptionsController : ControllerBase
         return Ok(result);
     }
 
-    [HttpPut("users/{userId:int}/{subscriptionId:int}")]
+    [AllowAnonymous]
+    [HttpPut("users")]
     public async Task<IActionResult> UpsertUserSubscription
-        (int userId, int subscriptionId)
+        (UpdateUserSubscriptionDto newUserSubscription)
     {
-        _logger.LogInformation("PUT: request at /api/subscriptions/users/{userId}/{subscriptionId} at {datetime}",
-            userId,
-            subscriptionId,
+        _logger.LogInformation("PUT: request at /api/subscriptions/users at {datetime}",
+            
             DateTime.Now);
 
         var result = await _subscriptionRepository
-            .UpsertSubscriptionToUserAsync(userId, subscriptionId);
+            .UpsertSubscriptionToUserAsync(newUserSubscription);
 
         if (result.Id is 0)
         {

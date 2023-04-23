@@ -12,6 +12,10 @@ public partial class Landing
     [CascadingParameter]
     public Task<AuthenticationState> AuthenticationState { get; set; }
 
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "user_id")]
+    public string UserId { get; set; }
+
     protected override async Task OnParametersSetAsync()
     {
         var authState = await AuthenticationState;

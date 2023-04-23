@@ -3,22 +3,18 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 namespace Client.Web.Utilities.Services;
-public class IdentityService
+public class IdentityService : BaseService
 {
-    private readonly HttpClient _httpClient;
-    private readonly IConfiguration _configuration;
     private readonly AppStateService _appState;
     private readonly ILogger<IdentityService> _logger;
 
-    public IdentityService(HttpClient httpClient,
+    public IdentityService(IHttpClientFactory httpClient,
         IConfiguration configuration,
         AppStateService appState, 
-        ILogger<IdentityService> logger)
+        ILogger<IdentityService> logger) : base(httpClient, configuration)
     {
         _appState = appState;
         _logger = logger;
-        _configuration = configuration;
-        _httpClient = httpClient;
     }
 
     public async Task GetByAuthIdAsync(string authProviderId)
@@ -29,7 +25,9 @@ public class IdentityService
         
         _logger.LogInformation("FETCHING: api request to route {url} at {date}", url, DateTime.UtcNow);
 
-        var response = await _httpClient.GetFromJsonAsync<UserDto>(url);
+        var client = await HttpClient();
+
+        var response = await client.GetFromJsonAsync<UserDto>(url);
 
         if (response.Id == Guid.Empty || string.IsNullOrEmpty(response.AuthId))
         {
@@ -50,7 +48,9 @@ public class IdentityService
 
         _logger.LogInformation("FETCHING: api request to route {url} at {date}", url, DateTime.UtcNow);
 
-        var response = await _httpClient.GetFromJsonAsync<UserDto>(url);
+        var client = await HttpClient();
+
+        var response = await client.GetFromJsonAsync<UserDto>(url);
 
         if (response.Id == Guid.Empty || string.IsNullOrEmpty(response.AuthId))
         {
@@ -69,7 +69,9 @@ public class IdentityService
     {
         const string url = "/api/identity/users";
 
-        var response = await _httpClient.PostAsJsonAsync(url, user);
+        var client = await HttpClient();
+
+        var response = await client.PostAsJsonAsync(url, user);
 
         if (response.IsSuccessStatusCode)
             return await response.Content.ReadFromJsonAsync<CreateUserDto>();

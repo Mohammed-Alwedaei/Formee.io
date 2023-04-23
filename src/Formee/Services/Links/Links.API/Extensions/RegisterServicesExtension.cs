@@ -53,9 +53,6 @@ public static class RegisterServices
         services.AddSyncCommunication();
         services.AddScoped<ILinkRepository, LinkRepository>();
         services.AddScoped<ILinkHitRepository, LinkHitRepository>();
-        
-        services.AddAuthentication();
-        services.AddAuthorization();
 
         return services;
     }

@@ -1,4 +1,7 @@
 ﻿using System.Net;
+using System.Net.Http.Json;
+using System.Reflection;
+using System.Text;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Polly;
@@ -14,7 +17,7 @@ public class SubscriptionsClient : ISubscriptionsClient
         Policy<HttpResponseMessage>
             .Handle<HttpRequestException>()
             .OrResult(x =>
-                x.StatusCode is >= HttpStatusCode.InternalServerError || x.StatusCode == HttpStatusCode.RequestTimeout)
+                x.StatusCode >= HttpStatusCode.InternalServerError || x.StatusCode == HttpStatusCode.RequestTimeout)
             .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds((Math.Pow(2, retryAttempt))));
 
     public SubscriptionsClient(HttpClient httpClient, IConfiguration configuration)
@@ -54,5 +57,45 @@ public class SubscriptionsClient : ISubscriptionsClient
         var subscription = JsonConvert.DeserializeObject<SubscriptionDto>(content);
 
         return subscription;
+    }
+
+    public async Task<UserSubscriptionDto?> CreateUserAndAssignSubscriptionAsync(Guid userId, string email)
+    {
+        const string createUserUrl = "/api/users";
+
+        var userToCreate = new UserDto
+        {
+            GlobalUserId = userId,
+            Email =email,
+            Role = "User"
+        };
+
+        var createUserResponse = await _retryPolicy.ExecuteAsync(() =>
+            _httpClient.PostAsJsonAsync(createUserUrl, userToCreate));
+
+        if(!createUserResponse.IsSuccessStatusCode)
+            return new UserSubscriptionDto();
+
+        var createdUser = await createUserResponse.Content
+            .ReadFromJsonAsync<UserDto>();
+
+        var defaultSubscription = await GetDefaultSubscription();
+
+        const string assignSubscriptionUrl = "/api/subscriptions/users";
+
+        var userToUpdate = new UpdateUserSubscriptionDto
+        {
+            UserId = createdUser.Id,
+            SubscriptionId = defaultSubscription.Id
+        };
+
+        var content = new StringContent(JsonConvert.SerializeObject(userToUpdate), 
+            Encoding.UTF8, 
+            "application/json");
+
+        var subscription = await _retryPolicy.ExecuteAsync(() => 
+            _httpClient.PutAsync(assignSubscriptionUrl, content));
+
+        return await subscription.Content.ReadFromJsonAsync<UserSubscriptionDto>();
     }
 }

@@ -9,15 +9,6 @@ public partial class MainLayout : IDisposable
     [Inject]
     private AppStateService AppState { get; set; }
 
-    [Inject]
-    private NavigationManager NavigationManager { get; set; }
-
-    [Inject] 
-    private ILogger<MainLayout> Logger { get; set; }
-
-    [CascadingParameter]
-    private Task<AuthenticationState> authenticationState { get; set; }
-
     private Timer _timer;
     private DateTime _currentTime;
     private bool _navigationSidebarToggle = false;
@@ -25,13 +16,6 @@ public partial class MainLayout : IDisposable
 
     protected override async Task OnParametersSetAsync()
     {
-        var authState = await authenticationState;
-
-        foreach (var claim in authState.User.Claims)
-        {
-            Logger.LogInformation("{type}: {value}", claim.Type, claim.Value);
-        }
-
         _timer = new Timer(GetCurrentTime, null, 0, 1000);
     }
 

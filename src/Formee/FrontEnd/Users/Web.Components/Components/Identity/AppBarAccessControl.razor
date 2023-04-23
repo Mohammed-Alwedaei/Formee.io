@@ -22,6 +22,14 @@
 
                             <div class="e-avatar e-avatar-circle" style="@style"></div>
                         }
+                        else
+                        {
+                            const string avatarUrl = "_content/Clients.Web.Components/images/avatar.jpg";
+
+                            const string style = $"background-image: url({avatarUrl})";
+
+                            <div class="e-avatar e-avatar-circle" style="@style"></div>
+                        }
 
                         <SfIcon IconCss="fa-solid fa-solid fa-chevron-down"
                                 class="fm-sidebar__icon ml-1"/>

@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Presentation.Controllers;
 
 [ApiController]
-[Authorize(Policy = "users")]
+[Authorize]
 [Route("api/[controller]")]
 public class NotificationsController : ControllerBase
 {

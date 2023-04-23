@@ -1,15 +1,16 @@
 ﻿using Client.Web.Utilities.Dtos.History;
+using Microsoft.Extensions.Configuration;
 
 namespace Client.Web.Utilities.Services;
 
-public class HistoryService
+public class HistoryService : BaseService
 {
-    private readonly HttpClient _httpClient;
     private readonly AppStateService _appState;
 
-    public HistoryService(HttpClient httpClient, AppStateService appState)
+    public HistoryService(IHttpClientFactory httpClient,
+        AppStateService appState,
+        IConfiguration configuration) : base(httpClient, configuration)
     {
-        _httpClient = httpClient;
         _appState = appState;
     }
 
@@ -19,8 +20,9 @@ public class HistoryService
         
         var url = $"/api/history/all/{userId}?pageNumber={pageNumber}&nPerPage={recordPerPage}";
 
-        var response = await _httpClient
-            .GetFromJsonAsync<List<HistoryDto>>(url);
+        var client = await HttpClient();
+
+        var response = await client.GetFromJsonAsync<List<HistoryDto>>(url);
 
         if (response != null && response.Any())
         {

@@ -41,11 +41,25 @@
                                             </FmHeader>
 
                                             <FmBody>
-                                                <FmTypography Text="@AppState.Containers.ContainersCollection.Count.ToString()"
+                                                @if (AppState.Containers.ContainersCollection != null &&
+                                               AppState.Containers.ContainersCollection.Any())
+                                                {
+                                                    <FmTypography Text="@AppState.Containers.ContainersCollection.Count.ToString()"
                                                           Type="@Typography.LevelThree"
                                                           Classes="fm-typography__display-3"
                                                           TextAlign="left" />
-
+                                                }
+                                                else if (AppState.Containers.IsFetching)
+                                                {
+                                                    <SfSpinner Visible="true" />
+                                                }
+                                                else
+                                                {
+                                                    <FmTypography Text="--"
+                                                          Type="@Typography.LevelThree"
+                                                          Classes="fm-typography__display-3"
+                                                          TextAlign="left" />
+                                                }
                                                 <FmTypography Text="Your active containers"
                                                           Classes="fm-typography__lead" />
                                             </FmBody>
@@ -63,18 +77,25 @@
                                             </FmHeader>
 
                                             <FmBody>
-                                                @if (AppState.Analytics.Sites is not null)
+                                                @if (AppState.Analytics.Sites is not null &&
+                                               AppState.Analytics.Sites.Any())
                                                 {
                                                     <FmTypography Text="@AppState.Analytics.Sites.Count.ToString()"
-                                                                 Type="@Typography.LevelThree"
-                                                                 Classes="fm-typography__display-3"
-                                                                 TextAlign="left" />
+                                                          Type="@Typography.LevelThree"
+                                                          Classes="fm-typography__display-3"
+                                                          TextAlign="left" />
                                                 }
-                                                else
+                                                else if (AppState.Analytics.IsFetching)
                                                 {
                                                     <SfSpinner Visible="true" />
                                                 }
-
+                                                else
+                                                {
+                                                    <FmTypography Text="--"
+                                                          Type="@Typography.LevelThree"
+                                                          Classes="fm-typography__display-3"
+                                                          TextAlign="left" />
+                                                }
                                                 <FmTypography Text="Your site count"
                                                           Classes="fm-typography__lead" />
                                             </FmBody>
@@ -92,17 +113,25 @@
                                             </FmHeader>
 
                                             <FmBody>
-                                               @if (AppState.Analytics.Hits is not null)
-                                               {
-                                                   <FmTypography Text="@AppState.Analytics.Hits.Count.ToString()"
-                                                                 Type="@Typography.LevelThree"
-                                                                 Classes="fm-typography__display-3"
-                                                                 TextAlign="left" />
-                                               }
-                                               else
-                                               {
-                                                   <SfSpinner Visible="true" />
-                                               }
+                                                @if (AppState.Analytics.Hits is not null && 
+                                                     AppState.Analytics.Hits.Any())
+                                                {
+                                                    <FmTypography Text="@AppState.Analytics.Hits.Count.ToString()"
+                                                          Type="@Typography.LevelThree"
+                                                          Classes="fm-typography__display-3"
+                                                          TextAlign="left" />
+                                                }
+                                                else if (AppState.Analytics.IsFetching)
+                                                {
+                                                    <SfSpinner Visible="true" />
+                                                }
+                                                else
+                                                {
+                                                    <FmTypography Text="--"
+                                                                  Type="@Typography.LevelThree"
+                                                                  Classes="fm-typography__display-3"
+                                                                  TextAlign="left" /> 
+                                                }
 
                                                 <FmTypography Text="Hits in last week"
                                                           Classes="fm-typography__lead" />
@@ -121,7 +150,7 @@
                                             </FmHeader>
 
                                             <FmBody>
-                                                <FmTypography Text="175"
+                                                <FmTypography Text="--"
                                                           Type="@Typography.LevelThree"
                                                           Classes="fm-typography__display-3"
                                                           TextAlign="left" />
@@ -159,7 +188,7 @@
                                     @foreach (var notification in AppState.Notifications.NotificationsCollection)
                                     {
                                         <NotificationModalItem Notification="@notification"
-                                                               OnMarkAsRead="HandleMarkAsRead"/>
+                                                   OnMarkAsRead="HandleMarkAsRead" />
                                     }
                                 }
                             </FmBody>
@@ -174,8 +203,8 @@
                     </Header>
 
                     <ContentTemplate>
-                        @if (AppState.Analytics.HitChartDataSeries is not null && 
-                             AppState.Analytics.IsFetching != true)
+                        @if (AppState.Analytics.HitChartDataSeries is not null &&
+                       AppState.Analytics.IsFetching != true)
                         {
                             <SfChart Width="100%" Title="Number of hits">
                                 <ChartPrimaryXAxis ValueType="Syncfusion.Blazor.Charts.ValueType.DateTime"
@@ -202,18 +231,18 @@
                                   Type="@Typography.LevelTwo" />
                     </Header>
                     <ContentTemplate>
-                        @if (AppState.Analytics.TopPerformingCategories is not null 
-                             && AppState.Analytics.IsFetching != true)
+                        @if (AppState.Analytics.TopPerformingCategories is not null
+                       && AppState.Analytics.IsFetching != true)
                         {
                             <SfChart Width="100%" Title="Number of hits">
                                 <ChartPrimaryXAxis ValueType="Syncfusion.Blazor.Charts.ValueType.Category"
-                                                   IntervalType="IntervalType.Days" />
+                                           IntervalType="IntervalType.Days" />
 
                                 <ChartSeriesCollection>
                                     <ChartSeries DataSource="@AppState.Analytics.TopPerformingCategories"
-                                                 XName="Name"
-                                                 YName="Count"
-                                                 Type="ChartSeriesType.StackingBar" />
+                                         XName="Name"
+                                         YName="Count"
+                                         Type="ChartSeriesType.StackingBar" />
                                 </ChartSeriesCollection>
                             </SfChart>
                         }

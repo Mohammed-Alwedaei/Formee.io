@@ -6,7 +6,7 @@ using Subscriptions.BusinessLogic.Repositories.IRepository;
 namespace Subscriptions.API.Controllers;
 
 [ApiController]
-[Authorize(Policy = "users")]
+[Authorize]
 [Route("api/subscriptions/features")]
 public class SubscriptionFeaturesController : ControllerBase
 {
@@ -22,6 +22,7 @@ public class SubscriptionFeaturesController : ControllerBase
         _logger = logger;
     }
 
+    [AllowAnonymous]
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetUserSubscriptionById(int id)
     {

@@ -9,7 +9,7 @@ namespace Presentation.Controllers;
 
 [ApiController]
 [Tags("Forms")]
-[Authorize(Policy = "users")]
+[Authorize]
 [Route("api/[controller]/")]
 public class FormsController : ControllerBase
 {

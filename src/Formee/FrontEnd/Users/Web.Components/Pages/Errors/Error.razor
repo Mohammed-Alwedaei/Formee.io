@@ -1,0 +1,30 @@
+﻿@page "/dashboard/error"
+
+@inject AppStateService _appState;
+
+@implements IDisposable 
+
+@if (ErrorCode is not 0 && !string.IsNullOrEmpty(ErrorMessage))
+{
+    <h3>@ErrorCode - @ErrorMessage</h3>
+}
+
+@code {
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "error_code")]
+    public int ErrorCode { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "error_message")]
+    public string ErrorMessage { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        _appState.Identity.StateChanged += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        _appState.Identity.StateChanged -= StateHasChanged;
+    }
+}

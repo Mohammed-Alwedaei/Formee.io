@@ -9,7 +9,9 @@ using Identity.BusinessLogic.Models;
 using Identity.BusinessLogic.Services.IServices;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using SynchronousCommunication.HttpClients;
 
 namespace Identity.BusinessLogic.Services;
@@ -20,16 +22,19 @@ public class IdentityManager : IIdentityManager
     private readonly HttpClient _httpClient;
     private readonly ApplicationDbContext _context;
     private readonly ISubscriptionsClient _subscriptionsClient;
+    private readonly IConfiguration _configuration;
 
     public IdentityManager(IOptions<BlobStorageConfiguration> blobStorage,
         HttpClient httpClient,
         ApplicationDbContext context,
-        ISubscriptionsClient subscriptionsClient)
+        ISubscriptionsClient subscriptionsClient, 
+        IConfiguration configuration)
     {
         _blobStorage = blobStorage;
         _httpClient = httpClient;
         _context = context;
         _subscriptionsClient = subscriptionsClient;
+        _configuration = configuration;
     }
 
     public async Task<bool> AssignRoleToUser(AddRoleToUseDto users,
@@ -89,6 +94,30 @@ public class IdentityManager : IIdentityManager
         }
 
         return userFromDb;
+    }
+
+    public async Task<TokenDto?> GetTokenAsync()
+    {
+        _httpClient.BaseAddress = new 
+            Uri($"https://{_configuration["Auth0:domain"]}");
+
+        var parameters = new Dictionary<string, string> {
+            { "grant_type", _configuration["M2M:Grant_Type"] },
+            { "client_id", _configuration["M2M:Client_Id"] },
+            { "client_secret", _configuration["M2M:Client_Secret"] },
+            { "audience", _configuration["Auth0:Audience"] }
+        };
+
+        var content = new FormUrlEncodedContent(parameters.Select(p =>
+            new KeyValuePair<string, string>(p.Key, p.Value?.ToString() ?? "")));
+
+        using var request = new HttpRequestMessage(HttpMethod.Post, "oauth/token")
+        {
+            Content = content
+        };
+
+        var response = await _httpClient.SendAsync(request);
+        return await response.Content.ReadFromJsonAsync<TokenDto>();
     }
 
     public async Task<UserDto> CreateAsync(UserEntity user)

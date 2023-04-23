@@ -6,7 +6,7 @@ using Subscriptions.BusinessLogic.Repositories.IRepository;
 namespace Subscriptions.API.Controllers;
 
 [ApiController]
-[Authorize(Policy = "users")]
+[Authorize]
 [Route("api/[controller]/")]
 public class UsersController : ControllerBase
 {
@@ -52,9 +52,10 @@ public class UsersController : ControllerBase
 
         return Ok(result);
     }
-    
+
+    [AllowAnonymous]
     [HttpGet("subscription/{userId:Guid}")]
-    public async Task<IActionResult> GetAllSubscribedUsers(Guid userId)
+    public async Task<IActionResult> GetUserSubscriptions(Guid userId)
     {
         _logger.LogInformation("GET: request at /api/users/all/subscription/{userId} at {datetime}",
             userId, 
@@ -87,6 +88,7 @@ public class UsersController : ControllerBase
         return Ok(result);
     }
 
+    [AllowAnonymous]
     [HttpPost]
     public async Task<IActionResult> CreateUser(UserDto user)
     {

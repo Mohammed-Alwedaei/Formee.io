@@ -1,5 +1,4 @@
 ﻿using Subscriptions.BusinessLogic.Dtos.Users;
-using Subscriptions.BusinessLogic.Models.Users;
 
 namespace Subscriptions.BusinessLogic.Repositories.IRepository;
 

@@ -1,21 +1,25 @@
 ﻿using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace Client.Web.Utilities.Services;
 
-public class NotificationsService : IAsyncDisposable
+public class NotificationsService : BaseService, IAsyncDisposable
 {
-    private readonly HttpClient _httpClient;
     private HubConnection? _hubConnection;
-    private readonly AppStateService _appState;
     private readonly IConfiguration _configuration;
+    private readonly AppStateService _appState;
+    private readonly ILogger<NotificationsService> _logger;
 
-    public NotificationsService(HttpClient httpClient, AppStateService appState, IConfiguration configuration)
+    public NotificationsService(IHttpClientFactory httpClient,
+        AppStateService appState,
+        IConfiguration configuration, 
+        ILogger<NotificationsService> logger) : base(httpClient, configuration)
     {
-        _httpClient = httpClient;
         _appState = appState;
         _configuration = configuration;
+        _logger = logger;
     }
 
     public async Task CreateClientConnection()
@@ -39,16 +43,16 @@ public class NotificationsService : IAsyncDisposable
 
         try
         {
+            var client = await HttpClient();
 
-            var response = await _httpClient
-                .GetFromJsonAsync<List<NotificationDto>>(url);
+            var response = await client.GetFromJsonAsync<List<NotificationDto>>(url);
             _appState.Notifications.SetNotificationCollectionState(response ?? new List<NotificationDto>());
 
             _appState.Notifications.InvertFetchingState();
         }
-        catch (AccessTokenNotAvailableException exception)
+        catch (Exception exception)
         {
-            exception.Redirect();
+            _logger.LogError(exception.Message);
         }
     }
 

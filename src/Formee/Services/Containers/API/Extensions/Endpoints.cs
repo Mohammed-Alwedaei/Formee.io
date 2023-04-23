@@ -7,7 +7,7 @@ public static class Endpoints
     public static WebApplication UseContainerEndpoints(this WebApplication app)
     {
         var containersRouteGroup = app.MapGroup("/api/containers")
-            .RequireAuthorization(policyNames: "users");
+            .AllowAnonymous();
 
         /*
          * Route: /api/container/
@@ -68,7 +68,7 @@ public static class Endpoints
                 var result = await containersService.CreateContainerAsync(container);
 
                 if (result is not { } containerResult) return Results.BadRequest();
-                
+
 
                 var history = new HistoryModel
                 {

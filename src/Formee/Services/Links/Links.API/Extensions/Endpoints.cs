@@ -12,7 +12,7 @@ public static class LinksEndpoints
         (this WebApplication app)
     {
         var links = app.MapGroup("/api/links")
-            .RequireAuthorization(policyNames: "users");
+            .RequireAuthorization();
 
         var logger = app.Logger;
 

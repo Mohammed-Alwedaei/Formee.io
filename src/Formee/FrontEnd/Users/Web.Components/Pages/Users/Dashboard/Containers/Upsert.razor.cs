@@ -72,18 +72,18 @@ public partial class Upsert
     /// <returns></returns>
     private async Task HandleActionApprove()
     {
-        var response = UpsertType switch
+        switch (UpsertType)
         {
-            "delete" => await ContainersService.DeleteByIdAsync(ContainerId),
-            "update" => await ContainersService.UpdateAsync(_container),
-            _ => await ContainersService.CreateAsync(_container)
-        };
-
-        var redirectUrl = !string.IsNullOrEmpty(response.Id)
-            ? $"{Routes.Containers}?user_id={UserId}&container_id={response.Id}"
-            : "/";
-
-        NavigationManager.NavigateTo(redirectUrl);
+            case "delete":
+                await ContainersService.DeleteByIdAsync(ContainerId);
+                break;
+            case "update":
+                await ContainersService.UpdateAsync(_container);
+                break;
+            default:
+                await ContainersService.CreateAsync(_container);
+                break;
+        }
     }
 
     /// <summary>

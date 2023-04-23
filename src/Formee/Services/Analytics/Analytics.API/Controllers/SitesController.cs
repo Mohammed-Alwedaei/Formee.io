@@ -9,7 +9,7 @@ namespace Analytics.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize(Policy = "users")]
+[Authorize]
 public class SitesController : ControllerBase
 {
     private readonly ILogger<SitesController> _logger;

@@ -58,7 +58,7 @@ public class UserRepository : IUserRepository
 
         await _context.SaveChangesAsync();
 
-        return _mapper.Map<UserDto>(createdUser);
+        return _mapper.Map<UserDto>(createdUser.Entity);
     }
 
     public async Task<UserDto> DeleteAsync(Guid userId)

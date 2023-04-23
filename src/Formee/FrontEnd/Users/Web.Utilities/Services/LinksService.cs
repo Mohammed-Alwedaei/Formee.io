@@ -1,15 +1,16 @@
 ﻿using Client.Web.Utilities.Dtos.Links;
+using Microsoft.Extensions.Configuration;
 
 namespace Client.Web.Utilities.Services;
 
-public class LinksService
+public class LinksService : BaseService
 {
-    private readonly HttpClient _httpClient;
     private readonly AppStateService _appState;
 
-    public LinksService(HttpClient httpClient, AppStateService appState)
+    public LinksService(IHttpClientFactory httpClient,
+        AppStateService appState,
+        IConfiguration configuration) : base(httpClient, configuration)
     {
-        _httpClient = httpClient;
         _appState = appState;
     }
 
@@ -19,8 +20,9 @@ public class LinksService
 
         var url = $"/api/links/all/{containerId}";
 
-        var response = await _httpClient
-            .GetFromJsonAsync<List<LinkDto>>(url);
+        var client = await HttpClient();
+
+        var response = await client.GetFromJsonAsync<List<LinkDto>>(url);
 
         _appState.Links.SetLinksCollectionState(response ?? new List<LinkDto>());
 
@@ -33,8 +35,9 @@ public class LinksService
 
         var url = $"/api/links/redirects/all/{linkId}";
 
-        var response = await _httpClient
-            .GetFromJsonAsync<List<LinkHitDto>>(url);
+        var client = await HttpClient();
+
+        var response = await client.GetFromJsonAsync<List<LinkHitDto>>(url);
 
         _appState.Links.SetLinkHitsState(response ?? new List<LinkHitDto>());
         
@@ -49,38 +52,10 @@ public class LinksService
 
         var url = $"/api/links/hits/all/{containerId}/{formattedStartDate}/{formattedEndDate}";
 
-        var response = await _httpClient
-            .GetFromJsonAsync<List<LinkHitDto>>(url);
+        var client = await HttpClient();
+
+        var response = await client.GetFromJsonAsync<List<LinkHitDto>>(url);
 
         _appState.Links.SetLinkHitsInContainerCollectionState(response ?? new List<LinkHitDto>());
     }
-
-    /*public List GenerateChartDataSeries(List<LinkHitDto> hits)
-    {
-        IsFetching = true;
-        var dataSeries = new List<DateChartModel>();
-
-        foreach (var hit in hits)
-        {
-            var isAvailableDate = dataSeries
-                .FirstOrDefault(c => c.Date.Date == hit.CreatedDate.Date);
-
-            if (isAvailableDate is not null)
-            {
-                isAvailableDate.Count++;
-            }
-            else
-            {
-                dataSeries.Add(new DateChartModel
-                {
-                    Id = hit.Id,
-                    Date = hit.CreatedDate,
-                    Count = 1
-                });
-            }
-        }
-
-        IsFetching = false;
-        return dataSeries;
-    }*/
 }

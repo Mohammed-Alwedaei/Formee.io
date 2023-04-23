@@ -1,7 +1,5 @@
 ﻿using Client.Web.Utilities.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.Extensions.Logging;
 
 namespace Clients.Web.Components.Pages.Users.Dashboard;
 
@@ -26,14 +24,10 @@ public partial class Index : IDisposable
     [Inject]
     public AppStateService AppState { get; set; }
 
-    
-
     protected override async Task OnParametersSetAsync()
     {
         var today = DateTime.Now;
         var lastWeek = today.AddDays(-7);
-
-        
 
         AggregatePageData(lastWeek, today);
     }
@@ -52,6 +46,7 @@ public partial class Index : IDisposable
         AppState.Identity.StateChanged += async () =>
         {
             AppState.Containers.StateChanged += async () => await InvokeAsync(StateHasChanged);
+            AppState.Analytics.StateChanged += async () => await InvokeAsync(StateHasChanged);
 
             await ContainersService.GetAllByUserIdAsync(AppState.Identity.User.Id);
 
@@ -67,6 +62,7 @@ public partial class Index : IDisposable
     {
         AppState.Identity.StateChanged -= StateHasChanged;
         AppState.Containers.StateChanged -= StateHasChanged;
+        AppState.Analytics.StateChanged -= StateHasChanged;
         AppState.Notifications.StateChanged -= StateHasChanged;
     }
 }

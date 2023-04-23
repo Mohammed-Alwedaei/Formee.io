@@ -8,8 +8,8 @@ using ServiceBus.ServiceBus;
 namespace Analytics.API.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("api/[controller]")]
-[Authorize(Policy = "users")]
 public class CategoryController : ControllerBase
 {
     private readonly ICategoryRepository _categoryRepository;

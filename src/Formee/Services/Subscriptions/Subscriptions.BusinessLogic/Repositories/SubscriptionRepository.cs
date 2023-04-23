@@ -91,8 +91,11 @@ public class SubscriptionRepository : ISubscriptionRepository
     }
 
     public async Task<UserSubscriptionModel> UpsertSubscriptionToUserAsync
-        (int userId, int subscriptionId)
+        (UpdateUserSubscriptionDto newUserSubscription)
     {
+        var userId = newUserSubscription.UserId;
+        var subscriptionId = newUserSubscription.SubscriptionId;
+
         var userSubscriptionFromDb = await _context.UserSubscriptions
             .FirstOrDefaultAsync(u => u.Id == userId);
 

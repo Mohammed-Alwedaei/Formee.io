@@ -6,7 +6,7 @@ using Subscriptions.BusinessLogic.Repositories.IRepository;
 namespace Subscriptions.API.Controllers;
 
 [ApiController]
-[Authorize(Policy = "users")]
+[Authorize]
 [Route("api/[controller]")]
 public class CouponsController : ControllerBase
 {

@@ -17,8 +17,8 @@ public interface ISubscriptionRepository
 
     Task<SubscriptionDto> UpdateAsync(SubscriptionDto subscription);
 
-    Task<UserSubscriptionModel> UpsertSubscriptionToUserAsync(int userId, 
-        int subscriptionId);
+    Task<UserSubscriptionModel> UpsertSubscriptionToUserAsync
+        (UpdateUserSubscriptionDto newUserSubscription);
 
     Task<UserSubscriptionModel> RemoveSubscriptionFromUserAsync(int userId);
 
