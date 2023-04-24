@@ -1,6 +1,6 @@
 ﻿namespace ServiceBus.Constants;
 
-public class SystemServices
+public class Services
 {
     public const string Analytics = "Analytics";
 

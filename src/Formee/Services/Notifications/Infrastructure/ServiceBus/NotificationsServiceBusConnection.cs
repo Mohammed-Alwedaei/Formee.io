@@ -6,7 +6,7 @@ public class NotificationsServiceBusConnection
 {
     public string? ConnectionString { get; set; }
 
-    public string? Notifications { get; set; }
+    public string? NotificationsTopic { get; set; }
 
     public string? NotificationsSubscription { get; set; }
 

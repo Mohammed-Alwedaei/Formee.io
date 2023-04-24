@@ -72,6 +72,8 @@ public static class ServicesExtensions
 
         services.AddServiceBusSender();
 
+        services.AddSyncCommunication();
+
         return services;
     }
 
@@ -88,10 +90,8 @@ public static class ServicesExtensions
         services.AddScoped<ICategoryRepository, CategoryRepository>();
         services.AddScoped<IPageHitRepository, PageHitRepository>();
         services.AddScoped<ISessionRepository, SessionsRepository>();
-        
-        services.AddServiceBusSender();
 
-        services.AddSyncCommunication();
+        
         
         return services;
     }

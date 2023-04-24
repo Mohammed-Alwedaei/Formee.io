@@ -2,12 +2,11 @@ const { ServiceBusClient } = require("@azure/service-bus");
 
 const History = require("../models/History");
 
-const connectionString = process.env.AZURE_SERVICE_BUS;
-
-const topicName = "topic-history";
-const subscriptionName = "formeeaAnalytics";
-
 async function Main() {
+  const connectionString = process.env.AZURE_SERVICE_BUS;
+
+  const topicName = "topic-history";
+  const subscriptionName = "formeeaAnalytics";
   const serviceBusClient = new ServiceBusClient(connectionString);
 
   const serviceBusReceiver = serviceBusClient.createReceiver(
@@ -19,10 +18,10 @@ async function Main() {
     const messageBody = message.body;
 
     var historyModel = new History({
-      title: messageBody.History.Title,
-      action: messageBody.History.Action,
-      userId: messageBody.History.UserId,
-      service: messageBody.History.Service,
+      title: messageBody.Entity.Title,
+      action: messageBody.Entity.Action,
+      userId: messageBody.Entity.UserId,
+      service: messageBody.Entity.Service,
       requestDate: messageBody.CreatedDate,
     });
 

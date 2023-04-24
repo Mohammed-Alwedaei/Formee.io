@@ -33,7 +33,7 @@ public class NotificationsServiceBus
             clientOptions);
 
         _processor = serviceBusClient.CreateProcessor(
-            connection.Value.Notifications,
+            connection.Value.NotificationsTopic,
             connection.Value.NotificationsSubscription,
             new ServiceBusProcessorOptions());
     }

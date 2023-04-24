@@ -79,7 +79,10 @@ public class SiteRepository : ISiteRepository
             return new DeleteSiteDto();
         }
 
-        _db.Sites.Remove(siteToDelete);
+        siteToDelete.IsDeleted = true;
+        siteToDelete.DeletedDate = DateTime.UtcNow;
+
+        _db.Sites.Update(siteToDelete);
 
         await _db.SaveChangesAsync();
 

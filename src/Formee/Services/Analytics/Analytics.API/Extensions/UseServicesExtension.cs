@@ -30,15 +30,21 @@ public static class UseServicesExtension
     /// <returns>WebApplication</returns>
     public static WebApplication UseProductionEnvironment(this WebApplication app)
     {
-        using var scope = app.Services.CreateScope();
+        var migrateOnStart = app.Configuration
+            .GetValue<bool>("Settings:EnableMigrations");
 
-        var services = scope.ServiceProvider;
-
-        var context = services.GetRequiredService<ApplicationDbContext>();
-
-        if (context.Database.GetPendingMigrations().Any())
+        if (migrateOnStart)
         {
-            context.Database.Migrate();
+            using var scope = app.Services.CreateScope();
+
+            var services = scope.ServiceProvider;
+
+            var context = services.GetRequiredService<ApplicationDbContext>();
+
+            if (context.Database.GetPendingMigrations().Any())
+            {
+                context.Database.Migrate();
+            }
         }
 
         return app;

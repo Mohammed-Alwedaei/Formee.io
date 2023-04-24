@@ -75,7 +75,7 @@ public static class Endpoints
                     Title = "A new container is created",
                     Action = ActionType.Create,
                     UserId = container.UserId,
-                    Service = SystemServices.Containers
+                    Service = ServiceBus.Constants.Services.Containers
                 };
 
                 await serviceBus.SendMessage(
@@ -119,7 +119,7 @@ public static class Endpoints
                     Title = "A container is updated",
                     Action = ActionType.Update,
                     UserId = container.UserId,
-                    Service = SystemServices.Containers
+                    Service = ServiceBus.Constants.Services.Containers
                 };
 
                 await serviceBus.SendMessage(
@@ -158,7 +158,7 @@ public static class Endpoints
                     Title = "A new container is deleted",
                     Action = ActionType.Delete,
                     UserId = result.UserId,
-                    Service = SystemServices.Containers
+                    Service = ServiceBus.Constants.Services.Containers
                 };
 
                 await notificationServiceBus.SendMessage(new NotificationModel

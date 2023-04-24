@@ -121,7 +121,7 @@ public class CategoryController : ControllerBase
             Title = "A new category is created",
             Action = ActionType.Create,
             UserId = category.UserId,
-            Service = SystemServices.Analytics
+            Service = Services.Analytics
         };
 
         await _serviceBus.SendMessage(new HistoryMessage
@@ -152,7 +152,7 @@ public class CategoryController : ControllerBase
             Title = "A category is updated",
             Action = ActionType.Update,
             UserId = category.UserId,
-            Service = SystemServices.Analytics
+            Service = Services.Analytics
         };
 
         await _serviceBus.SendMessage(new HistoryMessage
@@ -182,7 +182,7 @@ public class CategoryController : ControllerBase
             Title = "A category is deleted",
             Action = ActionType.Delete,
             UserId = result.UserId,
-            Service = SystemServices.Analytics
+            Service = Services.Analytics
         };
 
         await _serviceBus.SendMessage(new HistoryMessage

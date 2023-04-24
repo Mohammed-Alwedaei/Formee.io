@@ -1,5 +1,6 @@
 ﻿using Analytics.Utilities.Dtos.Site;
 using Microsoft.AspNetCore.Authorization;
+using ServiceBus.Constants;
 using ServiceBus.Messages;
 using ServiceBus.Models;
 using ServiceBus.ServiceBus;
@@ -16,16 +17,19 @@ public class SitesController : ControllerBase
     private readonly ISubscriptionsClient _subscriptionsClient;
     private readonly ISiteRepository _siteRepository;
     private readonly IAzureServiceBus<NotificationMessage> _notificationServiceBus;
+    private readonly IAzureServiceBus<HistoryMessage> _historyServiceBus;
 
     public SitesController(ILogger<SitesController> logger, 
         ISiteRepository siteRepository, 
         ISubscriptionsClient subscriptionsClient, 
-        IAzureServiceBus<NotificationMessage> notificationServiceBus)
+        IAzureServiceBus<NotificationMessage> notificationServiceBus, 
+        IAzureServiceBus<HistoryMessage> historyServiceBus)
     {
         _logger = logger;
         _siteRepository = siteRepository;
         _subscriptionsClient = subscriptionsClient;
         _notificationServiceBus = notificationServiceBus;
+        _historyServiceBus = historyServiceBus;
     }
 
     [HttpGet("{id:int}")]
@@ -83,6 +87,14 @@ public class SitesController : ControllerBase
             Message = $"You have created {result.Name} site"
         });
 
+        await _historyServiceBus.SendMessage(new HistoryModel
+        {
+            Title = $"{result.Name} site is created",
+            Action = ActionType.Create,
+            Service = Services.Analytics,
+            UserId = result.UserId,
+        });
+
         return Created("/", result);
     }
 
@@ -99,8 +111,16 @@ public class SitesController : ControllerBase
         await _notificationServiceBus.SendMessage(new NotificationModel
         {
             GlobalUserId = result.UserId,
-            Heading = "A site is updated",
+            Heading = $"{result.Name} site is updated",
             Message = $"You have updated {result.Name} site"
+        });
+
+        await _historyServiceBus.SendMessage(new HistoryModel
+        {
+            Title = $"{result.Name} site is updated",
+            Action = ActionType.Update,
+            Service = Services.Analytics,
+            UserId = result.UserId,
         });
 
         return Ok(result);
@@ -119,8 +139,16 @@ public class SitesController : ControllerBase
         await _notificationServiceBus.SendMessage(new NotificationModel
         {
             GlobalUserId = result.UserId,
-            Heading = "A site is deleted",
+            Heading = $"{result.Name} site is deleted",
             Message = $"You have deleted {result.Name} site"
+        });
+
+        await _historyServiceBus.SendMessage(new HistoryModel
+        {
+            Title = $"{result.Name} site is deleted",
+            Action = ActionType.Delete,
+            Service = Services.Analytics,
+            UserId = result.UserId,
         });
 
         return Ok(result);
