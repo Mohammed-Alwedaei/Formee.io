@@ -44,12 +44,12 @@ public interface ILinkRepository
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
-    Task<DeleteLinkDto> DeleteLinkAsync(int id);
+    Task<LinkEntity> DeleteLinkAsync(int id);
 
     /// <summary>
     /// Delete all short links that match the containerId
     /// </summary>
     /// <param name="containerId"></param>
     /// <returns>A List of Deleted Links</returns>
-    Task<List<DeleteLinkDto>> DeleteAllLinksByContainerIdAsync(string containerId);
+    Task<List<LinkEntity>> DeleteAllLinksByContainerIdAsync(string containerId);
 }

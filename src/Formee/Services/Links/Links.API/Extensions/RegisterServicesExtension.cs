@@ -1,11 +1,11 @@
 ﻿using System.Text;
-using HealthChecks.SqlServer;
 using Links.API.Middlewares;
 using Links.BusinessLogic.Contexts;
 using Links.BusinessLogic.Repositories;
 using Links.BusinessLogic.Repositories.IRepository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using ServiceBus;
 using SynchronousCommunication.Extensions;
 
 namespace Links.API.Extensions;
@@ -51,6 +51,7 @@ public static class RegisterServices
     { 
         services.AddSingleton<DbContext>();
 
+        services.AddServiceBusSender();
         services.AddSyncCommunication();
         services.AddScoped<ILinkRepository, LinkRepository>();
         services.AddScoped<ILinkHitRepository, LinkHitRepository>();

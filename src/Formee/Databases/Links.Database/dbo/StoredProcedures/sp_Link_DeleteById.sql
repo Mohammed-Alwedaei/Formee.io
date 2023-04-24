@@ -8,7 +8,11 @@ BEGIN
 	SET IsDeleted = 1, DeletedDate = @DeletedDate
 	WHERE Id = @Id;
 
-	SELECT [Id], [ContainerId], [OriginalUrl], [TargetUrl], [DeletedDate] 
-	FROM dbo.[Link]
-	WHERE Id = @Id;
+	SELECT [L].[Id], [L].[ContainerId], [L].[UserId], [L].[LinksDetailsId], 
+	[L].[OriginalUrl], [L].[TargetUrl], [L].[IsDeleted], [L].[DeletedDate], [L].[CreatedDate], 
+	[D].[Id], [D].[Name], [D].[Domain] 
+	FROM dbo.[Link] as L
+	INNER JOIN dbo.[LinkDetails] as D
+	ON (L.LinksDetailsId = D.Id)
+	WHERE L.Id = @Id;
 END

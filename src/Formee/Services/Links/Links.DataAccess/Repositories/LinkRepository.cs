@@ -22,7 +22,7 @@ public class LinkRepository : ILinkRepository
         using var connection = _db.Connect();
 
         var linkFromDb = await connection.QueryAsync
-            <LinkEntity, LinkDetailsEntity, LinkEntity>("sp_Link_GetById", 
+            <LinkEntity, LinkDetailsEntity, LinkEntity>("sp_Link_GetById",
                 map: (link, details) =>
                 {
                     link.LinkDetails = details;
@@ -34,14 +34,14 @@ public class LinkRepository : ILinkRepository
 
         return linkFromDb.FirstOrDefault();
     }
-    
+
     /// <inheritdoc />
     public async Task<List<LinkEntity>> GetAllByUserId(Guid userId)
     {
         using var connection = _db.Connect();
 
         var linkFromDb = await connection.QueryAsync
-            <LinkEntity, LinkDetailsEntity, LinkEntity>("sp_Link_GetAllByUserId", 
+            <LinkEntity, LinkDetailsEntity, LinkEntity>("sp_Link_GetAllByUserId",
                 map: (link, details) =>
                 {
                     link.LinkDetails = details;
@@ -127,12 +127,18 @@ public class LinkRepository : ILinkRepository
 
 
     /// <inheritdoc />
-    public async Task<DeleteLinkDto> DeleteLinkAsync(int id)
+    public async Task<LinkEntity> DeleteLinkAsync(int id)
     {
         using var connection = _db.Connect();
 
         var deletedLink = await connection.QueryAsync
-            <DeleteLinkDto>("sp_Link_DeleteById",
+            <LinkEntity, LinkDetailsEntity, LinkEntity>("sp_Link_DeleteById",
+                map: (link, details) =>
+                {
+                    link.LinkDetails = details;
+                    link.LinkDetailsId = details.Id;
+                    return link;
+                },
                 new { Id = id, DeletedDate = DateTime.Now },
                 commandType: CommandType.StoredProcedure);
 
@@ -140,13 +146,19 @@ public class LinkRepository : ILinkRepository
     }
 
     /// <inheritdoc />
-    public async Task<List<DeleteLinkDto>> DeleteAllLinksByContainerIdAsync(
+    public async Task<List<LinkEntity>> DeleteAllLinksByContainerIdAsync(
         string containerId)
     {
         using var connection = _db.Connect();
 
         var deletedLinks = await connection
-            .QueryAsync<DeleteLinkDto>("sp_Link_DeleteAllByContainerId",
+            .QueryAsync<LinkEntity, LinkDetailsEntity, LinkEntity>("sp_Link_DeleteAllByContainerId",
+                 map: (link, details) =>
+                {
+                    link.LinkDetails = details;
+                    link.LinkDetailsId = details.Id;
+                    return link;
+                },
                 new
                 {
                     ContainerId = containerId,

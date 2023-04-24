@@ -2,6 +2,10 @@
 using Links.Utilities.Constants;
 using Links.Utilities.Entities;
 using Links.Utilities.Exceptions;
+using ServiceBus.Constants;
+using ServiceBus.Messages;
+using ServiceBus.Models;
+using ServiceBus.ServiceBus;
 using SynchronousCommunication.HttpClients;
 
 namespace Links.API.Extensions;
@@ -67,6 +71,8 @@ public static class LinksEndpoints
         links.MapPost("/", async
             (ILinkRepository linkRepository, 
                 ISubscriptionsClient subscriptionsClient,
+                IAzureServiceBus<HistoryMessage> historyServiceBus,
+                IAzureServiceBus<NotificationMessage> notificationServiceBus,
                 LinkEntity link) =>
         {
             logger.LogInformation("POST: request to /api/links/ at {datetime}",
@@ -84,11 +90,29 @@ public static class LinksEndpoints
 
             if (link is null)
                 throw new BadRequestException(ErrorMessages.BadRequest);
-            
-            if (await linkRepository.CreateLinkAsync(link) is { } createdLink) 
-                return Results.Created("/", createdLink);
-            
-            throw new Exception(ErrorMessages.ServerError);
+
+            var result = await linkRepository.CreateLinkAsync(link);
+
+            if (result.Id is 0)
+                throw new Exception(ErrorMessages.ServerError);
+
+            await notificationServiceBus.SendMessage(new NotificationModel
+            {
+                GlobalUserId = link.UserId,
+                Heading = $"{link.LinkDetails.Name} link is created",
+                Message = $"You have created {link.LinkDetails.Name} link"
+            });
+
+
+            await historyServiceBus.SendMessage(new HistoryModel
+            {
+                Title = $"{link.LinkDetails.Name} link is created",
+                Action = ActionType.Create,
+                UserId = link.UserId,
+                Service = Services.Links
+            });
+
+            return Results.Created("/", result);
         });
 
         /*
@@ -97,7 +121,10 @@ public static class LinksEndpoints
          * AUTH : Users
          */
         links.MapDelete("/{id:int}", async
-            (ILinkRepository linkRepository, int id) =>
+            (ILinkRepository linkRepository,
+                IAzureServiceBus<HistoryMessage> historyServiceBus,
+                IAzureServiceBus<NotificationMessage> notificationServiceBus,
+                int id) =>
         {
             logger.LogInformation("GET: request to /api/links/{id} at {datetime}",
                 id,
@@ -105,10 +132,27 @@ public static class LinksEndpoints
 
             if (id is 0)
                 throw new BadRequestException(ErrorMessages.BadRequest);
-            
-            if (await linkRepository.DeleteLinkAsync(id) is { } deletedLink) return deletedLink;
 
-            throw new NotFoundException(ErrorMessages.NotFound);
+            var result = await linkRepository.DeleteLinkAsync(id);
+                
+            if (result.Id is 0)
+                throw new NotFoundException(ErrorMessages.NotFound);
+
+            await notificationServiceBus.SendMessage(new NotificationModel
+            {
+                GlobalUserId = result.UserId,
+                Heading = $"{result.LinkDetails.Name} link is deleted",
+                Message = $"You have deleted {result.LinkDetails.Name} link"
+            });
+
+
+            await historyServiceBus.SendMessage(new HistoryModel
+            {
+                Title = $"{result.LinkDetails.Name} link is deleted",
+                Action = ActionType.Delete,
+                UserId = result.UserId,
+                Service = Services.Links
+            });
         });
 
         /*
