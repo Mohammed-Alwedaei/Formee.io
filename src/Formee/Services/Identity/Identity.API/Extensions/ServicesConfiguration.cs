@@ -8,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using SynchronousCommunication.Extensions;
 using System.Text;
 using Microsoft.OpenApi.Models;
+using ServiceBus;
 
 namespace Identity.API.Extensions;
 
@@ -80,6 +81,7 @@ public static class ServicesConfiguration
                 configuration.GetConnectionString("DefaultConnection")));
 
         services.AddSyncCommunication();
+        services.AddServiceBusSender();
 
         return services;
     }
