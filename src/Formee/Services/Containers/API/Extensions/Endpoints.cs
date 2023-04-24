@@ -115,7 +115,6 @@ public static class Endpoints
                     Message = $"You have updated {result.Name} container"
                 });
 
-
                 await historyServiceBus.SendMessage(new HistoryModel
                 {
                     Title = $"{result.Name} container is updated",

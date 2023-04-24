@@ -3,7 +3,7 @@
 /// <summary>
 /// Create new form handler
 /// </summary>
-public class CreateFormHandler : IRequestHandler<CreateFormCommand, ResponseEntity>
+public class CreateFormHandler : IRequestHandler<CreateFormCommand, FormEntity>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IGenericRepository<FormEntity> _genericRepository;
@@ -23,7 +23,7 @@ public class CreateFormHandler : IRequestHandler<CreateFormCommand, ResponseEnti
     /// <param name="request"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public async Task<ResponseEntity> Handle(CreateFormCommand request,
+    public async Task<FormEntity> Handle(CreateFormCommand request,
         CancellationToken cancellationToken)
     {
         var result = await _genericRepository
@@ -31,9 +31,6 @@ public class CreateFormHandler : IRequestHandler<CreateFormCommand, ResponseEnti
 
         await _unitOfWork.SaveChangesAsync();
 
-        return new ResponseEntity
-        {
-            Results = result
-        };
+        return result;
     }
 }

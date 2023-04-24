@@ -4,6 +4,12 @@ using Application.Forms.Commands.DeleteById;
 using Application.Forms.Commands.UpdateById;
 using Application.Forms.Queries.GetAllBySiteId;
 using Microsoft.AspNetCore.Authorization;
+using ServiceBus.Messages;
+using SynchronousCommunication.HttpClients;
+using ServiceBus.ServiceBus;
+using ServiceBus.Constants;
+using ServiceBus.Models;
+using Domain.Exceptions;
 
 namespace Presentation.Controllers;
 
@@ -15,11 +21,22 @@ public class FormsController : ControllerBase
 {
     private readonly IMediator _mediator;
     private readonly ILogger<FormsController> _logger;
+    private readonly IAzureServiceBus<HistoryMessage> _historyServiceBus;
+    private readonly IAzureServiceBus<NotificationMessage> 
+        _notificationServiceBus;
+    private readonly ISubscriptionsClient _subscriptionsClient;
 
-    public FormsController(IMediator mediator, ILogger<FormsController> logger)
+    public FormsController(IMediator mediator, 
+        ILogger<FormsController> logger, 
+        ISubscriptionsClient subscriptionsClient,
+        IAzureServiceBus<HistoryMessage> historyServiceBus, 
+        IAzureServiceBus<NotificationMessage> notificationServiceBus)
     {
         _mediator = mediator;
         _logger = logger;
+        _subscriptionsClient = subscriptionsClient;
+        _historyServiceBus = historyServiceBus;
+        _notificationServiceBus = notificationServiceBus;
     }
 
     /*
@@ -70,8 +87,45 @@ public class FormsController : ControllerBase
             "POST: request to route /api/forms at " +
             "{datetime}", DateTime.Now);
 
+        var subscriptionFeatures = await _subscriptionsClient
+            .GetSubscriptionFeaturesAsync(form.UserId);
+
+        List<FormEntity> numberOfUserForms;
+
+        try
+        {
+            numberOfUserForms = await _mediator
+                .Send((new GetAllBySiteIdQuery(form.SiteId)));
+        }
+        catch (NotFoundException exception)
+        {
+            numberOfUserForms = new List<FormEntity>();
+        }
+
+        var numberOfRemainingForms = subscriptionFeatures.Subscription
+            .SubscriptionFeatures.NumberOfForms - numberOfUserForms.Count;
+
+        if (numberOfRemainingForms is 0) return Forbid();
+
         var result = await _mediator.Send(new
             CreateFormCommand(form));
+
+        if (result is not { }) return Problem(statusCode: 500);
+
+        await _notificationServiceBus.SendMessage(new NotificationModel
+        {
+            GlobalUserId = form.UserId,
+            Heading = $"{form.Details.Name} form is created",
+            Message = $"You have created {form.Details.Name} form"
+        });
+
+        await _historyServiceBus.SendMessage(new HistoryModel
+        {
+            Title = $"{form.Details.Name} form is created",
+            Action = ActionType.Create,
+            UserId = form.UserId,
+            Service = Services.Forms
+        });
 
         return Ok(result);
     }
@@ -90,6 +144,23 @@ public class FormsController : ControllerBase
 
         var result = await _mediator.Send(new
             UpdateFormByIdCommand(form));
+
+        if (result is not { }) return Problem(statusCode: 500);
+
+        await _notificationServiceBus.SendMessage(new NotificationModel
+        {
+            GlobalUserId = form.UserId,
+            Heading = $"{form.Details.Name} form is updated",
+            Message = $"You have updated {form.Details.Name} form"
+        });
+
+        await _historyServiceBus.SendMessage(new HistoryModel
+        {
+            Title = $"{form.Details.Name} form is updated",
+            Action = ActionType.Update,
+            UserId = form.UserId,
+            Service = Services.Forms
+        });
 
         return Ok(result);
     }
@@ -110,6 +181,23 @@ public class FormsController : ControllerBase
 
         var result = await _mediator.Send(new
             DeleteByIdCommand(id));
+
+        if (result is not { }) return Problem(statusCode: 500);
+
+        await _notificationServiceBus.SendMessage(new NotificationModel
+        {
+            GlobalUserId = result.UserId,
+            Heading = $"{result.Details.Name} form is deleted",
+            Message = $"You have deleted {result.Details.Name} form"
+        });
+
+        await _historyServiceBus.SendMessage(new HistoryModel
+        {
+            Title = $"{result.Details.Name} form is deleted",
+            Action = ActionType.Delete,
+            UserId = result.UserId,
+            Service = Services.Forms
+        });
 
         return Ok(result);
     }

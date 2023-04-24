@@ -4,4 +4,4 @@
 /// Delete form by form primary key request
 /// </summary>
 /// <param name="Id"></param>
-public record DeleteByIdCommand(int Id) : IRequest<ResponseEntity>;
+public record DeleteByIdCommand(int Id) : IRequest<FormEntity>;

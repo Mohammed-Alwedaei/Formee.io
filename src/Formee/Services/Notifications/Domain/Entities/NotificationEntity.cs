@@ -7,7 +7,7 @@ public class NotificationEntity : Entity
 
     [Required]
     [MinLength(10)]
-    [MaxLength(30)]
+    [MaxLength(100)]
     public string Heading { get; set; } = null!;
 
     [Required]

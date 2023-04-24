@@ -6,6 +6,8 @@ using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using ServiceBus;
+using SynchronousCommunication.Extensions;
 
 namespace Infrastructure;
 
@@ -33,6 +35,9 @@ public static class DependencyInjection
 
         services.AddScoped<IGenericRepository<ContainerEntity>,
             GenericRepository<ContainerEntity>>();
+
+        services.AddServiceBusSender();
+        services.AddSyncCommunication();
 
         return services;
     }

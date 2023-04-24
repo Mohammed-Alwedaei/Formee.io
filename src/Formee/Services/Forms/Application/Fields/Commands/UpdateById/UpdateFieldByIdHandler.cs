@@ -6,7 +6,7 @@ namespace Application.Fields.Commands.UpdateById;
 /// 
 /// </summary>
 public class UpdateFieldByIdHandler : 
-    IRequestHandler<UpdateFieldByIdCommand, ResponseEntity>
+    IRequestHandler<UpdateFieldByIdCommand, FieldEntity>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IGenericRepository<FieldEntity> _genericRepository;
@@ -22,7 +22,7 @@ public class UpdateFieldByIdHandler :
         _logger = logger;
     }
 
-    public async Task<ResponseEntity> Handle(UpdateFieldByIdCommand request, 
+    public async Task<FieldEntity> Handle(UpdateFieldByIdCommand request, 
         CancellationToken cancellationToken)
     {
         var validator = new UpdateFieldByIdValidator();
@@ -48,9 +48,6 @@ public class UpdateFieldByIdHandler :
 
         await _unitOfWork.SaveChangesAsync();
 
-        return new ResponseEntity
-        {
-            Results = result
-        };
+        return result;
     }
 }

@@ -1,3 +1,3 @@
 ﻿namespace Application.Fields.Commands.DeleteById;
 
-public record DeleteFieldByIdCommand(int Id) : IRequest<ResponseEntity>;
+public record DeleteFieldByIdCommand(int Id) : IRequest<FieldEntity>;

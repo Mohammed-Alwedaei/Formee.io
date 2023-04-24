@@ -7,6 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+	<ProjectReference Include="..\..\..\Shared\ServiceBus\ServiceBus.csproj" />
+	<ProjectReference Include="..\..\..\Shared\SynchronousCommunication\SynchronousCommunication.csproj" />
 	<ProjectReference Include="..\Application\Application.csproj" />
   </ItemGroup>
 

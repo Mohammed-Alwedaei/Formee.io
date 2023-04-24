@@ -1,6 +1,7 @@
 ﻿namespace Application.FormResponse.Commands.DeleteFormResponse;
 
-public class DeleteFormResponseHandler : IRequestHandler<DeleteFormResponseCommand, ResponseEntity>
+public class DeleteFormResponseHandler 
+    : IRequestHandler<DeleteFormResponseCommand, FormResponseEntity>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IGenericRepository<FormResponseEntity> 
@@ -13,7 +14,7 @@ public class DeleteFormResponseHandler : IRequestHandler<DeleteFormResponseComma
         _formResponseRepository = formResponseRepository;
     }
 
-    public async Task<ResponseEntity> Handle(DeleteFormResponseCommand request,
+    public async Task<FormResponseEntity> Handle(DeleteFormResponseCommand request,
         CancellationToken cancellationToken)
     {
         if (request.FormResponseId is 0)
@@ -43,9 +44,6 @@ public class DeleteFormResponseHandler : IRequestHandler<DeleteFormResponseComma
 
         await _unitOfWork.SaveChangesAsync();
 
-        return new ResponseEntity
-        {
-            Results = result,
-        };
+        return result;
     }
 }

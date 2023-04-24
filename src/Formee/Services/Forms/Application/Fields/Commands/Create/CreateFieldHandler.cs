@@ -1,7 +1,7 @@
 ﻿namespace Application.Fields.Commands.Create;
 
 public class CreateFieldHandler : IRequestHandler
-    <CreateFieldCommand, ResponseEntity>
+    <CreateFieldCommand, FieldEntity>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IGenericRepository<FieldEntity> _genericRepository;
@@ -12,7 +12,7 @@ public class CreateFieldHandler : IRequestHandler
         _genericRepository = genericRepository;
     }
 
-    public async Task<ResponseEntity> Handle(CreateFieldCommand request, 
+    public async Task<FieldEntity> Handle(CreateFieldCommand request, 
         CancellationToken cancellationToken)
     {
         var validator = new CreateFieldValidator();
@@ -30,9 +30,6 @@ public class CreateFieldHandler : IRequestHandler
 
         await _unitOfWork.SaveChangesAsync();
 
-        return new ResponseEntity
-        {
-            Results = result
-        };
+        return result;
     }
 }

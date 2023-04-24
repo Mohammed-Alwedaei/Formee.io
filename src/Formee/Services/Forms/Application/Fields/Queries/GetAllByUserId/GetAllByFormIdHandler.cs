@@ -1,7 +1,7 @@
 ﻿namespace Application.Fields.Queries.GetAllByUserId;
 
 public class GetAllByFormIdHandler : IRequestHandler
-    <GetAllByFormIdQuery, ResponseEntity>
+    <GetAllByFormIdQuery, List<FieldEntity>>
 {
     private readonly IGenericRepository<FieldEntity> _genericRepository;
 
@@ -11,7 +11,7 @@ public class GetAllByFormIdHandler : IRequestHandler
         _genericRepository = genericRepository;
     }
 
-    public async Task<ResponseEntity> Handle(GetAllByFormIdQuery request, 
+    public async Task<List<FieldEntity>> Handle(GetAllByFormIdQuery request, 
         CancellationToken cancellationToken)
     {
         if (request.FormId is 0)
@@ -27,9 +27,6 @@ public class GetAllByFormIdHandler : IRequestHandler
            throw new NotFoundException(ErrorMessages.NotFound);
         }
 
-        return new ResponseEntity
-        {
-            Results = result
-        };
+        return result;
     }
 }

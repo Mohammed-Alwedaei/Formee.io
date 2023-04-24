@@ -3,8 +3,8 @@
 /// <summary>
 /// Delete form by primary key (Id) request handler
 /// </summary>
-public class DeleteByIdHandler : IRequestHandler<DeleteByIdCommand, 
-    ResponseEntity>
+public class DeleteByIdHandler : IRequestHandler<DeleteByIdCommand,
+    FormEntity>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IGenericRepository<FormEntity> _genericRepository;
@@ -25,26 +25,26 @@ public class DeleteByIdHandler : IRequestHandler<DeleteByIdCommand,
     /// <param name="request"></param>
     /// <param name="cancellationToken"></param>
     /// <returns>ResponseEntity</returns>
-    public async Task<ResponseEntity> Handle(DeleteByIdCommand request,
+    public async Task<FormEntity> Handle(DeleteByIdCommand request,
         CancellationToken cancellationToken)
     {
         if (request.Id == 0)
             throw new BadRequestException(ErrorMessages.BadRequest);
 
         var entityFromDb = await _genericRepository
-            .GetOneByIdAsync(x => x.Id == request.Id);
+            .GetOneByIdAsync(x => x.Id == request.Id, new[] { "Details" } );
 
         if (entityFromDb is null)
             throw new NotFoundException(ErrorMessages.NotFound);
+
+        entityFromDb.IsDeleted = true;
 
         var result = _genericRepository
             .DeleteByIdAsync(entityFromDb);
 
         await _unitOfWork.SaveChangesAsync();
 
-        return new ResponseEntity
-        {
-            Results = result
-        };
+
+        return result;
     }
 }

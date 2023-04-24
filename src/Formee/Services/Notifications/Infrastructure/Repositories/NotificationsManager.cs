@@ -31,7 +31,8 @@ public class NotificationsManager : INotificationsManager
 
     public async Task CreateAndSendAsync(NotificationDto entity)
     {
-        var notification = await _context.Notifications.AddAsync(entity);
+        var notification = await _context
+            .Notifications.AddAsync(entity);
 
         await _context.SaveChangesAsync();
 

@@ -3,8 +3,8 @@
 /// <summary>
 /// Update form by primary key (Id) request handler
 /// </summary>
-public class UpdateFormByIdHandler : IRequestHandler<UpdateFormByIdCommand, 
-    ResponseEntity>
+public class UpdateFormByIdHandler : IRequestHandler<UpdateFormByIdCommand,
+    FormEntity>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IGenericRepository<FormEntity> _genericRepository;
@@ -24,7 +24,7 @@ public class UpdateFormByIdHandler : IRequestHandler<UpdateFormByIdCommand,
     /// <param name="request"></param>
     /// <param name="cancellationToken"></param>
     /// <returns>ResponseEntity</returns>
-    public async Task<ResponseEntity> Handle(UpdateFormByIdCommand request, 
+    public async Task<FormEntity> Handle(UpdateFormByIdCommand request, 
         CancellationToken cancellationToken)
     {
         var result = _genericRepository
@@ -32,9 +32,6 @@ public class UpdateFormByIdHandler : IRequestHandler<UpdateFormByIdCommand,
 
         await _unitOfWork.SaveChangesAsync();
 
-        return new ResponseEntity
-        {
-            Results = result
-        };
+        return result;
     }
 }

@@ -1,3 +1,3 @@
 ﻿namespace Application.Fields.Commands.Create;
 
-public record CreateFieldCommand(FieldEntity Field) : IRequest<ResponseEntity>;
+public record CreateFieldCommand(FieldEntity Field) : IRequest<FieldEntity>;

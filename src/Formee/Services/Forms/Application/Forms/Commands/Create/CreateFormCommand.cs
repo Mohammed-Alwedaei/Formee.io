@@ -4,4 +4,4 @@
 /// Create a new form request 
 /// </summary>
 /// <param name="Form"></param>
-public record CreateFormCommand(FormEntity Form) : IRequest<ResponseEntity>;
+public record CreateFormCommand(FormEntity Form) : IRequest<FormEntity>;

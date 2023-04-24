@@ -1,4 +1,3 @@
 ﻿namespace Application.Fields.Commands.UpdateById;
 
-public record UpdateFieldByIdCommand(FieldEntity Field) 
-    : IRequest<ResponseEntity>;
+public record UpdateFieldByIdCommand(FieldEntity Field) : IRequest<FieldEntity>;

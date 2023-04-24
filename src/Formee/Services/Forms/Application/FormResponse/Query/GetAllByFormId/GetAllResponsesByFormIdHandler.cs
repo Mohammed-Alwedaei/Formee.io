@@ -1,7 +1,7 @@
 ﻿namespace Application.FormResponse.Query.GetAllByFormId;
 
 public class GetAllResponsesByFormIdHandler 
-    : IRequestHandler<GetAllResponsesByFormIdQuery, ResponseEntity>
+    : IRequestHandler<GetAllResponsesByFormIdQuery, List<FormResponseEntity>>
 {
     private readonly IGenericRepository<FormResponseEntity>
         _formResponseRepository;
@@ -12,7 +12,7 @@ public class GetAllResponsesByFormIdHandler
         _formResponseRepository = formResponseRepository;
     }
 
-    public async Task<ResponseEntity> Handle(GetAllResponsesByFormIdQuery request,
+    public async Task<List<FormResponseEntity>> Handle(GetAllResponsesByFormIdQuery request,
         CancellationToken cancellationToken)
     {
         if (request.FormId is 0)
@@ -33,9 +33,6 @@ public class GetAllResponsesByFormIdHandler
             throw new NotFoundException(ErrorMessages.NotFound);
         }
 
-        return new ResponseEntity
-        {
-            Results = result
-        };
+        return result;
     }
 }

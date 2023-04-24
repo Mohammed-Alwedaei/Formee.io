@@ -4,7 +4,7 @@
 /// Get form by id
 /// </summary>
 public class GetFormByIdHandler : IRequestHandler
-    <GetFormByIdQuery, ResponseEntity>
+    <GetFormByIdQuery, FormEntity>
 {
     private readonly IGenericRepository<FormEntity> _genericRepository;
 
@@ -13,7 +13,7 @@ public class GetFormByIdHandler : IRequestHandler
         _genericRepository = genericRepository;
     }
 
-    public async Task<ResponseEntity> Handle(GetFormByIdQuery request,
+    public async Task<FormEntity> Handle(GetFormByIdQuery request,
         CancellationToken cancellationToken)
     {
         var formFromDb = await _genericRepository
@@ -28,9 +28,7 @@ public class GetFormByIdHandler : IRequestHandler
             throw new NotFoundException(ErrorMessages.NotFound);
         }
 
-        return new ResponseEntity
-        {
-            Results = formFromDb
-        };
+
+        return formFromDb;
     }
 }

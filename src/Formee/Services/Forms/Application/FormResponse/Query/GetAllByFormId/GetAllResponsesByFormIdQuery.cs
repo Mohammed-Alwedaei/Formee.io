@@ -1,4 +1,4 @@
 ﻿namespace Application.FormResponse.Query.GetAllByFormId;
 
 public record GetAllResponsesByFormIdQuery(int FormId) 
-    : IRequest<ResponseEntity>;
+    : IRequest<List<FormResponseEntity>>;

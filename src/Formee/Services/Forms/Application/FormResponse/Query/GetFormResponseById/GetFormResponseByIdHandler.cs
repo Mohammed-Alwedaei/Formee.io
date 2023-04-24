@@ -1,5 +1,5 @@
 ﻿namespace Application.FormResponse.Query.GetFormResponseById;
-public class GetFormResponseByIdHandler : IRequestHandler<GetFormResponseByIdQuery, ResponseEntity>
+public class GetFormResponseByIdHandler : IRequestHandler<GetFormResponseByIdQuery, FormResponseEntity>
 {
     private readonly IGenericRepository
         <FormResponseEntity> _formResponseRepository;
@@ -10,7 +10,7 @@ public class GetFormResponseByIdHandler : IRequestHandler<GetFormResponseByIdQue
         _formResponseRepository = formResponseRepository;
     }
 
-    public async Task<ResponseEntity> Handle(GetFormResponseByIdQuery request,
+    public async Task<FormResponseEntity> Handle(GetFormResponseByIdQuery request,
         CancellationToken cancellationToken)
     {
         if (request.FormResponseId is 0)
@@ -24,13 +24,8 @@ public class GetFormResponseByIdHandler : IRequestHandler<GetFormResponseByIdQue
                 new[] { "FormResponseFields" });
 
         if (result is null)
-        {
             throw new NotFoundException(ErrorMessages.NotFound);
-        }
 
-        return new ResponseEntity
-        {
-            Results = result
-        };
+        return result;
     }
 }

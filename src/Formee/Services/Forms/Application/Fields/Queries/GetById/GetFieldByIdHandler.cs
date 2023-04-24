@@ -4,7 +4,7 @@
 /// Get field by primary key (Id)
 /// </summary>
 public class GetFieldByIdHandler : IRequestHandler
-    <GetFieldByIdQuery, ResponseEntity>
+    <GetFieldByIdQuery, FieldEntity>
 {
     private readonly IGenericRepository<FieldEntity> _genericRepository;
 
@@ -20,7 +20,7 @@ public class GetFieldByIdHandler : IRequestHandler
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
-    public async Task<ResponseEntity> Handle(GetFieldByIdQuery request,
+    public async Task<FieldEntity> Handle(GetFieldByIdQuery request,
         CancellationToken cancellationToken)
     {
         if (request.Id == 0)
@@ -32,14 +32,8 @@ public class GetFieldByIdHandler : IRequestHandler
             .GetOneByIdAsync(f => f.Id == request.Id);
 
         if (result is null)
-
-        {
             throw new NotFoundException(ErrorMessages.NotFound);
-        }
 
-        return new ResponseEntity
-        {
-            Results = result
-        };
+        return result;
     }
 }

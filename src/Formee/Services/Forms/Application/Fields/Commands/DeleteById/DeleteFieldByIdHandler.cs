@@ -1,7 +1,7 @@
 ﻿namespace Application.Fields.Commands.DeleteById;
 
 public class DeleteFieldByIdHandler 
-    : IRequestHandler<DeleteFieldByIdCommand, ResponseEntity>
+    : IRequestHandler<DeleteFieldByIdCommand, FieldEntity>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IGenericRepository<FieldEntity> _genericRepository;
@@ -17,7 +17,7 @@ public class DeleteFieldByIdHandler
         _logger = logger;
     }
 
-    public async Task<ResponseEntity> Handle(DeleteFieldByIdCommand request,
+    public async Task<FieldEntity> Handle(DeleteFieldByIdCommand request,
         CancellationToken cancellationToken)
     {
         var fieldFromDb = await _genericRepository
@@ -39,9 +39,6 @@ public class DeleteFieldByIdHandler
 
         await _unitOfWork.SaveChangesAsync();
 
-        return new ResponseEntity
-        {
-            Results = fieldFromDb
-        };
+        return fieldFromDb;
     }
 }

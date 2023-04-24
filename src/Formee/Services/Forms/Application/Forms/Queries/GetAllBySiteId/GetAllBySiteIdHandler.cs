@@ -1,7 +1,7 @@
 ﻿namespace Application.Forms.Queries.GetAllBySiteId;
 
 public class GetAllBySiteIdHandler : IRequestHandler
-    <GetAllBySiteIdQuery, ResponseEntity>
+    <GetAllBySiteIdQuery, List<FormEntity>>
 {
     private readonly IGenericRepository<FormEntity> _genericRepository;
 
@@ -10,7 +10,7 @@ public class GetAllBySiteIdHandler : IRequestHandler
         _genericRepository = genericRepository;
     }
 
-    public async Task<ResponseEntity> Handle(GetAllBySiteIdQuery request,
+    public async Task<List<FormEntity>> Handle(GetAllBySiteIdQuery request,
         CancellationToken cancellationToken)
     {
         var formsFromDb = await _genericRepository
@@ -26,9 +26,6 @@ public class GetAllBySiteIdHandler : IRequestHandler
             throw new NotFoundException(ErrorMessages.NotFound);
         }
 
-        return new ResponseEntity
-        {
-            Results = formsFromDb
-        };
+        return formsFromDb;
     }
 }

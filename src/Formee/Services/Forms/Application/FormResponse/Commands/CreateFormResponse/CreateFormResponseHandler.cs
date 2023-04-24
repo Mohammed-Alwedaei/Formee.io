@@ -6,7 +6,7 @@ namespace Application.FormResponse.Commands.CreateFormResponse;
 /// Create a field warehouse and check if the warehouse has an active field
 /// </summary>
 public class CreateFormResponseHandler
-    : IRequestHandler<CreateFormResponseCommand, ResponseEntity>
+    : IRequestHandler<CreateFormResponseCommand, FormResponseEntity>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IGenericRepository<FormResponseEntity>
@@ -25,7 +25,7 @@ public class CreateFormResponseHandler
         _warehouseRepository = warehouseRepository;
         _fieldRepository = fieldRepository;
     }
-    public async Task<ResponseEntity> Handle(CreateFormResponseCommand request
+    public async Task<FormResponseEntity> Handle(CreateFormResponseCommand request
         , CancellationToken cancellationToken)
     {
         var validator = new CreateFormResponseValidator();
@@ -52,9 +52,6 @@ public class CreateFormResponseHandler
 
         await _unitOfWork.SaveChangesAsync();
 
-        return new ResponseEntity
-        {
-            Results = result,
-        };
+        return result;
     }
 }

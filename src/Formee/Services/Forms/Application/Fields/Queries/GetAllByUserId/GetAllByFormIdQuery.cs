@@ -1,3 +1,3 @@
 ﻿namespace Application.Fields.Queries.GetAllByUserId;
 
-public record GetAllByFormIdQuery(int FormId) : IRequest<ResponseEntity>;
+public record GetAllByFormIdQuery(int FormId) : IRequest<List<FieldEntity>>;
