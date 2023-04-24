@@ -4,7 +4,7 @@ public class LinkDetailsDto
 {
     public int Id { get; set; }
 
-    public string Name { get; set; } = null!;
+    public string? Name { get; set; }
 
-    public string Domain { get; set; }
+    public string? Domain { get; set; }
 }

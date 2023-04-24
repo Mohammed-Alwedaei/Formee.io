@@ -114,9 +114,6 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       ConnectionStrings__DefaultConnection: Server=host.docker.internal, 1433;Database=Formee.Identity;User Id=Admin;Password=Admin@123123;integrated security=false;TrustServerCertificate=True
-      Identity__Authority: https://dev-pnxnfhh8.us.auth0.com/
-      Identity__Audience: https:api.formee.io/identity
-      Identity__APIUrl: https://login.auth0.com
       AzureStorage__ConnectionString: DefaultEndpointsProtocol=https;AccountName=adoptingmsastorage;AccountKey=QNiF+oq3F+EpswAiImlnQINuLurflfMI/EgC+SvqHv/OW9yLJ6+42hm4/W+DipcLK+qpqDk9qHpN+AStIzFf1g==;EndpointSuffix=core.windows.net
       AzureStorage__ContainerName: accountavatars
       Services__Subscriptions: http://host.docker.internal:5007

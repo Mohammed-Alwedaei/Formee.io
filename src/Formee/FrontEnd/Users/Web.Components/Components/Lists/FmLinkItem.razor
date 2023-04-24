@@ -1,27 +1,37 @@
 ﻿@using Client.Web.Utilities.Dtos.Links
 
-<Grid Gap="@GridGap.Large">
-    <Items>
-        <GridItem ColumnSize="@GridSize.GridItemMedium">
-            <Child>
-                <FmTypography Text="@Link.LinkDetails.Name"
-                              Type="@Typography.LevelTwo"/>
-            </Child>
-        </GridItem>
+<div @onclick="HandleItemClick">
+    <Grid Gap="@GridGap.Large">
+        <Items>
+            <GridItem ColumnSize="@GridSize.GridItemMedium">
+                <Child>
+                    <FmTypography Text="@Link.LinkDetails.Name"
+                                  Type="@Typography.LevelTwo"/>
+                </Child>
+            </GridItem>
         
-        <GridItem ColumnSize="@GridSize.GridItemSmall">
-            <Child>
-                <FmTypography Text="@Link.TargetUrl" />
+            <GridItem ColumnSize="@GridSize.GridItemSmall">
+                <Child>
+                    <FmTypography Text="@Link.TargetUrl" />
                 
-            </Child>
-        </GridItem>
-    </Items>
-</Grid>
+                </Child>
+            </GridItem>
+        </Items>
+    </Grid>
 
-<FmTypography Text="@Link.OriginalUrl"
-              Classes="fm-link__small mt-0-5"/>
+    <FmTypography Text="@Link.OriginalUrl"
+                  Classes="fm-link__small mt-0-5"/>
+</div>
 
 @code {
     [Parameter]
     public LinkDto Link { get; set; }
+
+    [Parameter]
+    public EventCallback<int> OnClick { get; set; }
+
+    private async Task HandleItemClick()
+    {
+        await OnClick.InvokeAsync(Link.Id);
+    }
 }

@@ -7,6 +7,7 @@ public static class GridSize
     public const string GridIteLarge = "fm-grid__item-lg";
 
     public const string GridItemMedium = "fm-grid__item-md";
+
     public const string Normal = "fm-grid__item-nm";
 
     public const string GridItemSmall = "fm-grid__item-sm";

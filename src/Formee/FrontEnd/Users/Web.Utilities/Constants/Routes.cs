@@ -16,7 +16,7 @@ public static class Routes
 
     public const string Links = "/dashboard/links";
 
-    public const string LiveChat = "/dashboard/livechat";
+    public const string LinksView = "/dashboard/links/view";
 
     public const string History = "/dashboard/history";
 

@@ -1,0 +1,231 @@
+﻿<FmPageIntro Heading="Links">
+    <Breadcrumbs>
+        <BreadcrumbItem IconCss="fa-solid fa-house"
+                        Text="Dashboard"
+                        Url="@Routes.Home" />
+
+        <BreadcrumbItem IconCss="fa-solid fa-arrow-up-right-from-square"
+                        Text="Links"
+                        Url="@($"{Routes.Links}?user_id={UserId}&container_id={ContainerId}")" />
+
+        @if (AppState.Links.Link is { Id: > 0 })
+        {
+            <BreadcrumbItem IconCss="fa-solid fa-arrow-up-right-from-square"
+                        Disabled="true"
+                        Text="@AppState.Links.Link.LinkDetails.Name" />
+        }
+    </Breadcrumbs>
+</FmPageIntro>
+
+<FmSpacer />
+
+<div class="d-flex justify-content-between align-items-center">
+    <FmTypography Text="Delete Link"
+                  Type="@Typography.LevelTwo" />
+    <SfTooltip Position="Syncfusion.Blazor.Popups.Position.BottomCenter"
+               Content="Delete This Link">
+        <SfButton OnClick="RevealDeleteLinkDialog"
+                  CssClass="e-danger"
+                  IconCss="fa-solid fa-plus">
+            Delete Link
+        </SfButton>
+    </SfTooltip>
+</div>
+
+<FmSpacer />
+
+@if (AppState.Links.Link is { Id: > 0 })
+{
+    <div>
+        <SfDashboardLayout Columns="4"
+                       CellSpacing="@(new double[] {40, 40})"
+                       AllowResizing="false"
+                       AllowDragging="false"
+                       AllowFloating="false">
+            <DashboardLayoutPanels>
+                <DashboardLayoutPanel Column="0" Row="0" SizeX="1" SizeY="1">
+                    <Header>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <FmTypography Text="Link Information"
+                                      Type="@Typography.LevelTwo" />
+                        </div>
+                    </Header>
+
+                    <ContentTemplate>
+                        <FmSpacer />
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <FmTypography Text="Name:" 
+                                          Type="@Typography.LevelTwo" />
+                            
+                            <FmTypography Text="@AppState.Links.Link.LinkDetails.Name" 
+                                          Classes="fm-typography__lead" />
+                        </div>
+
+                        <FmSpacer />
+                        
+                        <div class="d-flex justify-content-between align-items-center">
+                            <FmTypography Text="Original Url:" 
+                                          Type="@Typography.LevelTwo" />
+                            
+                            <FmTypography Text="@AppState.Links.Link.OriginalUrl" 
+                                          Classes="fm-typography__lead" />
+                        </div>
+
+                        <FmSpacer />
+                        
+                        <div class="d-flex justify-content-between align-items-center">
+                            <FmTypography Text="Shortened Url:" 
+                                          Type="@Typography.LevelTwo" />
+                            
+                            <FmLink Text="@AppState.Links.Link.TargetUrl"
+                                    Classes="fm-typography__lead" />
+                        </div>
+                        
+                        <FmSpacer />
+                        
+                        <div class="d-flex justify-content-between align-items-center">
+                            <FmTypography Text="Domain:" 
+                                          Type="@Typography.LevelTwo" />
+                            
+                            <FmTypography Text="@AppState.Links.Link.LinkDetails.Domain" 
+                                          Classes="fm-typography__lead" />
+                        </div>
+                    </ContentTemplate>
+                </DashboardLayoutPanel>
+
+                <DashboardLayoutPanel Column="1" Row="0" SizeX="3" SizeY="1">
+                    <Header>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <FmTypography Text="Analytics"
+                                      Type="@Typography.LevelTwo" />
+
+                            <SfTooltip Position="Syncfusion.Blazor.Popups.Position.BottomCenter"
+                                   Content="Refresh">
+                                <SfButton IconCss="fa-solid fa-arrows-rotate"
+                                      OnClick="HandleLinkHitsRefresh" />
+                            </SfTooltip>
+                        </div>
+                    </Header>
+
+                    <ContentTemplate>
+                        @if (AppState.Links.LinkHitsInContainerCollection is { Count: > 0 })
+                        {
+                            <SfChart Width="100%"
+                             Title="Number of hits">
+                                <ChartPrimaryXAxis ValueType="Syncfusion.Blazor.Charts.ValueType.DateTime"
+                                           IntervalType="IntervalType.Days" />
+
+                                <ChartTooltipSettings Enable="true" />
+
+                                <ChartSeriesCollection>
+                                    <ChartSeries DataSource="AppState.Links.LinkHitsInContainerCollection"
+                                         XName="Date"
+                                         YName="Count"
+                                         Type="ChartSeriesType.Spline">
+                                        <ChartMarker Visible="true" />
+                                    </ChartSeries>
+                                </ChartSeriesCollection>
+                            </SfChart>
+                        }
+                        else
+                        {
+                            <FmNotFound Message="There are no data to display" />
+                        }
+                    </ContentTemplate>
+                </DashboardLayoutPanel>
+            </DashboardLayoutPanels>
+        </SfDashboardLayout>
+    </div>
+}
+else
+{
+    <FmLoadingScreen />
+}
+
+@if (_linkDto is { Id: > 0 })
+{
+    <SfDialog Width="600px"
+          @bind-Visible="@_isVisibleDeleteLinkDialog"
+          AllowPrerender="true"
+          IsModal="true">
+        <DialogAnimationSettings Effect="DialogEffect.SlideBottom" Duration=400 />
+        <DialogTemplates>
+            <Header>
+                <FmTypography Text="Create new Link"
+                          Type="@Typography.LevelTwo" />
+            </Header>
+            <Content>
+                <FmTypography Text="You are going to create a new container, please fill the following fields" />
+
+                <div class="p-1">
+                    <EditForm Model="_linkDto">
+                        <Grid Gap="@GridGap.Small">
+                            <Items>
+                                <GridItem ColumnSize="@GridSize.GridItemMedium">
+                                    <Child>
+                                        <div>
+                                            <label for="@nameof(_linkDto.UserId)" class="mb-1">
+                                                User Id
+                                            </label>
+
+                                            <FmTypography Text="@AppState.Identity.User.UserName" />
+                                        </div>
+                                    </Child>
+                                </GridItem>
+
+                                <GridItem ColumnSize="@GridSize.GridItemMedium">
+                                    <Child>
+                                        <div>
+                                            <label for="@nameof(_linkDto.ContainerId)" class="mb-1">
+                                                Container Id
+                                            </label>
+
+                                            <FmTypography Text="@_linkDto.ContainerId" />
+                                        </div>
+                                    </Child>
+                                </GridItem>
+
+                                <GridItem ColumnSize="@GridSize.GridItemMedium">
+                                    <Child>
+                                        <div>
+                                            <label for="@nameof(_linkDto.ContainerId)" class="mb-1">
+                                                Name
+                                            </label>
+
+                                            <FmTypography Text="@_linkDto.LinkDetails.Name" />
+                                        </div>
+                                    </Child>
+                                </GridItem>
+
+                                <GridItem ColumnSize="@GridSize.GridItemMedium">
+                                    <Child>
+                                        <div>
+                                            <label for="@nameof(_linkDto.ContainerId)" class="mb-1">
+                                                Original Url
+                                            </label>
+
+                                            <FmTypography Text="@_linkDto.OriginalUrl" />
+                                        </div>
+                                    </Child>
+                                </GridItem>
+                            </Items>
+                        </Grid>
+                    </EditForm>
+                </div>
+            </Content>
+        </DialogTemplates>
+        <DialogButtons>
+            <DialogButton Content="Delete"
+                      IconCss="fa-solid fa-plus-circle"
+                      IsPrimary="true"
+                      IconPosition="IconPosition.Right"
+                      OnClick="HandleDeleteLinkApprove" />
+
+            <DialogButton Content="Cancel"
+                      IconCss="fa-solid fa-xmark"
+                      IconPosition="IconPosition.Right"
+                      OnClick="HandleDeleteLinkReject" />
+        </DialogButtons>
+    </SfDialog>
+}

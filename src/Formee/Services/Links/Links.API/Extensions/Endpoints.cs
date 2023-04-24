@@ -143,12 +143,11 @@ public static class LinksEndpoints
         (this WebApplication app)
     {
         var redirectLinks = app
-            .MapGroup("/api/links/redirects/")
-            .RequireAuthorization(policyNames: "users");
+            .MapGroup("/api/links/redirects/");
 
         var hits = app
             .MapGroup("/api/links/hits/")
-            .RequireAuthorization(policyNames: "users");
+            .RequireAuthorization();
 
         var logger = app.Logger;
 
@@ -183,7 +182,7 @@ public static class LinksEndpoints
             await linkHitRepository.CreateAsync(hit);
 
             return Results.Redirect(result.OriginalUrl, true);
-        });
+        }).AllowAnonymous();
 
         /*
          * ROUTE: /api/links/redirect/targetUrl

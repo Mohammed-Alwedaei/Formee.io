@@ -20,7 +20,7 @@ builder.Services.AddHttpClient("ServerApi", client =>
     client.BaseAddress = new Uri(builder.Configuration
         .GetValue<string>("GatewayUrl")!);
 
-}).AddHttpMessageHandler<BaseAddressAuthorizationMessageHandler>();
+});
 
 builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>()
     .CreateClient("ServerApi"));

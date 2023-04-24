@@ -1,6 +1,8 @@
+using System.Text;
 using Application.Hubs;
 using Infrastructure.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,11 +17,12 @@ builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, JwtBearerDefaults.AuthenticationScheme, c =>
     {
-        c.Authority = $"https://{builder.Configuration["Auth0:Domain"]}";
-        c.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+        c.Authority = $"https://{builder.Configuration["Identity:Issuer"]}";
+        c.TokenValidationParameters = new TokenValidationParameters
         {
-            ValidAudience = builder.Configuration["Auth0:Audience"],
-            ValidIssuer = $"https://{builder.Configuration["Auth0:Domain"]}"
+            ValidAudience = builder.Configuration["Identity:Audience"],
+            ValidIssuer = "dev-pnxnfhh8.us.auth0.com",
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Identity:SecretKey"]))
         };
     });
 

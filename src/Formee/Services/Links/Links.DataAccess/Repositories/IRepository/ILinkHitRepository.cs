@@ -1,4 +1,5 @@
-﻿using Links.Utilities.Entities;
+﻿using Links.Utilities.Dtos;
+using Links.Utilities.Entities;
 
 namespace Links.BusinessLogic.Repositories.IRepository;
 
@@ -9,14 +10,14 @@ public interface ILinkHitRepository
     /// </summary>
     /// <param name="id"></param>
     /// <returns>A collection of link hits</returns>
-    Task<List<LinkHitEntity>> GetAllByLinkIdAsync(int id);
+    Task<List<DateChartDto>> GetAllByLinkIdAsync(int id);
 
     /// <summary>
     /// Get all link hits of all links in a container
     /// </summary>
     /// <param name="containerId"></param>
     /// <returns></returns>
-    Task<List<LinkHitEntity>> GetAllByContainerIdAsync
+    Task<List<DateChartDto>> GetAllByContainerIdAsync
         (string containerId, DateTime startDate, DateTime endDate);
 
     /// <summary>

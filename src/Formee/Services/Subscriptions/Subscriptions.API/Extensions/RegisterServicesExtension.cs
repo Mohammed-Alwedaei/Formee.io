@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Subscriptions.BusinessLogic;
@@ -78,11 +79,14 @@ public static class RegisterServicesExtension
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, JwtBearerDefaults.AuthenticationScheme, c =>
             {
-                c.Authority = $"https://{_configuration["Auth0:Domain"]}";
+                c.Authority = $"https://{_configuration["Identity:Issuer"]}";
                 c.TokenValidationParameters = new TokenValidationParameters
                 {
-                    ValidAudience = _configuration["Auth0:Audience"],
-                    ValidIssuer = $"https://{_configuration["Auth0:Domain"]}"
+                    ValidAudience = _configuration["Identity:Audience"],
+                    ValidIssuer = "dev-pnxnfhh8.us.auth0.com",
+                    IssuerSigningKey = new SymmetricSecurityKey
+                    (Encoding.UTF8.GetBytes
+                        (_configuration["Identity:SecretKey"]))
                 };
             });
 

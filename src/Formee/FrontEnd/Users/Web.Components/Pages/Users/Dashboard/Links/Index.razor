@@ -13,11 +13,12 @@
 
 <FmSpacer />
 
-<FmTab OnTabChange="HandleContainerChangeEvent">
-    <FmTabItems>
-        @if (AppState.Identity.User.Id != Guid.Empty)
-        {
-            foreach (var container in AppState.Containers.ContainersCollection)
+@if (AppState.Containers.ContainersCollection is not null &&
+   AppState.Containers.ContainersCollection.Any())
+{
+    <FmTab OnTabChange="HandleContainerChangeEvent">
+        <FmTabItems>
+            @foreach (var container in AppState.Containers.ContainersCollection)
             {
                 <FmTabItem Id="@container.Id">
                     <Header>
@@ -28,6 +29,22 @@
                     </Header>
 
                     <Body>
+
+                        <FmSpacer />
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <FmTypography Text="Create new Link"
+                                  Type="@Typography.LevelTwo" />
+
+                            <SfTooltip Position="Syncfusion.Blazor.Popups.Position.BottomCenter"
+                                       Content="Refresh">
+                                <SfButton OnClick="() => HandleNewContainerClick(container.Id)"
+                                          IconCss="fa-solid fa-plus">
+                                    New Link
+                                </SfButton>
+                            </SfTooltip>
+                        </div>
+
                         <FmSpacer />
 
                         <SfDashboardLayout Columns="4"
@@ -38,12 +55,20 @@
                             <DashboardLayoutPanels>
                                 <DashboardLayoutPanel Column="0" Row="0" SizeX="3" SizeY="1">
                                     <Header>
-                                        <FmTypography Text="Analytics"
-                                              Type="@Typography.LevelTwo" />
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <FmTypography Text="Analytics"
+                                                          Type="@Typography.LevelTwo" />
+                                            
+                                            <SfTooltip Position="Syncfusion.Blazor.Popups.Position.BottomCenter"
+                                                       Content="Refresh">
+                                                <SfButton IconCss="fa-solid fa-arrows-rotate" 
+                                                          OnClick="() => HandleLinkHitsRefresh(container.Id)" />
+                                            </SfTooltip>
+                                        </div>
                                     </Header>
 
                                     <ContentTemplate>
-                                        @if (_linkHitsChart != null)
+                                        @if (AppState.Links.LinkHitsInContainerCollection is { Count: > 0 })
                                         {
                                             <SfChart Width="100%"
                                          Title="Number of hits"
@@ -54,74 +79,96 @@
                                                 <ChartTooltipSettings Enable="true" />
 
                                                 <ChartSeriesCollection>
-                                                    <ChartSeries DataSource="_linkHitsChart"
-                                                     XName="Date"
-                                                     YName="Count"
-                                                     Type="ChartSeriesType.Spline">
-                                                        <ChartMarker Visible="true">
-                                                        </ChartMarker>
+                                                    <ChartSeries DataSource="AppState.Links.LinkHitsInContainerCollection"
+                                                                 XName="Date"
+                                                                 YName="Count"
+                                                                 Type="ChartSeriesType.Spline">
+                                                        <ChartMarker Visible="true" />
                                                     </ChartSeries>
                                                 </ChartSeriesCollection>
                                             </SfChart>
                                         }
                                         else
                                         {
-                                            <p>There are no data to be displayed</p>
+                                            <FmNotFound Message="There are no data to display" />
                                         }
                                     </ContentTemplate>
                                 </DashboardLayoutPanel>
 
                                 <DashboardLayoutPanel Column="4" Row="0" SizeX="1" SizeY="1">
                                     <Header>
-                                        <FmTypography Text="Recent Links"
-                                              Type="@Typography.LevelTwo" />
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <FmTypography Text="Recent Links"
+                                                  Type="@Typography.LevelTwo" />
+
+                                            <SfTooltip Position="Syncfusion.Blazor.Popups.Position.BottomCenter"
+                                               Content="Refresh">
+                                                <SfButton IconCss="fa-solid fa-arrows-rotate"
+                                                  OnClick="() => HandleLinksRefresh(container.Id)" />
+                                            </SfTooltip>
+                                        </div>
                                     </Header>
 
                                     <ContentTemplate>
-                                        @if (_links != null)
+                                        <FmSpacer />
+
+                                        @if (AppState.Links.LinksCollection is { Count: > 0 })
                                         {
                                             var lastItem = _links.LastOrDefault();
 
-                                            foreach (var link in _links)
+                                            foreach (var link in AppState.Links.LinksCollection)
                                             {
-                                                <FmLinkItem Link="link" />
+                                                <FmLinkItem Link="link" OnClick="HandleLinkItemClick"/>
 
                                                 if (link != lastItem)
                                                 {
-                                                    <FmSpacer />
+                                                    <FmSpacer/>
                                                 }
                                             }
                                         }
                                         else
                                         {
-                                            <FmNotFound />
+                                            <FmNotFound Message="There are no links to display"/>
                                         }
                                     </ContentTemplate>
                                 </DashboardLayoutPanel>
 
                                 <DashboardLayoutPanel Column="0" Row="1" SizeX="1" SizeY="1">
+                                    <Header>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <FmTypography Text="Top Performing Links"
+                                                          Type="@Typography.LevelTwo" />
+
+                                            <SfTooltip Position="Syncfusion.Blazor.Popups.Position.BottomCenter"
+                                               Content="Refresh">
+                                                <SfButton IconCss="fa-solid fa-arrows-rotate"
+                                                  OnClick="() => HandleLinkHitsRefresh(container.Id)" />
+                                            </SfTooltip>
+                                        </div>
+                                    </Header>
+
                                     <ContentTemplate>
-                                        @if (_linkHitsChart != null)
+                                        @if (AppState.Links.LinkHitsInContainerCollection is { Count: > 0 })
                                         {
                                             <SfChart Width="100%"
-                                         Title="Created Links"
-                                         Palettes="@_palettes">
+                                                     Title="Created Links"
+                                                     Palettes="@_palettes">
                                                 <ChartPrimaryXAxis ValueType="Syncfusion.Blazor.Charts.ValueType.DateTime"
-                                                       IntervalType="IntervalType.Days" />
+                                                                   IntervalType="IntervalType.Days"/>
 
-                                                <ChartTooltipSettings Enable="true" />
+                                                <ChartTooltipSettings Enable="true"/>
 
                                                 <ChartSeriesCollection>
-                                                    <ChartSeries DataSource="_linkHitsChart"
-                                                     XName="Date"
-                                                     YName="Count"
-                                                     Type="ChartSeriesType.Column" />
+                                                    <ChartSeries DataSource="AppState.Links.LinkHitsInContainerCollection"
+                                                                 XName="Date"
+                                                                 YName="Count"
+                                                                 Type="ChartSeriesType.Column"/>
                                                 </ChartSeriesCollection>
                                             </SfChart>
                                         }
                                         else
                                         {
-                                            <p>There are no data to be displayed</p>
+                                            <FmNotFound Message="There are no data to display"/>
                                         }
                                     </ContentTemplate>
                                 </DashboardLayoutPanel>
@@ -130,10 +177,103 @@
                     </Body>
                 </FmTabItem>
             }
-        }
-        else
-        {
-            <SfSpinner Visible="true" />
-        }
-    </FmTabItems>
-</FmTab>
+        </FmTabItems>
+    </FmTab>
+}
+else if (AppState.Containers.ContainersCollection is null &&
+         !AppState.Containers.IsFetching)
+{
+    <FmTypography Text="No Containers found" />
+}
+else
+{
+    <SfSpinner Visible="true" />
+}
+
+<SfDialog Width="600px"
+          @bind-Visible="@_isVisibleUpsertDialog"
+          AllowPrerender="true"
+          IsModal="true">
+    <DialogAnimationSettings Effect="DialogEffect.SlideBottom" Duration=400 />
+    <DialogTemplates>
+        <Header>
+            <FmTypography Text="Create new Link"
+                          Type="@Typography.LevelTwo" />
+        </Header>
+        <Content>
+            <FmTypography Text="You are going to create a new container, please fill the following fields" />
+
+            <EditForm Model="_linkDto">
+                <Grid Gap="@GridGap.Large">
+                    <Items>
+                        <GridItem ColumnSize="@GridSize.GridItemMedium">
+                            <Child>
+                                <div>
+                                    <label for="@nameof(_linkDto.UserId)" class="mb-1">
+                                        User Id
+                                    </label>
+
+                                    <FmTypography Text="@_linkDto.UserId.ToString()" />
+                                </div>
+                            </Child>
+                        </GridItem>
+
+                        <GridItem ColumnSize="@GridSize.GridItemMedium">
+                            <Child>
+                                <div>
+                                    <label for="@nameof(_linkDto.ContainerId)" class="mb-1">
+                                        Container Id
+                                    </label>
+
+                                    <FmTypography Text="@_linkDto.ContainerId" />
+                                </div>
+                            </Child>
+                        </GridItem>
+
+                        <GridItem ColumnSize="@GridSize.GridItemMedium">
+                            <Child>
+                                <div>
+                                    <label for="@nameof(_linkDto.Name)" class="mb-1">
+                                        Name
+                                    </label>
+
+                                    <SfTextBox ID="@nameof(_linkDto.Name)"
+                                               @bind-Value="_linkDto.Name" />
+
+                                    <ValidationMessage For="() => _linkDto.Name" />
+                                </div>
+                            </Child>
+                        </GridItem>
+
+                        <GridItem ColumnSize="@GridSize.GridItemMedium">
+                            <Child>
+                                <div>
+                                    <label for="@nameof(_linkDto.OriginalUrl)" class="mb-1">
+                                        Original Url
+                                    </label>
+
+                                    <SfTextBox ID="@nameof(_linkDto.OriginalUrl)"
+                                               @bind-Value="_linkDto.OriginalUrl" />
+
+                                    <ValidationMessage For="() => _linkDto.OriginalUrl" />
+                                </div>
+                            </Child>
+                        </GridItem>
+                    </Items>
+                </Grid>
+            </EditForm>
+        </Content>
+    </DialogTemplates>
+    <DialogButtons>
+        <DialogButton Content="Create"
+                      IconCss="fa-solid fa-plus-circle"
+                      IsPrimary="true"
+                      IconPosition="IconPosition.Right"
+                      OnClick="HandleNewLinkApprove" />
+
+        <DialogButton Content="Cancel"
+                      IconCss="fa-solid fa-xmark"
+                      IconPosition="IconPosition.Right"
+                      OnClick="HandleNewLinkReject" />
+    </DialogButtons>
+</SfDialog>

@@ -1,6 +1,7 @@
 ﻿using Client.Web.Utilities.Exceptions;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System.Net;
 
 namespace Client.Web.Utilities.Services;
@@ -9,14 +10,17 @@ public class ContainersService : BaseService
 {
     private readonly AppStateService _appState;
     private readonly NavigationManager _navigationManager;
+    private readonly ILogger<ContainersService> _logger;
 
     public ContainersService(IHttpClientFactory httpClient, 
         AppStateService appState,
         IConfiguration configuration, 
-        NavigationManager navigationManager) : base(httpClient, configuration, appState)
+        NavigationManager navigationManager, 
+        ILogger<ContainersService> logger) : base(httpClient, configuration, appState)
     {
         _appState = appState;
         _navigationManager = navigationManager;
+        _logger = logger;
     }
 
     public async Task GetAllByUserIdAsync(Guid userId)
@@ -29,13 +33,22 @@ public class ContainersService : BaseService
 
             var client = await HttpClient();
 
-            var response = await client.GetFromJsonAsync<List<ContainerDto>>(url);
+            var response = await client.GetAsync(url);
 
-            _appState.Containers.SetContainersCollectionState(response ?? new List<ContainerDto>());
+            if (response.IsSuccessStatusCode)
+            {
+                var containers = await response.Content
+                    .ReadFromJsonAsync<List<ContainerDto>>();
+
+                _appState.Containers.SetContainersCollectionState(containers);
+            }
+            
+            else
+                throw new NotFoundException("no containers are found");
         }
         catch (Exception)
         {
-            _appState.Containers.SetContainersCollectionState(new List<ContainerDto>());
+            _logger.LogInformation("GET: No containers are found");
         }
         finally
         {

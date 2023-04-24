@@ -7,8 +7,8 @@ public class LinksState
     public List<LinkDto> LinksCollection;
     
     public LinkDto Link;
-    public List<LinkHitDto> LinkHitsCollection;
-    public List<LinkHitDto> LinkHitsInContainerCollection;
+    public List<DateChartModel> LinkHitsCollection;
+    public List<DateChartModel> LinkHitsInContainerCollection;
 
     public bool IsFetching;
 
@@ -26,12 +26,12 @@ public class LinksState
         StateChanged.Invoke();
     }
     
-    public void SetLinkHitsState(List<LinkHitDto> linkHits)
+    public void SetLinkHitsState(List<DateChartModel> linkHits)
     {
         LinkHitsCollection = linkHits;
         StateChanged.Invoke();
     }
-    public void SetLinkHitsInContainerCollectionState(List<LinkHitDto> linkHits)
+    public void SetLinkHitsInContainerCollectionState(List<DateChartModel> linkHits)
     {
         LinkHitsInContainerCollection = linkHits;
         StateChanged.Invoke();

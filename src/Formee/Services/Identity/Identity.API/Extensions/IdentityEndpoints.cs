@@ -13,9 +13,14 @@ public static class IdentityEndpoints
                 .RequireAuthorization()
                 .WithTags("Users");
 
+        var logger = app.Logger;
+
         identity.MapGet("/users/{userId:Guid}", async
             (IIdentityManager identityManager, Guid userId) =>
         {
+            logger.LogInformation("GET: request at /api/identity/users/{userId} at {date}",
+                userId, DateTime.UtcNow);
+
             var user = await identityManager.GetByIdAsync(userId);
 
             return string.IsNullOrEmpty(user.AuthId)
@@ -26,6 +31,9 @@ public static class IdentityEndpoints
         identity.MapGet("/users/{authId}", async
             (IIdentityManager identityManager, string authId) =>
         {
+            logger.LogInformation("GET: request at /api/identity/users/{auth} at {date}",
+                authId, DateTime.UtcNow);
+
             var user = await identityManager.GetByAuthIdAsync(authId);
 
             return string.IsNullOrEmpty(user.AuthId)

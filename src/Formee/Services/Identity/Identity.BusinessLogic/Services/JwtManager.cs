@@ -92,11 +92,12 @@ public class JwtManager : IJwtManager
         var claims = new[]
         {
             new Claim(JwtRegisteredClaimNames.Sub, userId),
-            new Claim("authority", "https://dev-pnxnfhh8.us.auth0.com"),
+            new Claim("authority", "dev-pnxnfhh8.us.auth0.com"),
         };
 
+        var secretKey = _configuration["Identity:SecretKey"];
         
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("s6v9y$B&E)H@MbQe"));
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
         var signingCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
         var handler = new JwtSecurityTokenHandler();

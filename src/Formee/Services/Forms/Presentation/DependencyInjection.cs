@@ -1,4 +1,5 @@
-﻿using HealthChecks.UI.Client;
+﻿using System.Text;
+using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.IdentityModel.Tokens;
@@ -39,14 +40,16 @@ public static class DependencyInjection
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, JwtBearerDefaults.AuthenticationScheme, c =>
             {
-                c.Authority = $"https://{configuration["Auth0:Domain"]}";
+                c.Authority = $"https://{configuration["Identity:Issuer"]}";
                 c.TokenValidationParameters = new TokenValidationParameters
                 {
-                    ValidAudience = configuration["Auth0:Audience"],
-                    ValidIssuer = $"https://{configuration["Auth0:Domain"]}"
+                    ValidAudience = configuration["Identity:Audience"],
+                    ValidIssuer = "dev-pnxnfhh8.us.auth0.com",
+                    IssuerSigningKey = new SymmetricSecurityKey
+                    (Encoding.UTF8.GetBytes
+                        (configuration["Identity:SecretKey"]))
                 };
             });
-
         services.AddAuthorization();
 
         return services;
