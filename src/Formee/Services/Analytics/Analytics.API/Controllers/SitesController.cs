@@ -83,7 +83,7 @@ public class SitesController : ControllerBase
         await _notificationServiceBus.SendMessage(new NotificationModel
         {
             GlobalUserId = result.UserId,
-            Heading = "A new site is created",
+            Heading = $"{result.Name} site is created",
             Message = $"You have created {result.Name} site"
         });
 

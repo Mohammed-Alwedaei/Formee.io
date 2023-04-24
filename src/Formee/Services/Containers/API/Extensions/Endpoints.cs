@@ -18,7 +18,7 @@ public static class Endpoints
             async (ContainersService containersService, string id) =>
             {
                 if (await containersService.GetContainerById(id) is { } container) return Results.Ok(container);
-                
+
                 return Results.NotFound();
             });
 
@@ -46,7 +46,7 @@ public static class Endpoints
         containersRouteGroup.MapPost("/",
             async (ContainersService containersService,
                 ISubscriptionsClient subscriptionClient,
-                IAzureServiceBus<HistoryMessage> serviceBus,
+                IAzureServiceBus<HistoryMessage> historyServiceBus,
                 IAzureServiceBus<NotificationMessage> notificationServiceBus,
                 ContainerEntity container) =>
             {
@@ -69,26 +69,20 @@ public static class Endpoints
 
                 if (result is not { } containerResult) return Results.BadRequest();
 
-
-                var history = new HistoryModel
-                {
-                    Title = "A new container is created",
-                    Action = ActionType.Create,
-                    UserId = container.UserId,
-                    Service = ServiceBus.Constants.Services.Containers
-                };
-
-                await serviceBus.SendMessage(
-                    new HistoryMessage
-                    {
-                        Entity = history
-                    });
-                
                 await notificationServiceBus.SendMessage(new NotificationModel
                 {
                     GlobalUserId = result.UserId,
-                    Heading = "A new container is created",
+                    Heading = $"{result.Name} container is created",
                     Message = $"You have created {result.Name} container"
+                });
+
+
+                await historyServiceBus.SendMessage(new HistoryModel
+                {
+                    Title = $"{result.Name} container is created",
+                    Action = ActionType.Create,
+                    UserId = result.UserId,
+                    Service = ServiceBus.Constants.Services.Containers
                 });
 
                 return Results.Ok(containerResult);
@@ -102,7 +96,7 @@ public static class Endpoints
          */
         containersRouteGroup.MapPut("/",
             async (ContainersService containersService,
-                IAzureServiceBus<HistoryMessage> serviceBus,
+                IAzureServiceBus<HistoryMessage> historyServiceBus,
                 IAzureServiceBus<NotificationMessage> notificationServiceBus,
                 ContainerDto container) =>
             {
@@ -113,29 +107,24 @@ public static class Endpoints
                     .UpdateContainerAsync(container);
 
                 if (string.IsNullOrEmpty(result.Id)) return Results.NotFound();
-                
-                var history = new HistoryModel
-                {
-                    Title = "A container is updated",
-                    Action = ActionType.Update,
-                    UserId = container.UserId,
-                    Service = ServiceBus.Constants.Services.Containers
-                };
-
-                await serviceBus.SendMessage(
-                    new HistoryMessage
-                    {
-                        Entity = history
-                    });
 
                 await notificationServiceBus.SendMessage(new NotificationModel
                 {
                     GlobalUserId = result.UserId,
-                    Heading = "A container is updated",
-                    Message = $"You have deleted {result.Name} container"
+                    Heading = $"{result.Name} site is updated",
+                    Message = $"You have updated {result.Name} container"
                 });
 
-                return Results.Ok(); 
+
+                await historyServiceBus.SendMessage(new HistoryModel
+                {
+                    Title = $"{result.Name} container is updated",
+                    Action = ActionType.Update,
+                    UserId = result.UserId,
+                    Service = ServiceBus.Constants.Services.Containers
+                });
+
+                return Results.Ok(result);
             });
 
         /*
@@ -145,6 +134,7 @@ public static class Endpoints
          */
         containersRouteGroup.MapDelete("/{id:length(24)}",
             async (ContainersService containersService,
+                IAzureServiceBus<HistoryMessage> historyServiceBus,
                 IAzureServiceBus<NotificationMessage> notificationServiceBus,
                 string id) =>
             {
@@ -153,22 +143,23 @@ public static class Endpoints
 
                 if (result is null) Results.NotFound();
 
-                var history = new HistoryModel
-                {
-                    Title = "A new container is deleted",
-                    Action = ActionType.Delete,
-                    UserId = result.UserId,
-                    Service = ServiceBus.Constants.Services.Containers
-                };
-
                 await notificationServiceBus.SendMessage(new NotificationModel
                 {
                     GlobalUserId = result.UserId,
-                    Heading = "A container is Deleted",
+                    Heading = $"{result.Name} site is deleted",
                     Message = $"You have deleted {result.Name} container"
                 });
 
-                Results.Ok(result);
+
+                await historyServiceBus.SendMessage(new HistoryModel
+                {
+                    Title = $"{result.Name} container is deleted",
+                    Action = ActionType.Delete,
+                    UserId = result.UserId,
+                    Service = ServiceBus.Constants.Services.Containers
+                });
+
+                return Results.Ok(result);
             });
         return app;
     }

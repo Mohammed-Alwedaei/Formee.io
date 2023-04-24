@@ -6,7 +6,7 @@ async function Main() {
   const connectionString = process.env.AZURE_SERVICE_BUS;
 
   const topicName = "topic-history";
-  const subscriptionName = "formeeaAnalytics";
+  const subscriptionName = "subscription-history";
   const serviceBusClient = new ServiceBusClient(connectionString);
 
   const serviceBusReceiver = serviceBusClient.createReceiver(
