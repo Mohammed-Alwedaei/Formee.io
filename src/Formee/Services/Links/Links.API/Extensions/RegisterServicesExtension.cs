@@ -4,6 +4,7 @@ using Links.BusinessLogic.Contexts;
 using Links.BusinessLogic.Repositories;
 using Links.BusinessLogic.Repositories.IRepository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using ServiceBus;
 using SynchronousCommunication.Extensions;
@@ -48,8 +49,13 @@ public static class RegisterServices
     /// <param name="services"></param>
     /// <returns></returns>
     public static IServiceCollection AddPersistant(this IServiceCollection services)
-    { 
-        services.AddSingleton<DbContext>();
+    {
+        var connectionString = _configuration["ConnectionStrings:DefaultConnection"];
+
+        services.AddDbContext<ApplicationDbContext>(options =>
+            options.UseSqlServer(connectionString));
+
+        services.AddSingleton<AppContextService>();
 
         services.AddServiceBusSender();
         services.AddSyncCommunication();

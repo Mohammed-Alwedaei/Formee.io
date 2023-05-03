@@ -1,6 +1,8 @@
 ﻿using HealthChecks.UI.Client;
 using Links.API.Middlewares;
+using Links.BusinessLogic.Contexts;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.EntityFrameworkCore;
 
 namespace Links.API.Extensions;
 
@@ -24,6 +26,21 @@ public static class UseServicesExtension
 
         app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
 
+        if (!app.Configuration.GetValue<bool>("MigrateDatabase"))
+        {
+            return app;
+        }
+
+        using var scope = app.Services.CreateScope();
+
+        var services = scope.ServiceProvider;
+
+        var context = services.GetRequiredService<ApplicationDbContext>();
+
+        if (context.Database.GetPendingMigrations().Any())
+        {
+            context.Database.Migrate();
+        }
 
         return app;
     }

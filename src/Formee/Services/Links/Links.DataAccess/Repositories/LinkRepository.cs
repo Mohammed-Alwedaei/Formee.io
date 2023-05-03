@@ -9,9 +9,9 @@ namespace Links.BusinessLogic.Repositories;
 
 public class LinkRepository : ILinkRepository
 {
-    private readonly DbContext _db;
+    private readonly AppContextService _db;
 
-    public LinkRepository(DbContext db)
+    public LinkRepository(AppContextService db)
     {
         _db = db;
     }

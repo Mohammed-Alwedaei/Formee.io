@@ -4,11 +4,11 @@ using Microsoft.Extensions.Configuration;
 
 namespace Links.BusinessLogic.Contexts;
 
-public class DbContext
+public class AppContextService
 {
     private readonly IConfiguration _configuration;
 
-    public DbContext(IConfiguration configuration)
+    public AppContextService(IConfiguration configuration)
     {
         _configuration = configuration;
     }

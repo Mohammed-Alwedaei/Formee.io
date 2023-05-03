@@ -9,9 +9,9 @@ namespace Links.BusinessLogic.Repositories;
 
 public class LinkHitRepository : ILinkHitRepository
 {
-    private readonly DbContext _db;
+    private readonly AppContextService _db;
 
-    public LinkHitRepository(DbContext db)
+    public LinkHitRepository(AppContextService db)
     {
         _db = db;
     }
