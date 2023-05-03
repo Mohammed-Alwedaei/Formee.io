@@ -27,7 +27,7 @@ public partial class Index : IDisposable
     protected override async Task OnParametersSetAsync()
     {
         var today = DateTime.Now;
-        var lastWeek = today.AddDays(-7);
+        var lastWeek = today.AddDays(-14);
 
         AggregatePageData(lastWeek, today);
     }
@@ -41,21 +41,25 @@ public partial class Index : IDisposable
         await NotificationsService.MarkNotificationAsReadAsync(id);
     }
 
-    private void AggregatePageData(DateTime startDate, DateTime endDate)
+    private async Task AggregatePageData(DateTime startDate, DateTime endDate)
     {
         AppState.Identity.StateChanged += async () =>
         {
-            AppState.Containers.StateChanged += async () => await InvokeAsync(StateHasChanged);
-            AppState.Analytics.StateChanged += async () => await InvokeAsync(StateHasChanged);
-
-            await ContainersService.GetAllByUserIdAsync(AppState.Identity.User.Id);
-
-            await AnalyticsService.GetAllHitsInTimePeriodAsync(3, startDate, endDate, "categories");
-
-            await AnalyticsService.GetTopPerformingCategories(3);
-
             await InvokeAsync(StateHasChanged);
         };
+
+        AppState.Containers.StateChanged += async () => await InvokeAsync(StateHasChanged);
+        AppState.Analytics.StateChanged += async () => await InvokeAsync(StateHasChanged);
+
+        await ContainersService.GetAllByUserIdAsync(AppState.Identity.User.Id);
+
+        var randomContainerId = AppState.Containers.ContainersCollection.FirstOrDefault().Id;
+
+        await AnalyticsService.GetAllSitesAsync(randomContainerId);
+
+        await AnalyticsService.GetAllHitsInTimePeriodAsync(3, startDate, endDate, "modeled");
+
+        await AnalyticsService.GetTopPerformingCategories(3);
     }
 
     public void Dispose()

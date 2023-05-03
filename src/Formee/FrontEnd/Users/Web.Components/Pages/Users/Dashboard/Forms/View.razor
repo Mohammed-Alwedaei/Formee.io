@@ -1,0 +1,83 @@
+﻿<FmPageIntro Heading="My Forms">
+    <Breadcrumbs>
+        <BreadcrumbItem IconCss="fa-solid fa-house"
+                        Text="Dashboard"
+                        Url="/" />
+
+        <BreadcrumbItem IconCss="fa-solid fa-envelope"
+                        Text="Forms"
+                        Url=@($"{Routes.Forms}?user_id={UserId}&container_id={ContainerId}&site_id={SiteId}") />
+
+        @if (AppState.Forms.Form is { Id: > 0 })
+        {
+            <BreadcrumbItem IconCss="fa-solid fa-envelope"
+                        Text="@AppState.Forms.Form.Details.Name"
+                        Disabled="true" />
+        }
+        else
+        {
+            <SfSpinner Visible="true" />
+        }
+    </Breadcrumbs>
+</FmPageIntro>
+
+<FmSpacer />
+
+<div class="d-flex justify-content-between align-items-center">
+    <FmTypography Text="Delete Link"
+                  Type="@Typography.LevelTwo" />
+
+    <SfButtonGroup Mode="Syncfusion.Blazor.SplitButtons.SelectionMode.Single">
+        <SfTooltip Position="Syncfusion.Blazor.Popups.Position.BottomCenter"
+                   Content="Edit This Form">
+            <SfButton OnClick="HandleFormEditEvent"
+                      CssClass="e-info"
+                      IconCss="fa-solid fa-pen-to-square">
+                Edit Form
+            </SfButton>
+        </SfTooltip>
+        <SfTooltip Position="Syncfusion.Blazor.Popups.Position.BottomCenter"
+                   Content="Delete This Form">
+            <SfButton OnClick="HandleFormDeleteEvent"
+                      CssClass="e-danger"
+                      IconCss="fa-solid fa-trash-can">
+                Delete Form
+            </SfButton>
+        </SfTooltip>
+    </SfButtonGroup>
+</div>
+
+<FmSpacer />
+
+@if (AppState.Forms.Form is { Id: > 0 })
+{
+    <SfDashboardLayout Columns="4"
+                   CellSpacing="@(new double[] {40, 40})"
+                   AllowResizing="false"
+                   AllowDragging="false"
+                   AllowFloating="false">
+        <DashboardLayoutPanels>
+            <DashboardLayoutPanel Column="0"
+                              Row="0"
+                              SizeX="3"
+                              SizeY="1">
+                <ContentTemplate>
+                    <div class="fm-markdown__display">
+                        @if (!string.IsNullOrEmpty(AppState.Forms.Form.Details.Description))
+                        {
+                            <FmMarkdown Markup="@AppState.Forms.Form.Details.Description" />
+                        }
+                    </div>
+                </ContentTemplate>
+            </DashboardLayoutPanel>
+        </DashboardLayoutPanels>
+    </SfDashboardLayout>
+
+    <FmUpsertFormDialog Form="_formDto"
+                        DialogRevealState="_isVisibleUpsertDialog"
+                        UpsertType="@_upsertType" />
+}
+else
+{
+    <FmLoadingScreen />
+}

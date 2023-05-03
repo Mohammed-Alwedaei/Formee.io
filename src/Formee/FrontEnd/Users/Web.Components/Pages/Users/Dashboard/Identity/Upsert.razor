@@ -1,4 +1,4 @@
-﻿@layout IdentityLayout
+﻿@*@layout IdentityLayout*@
 
 <FmPageIntro Heading="My Profile">
     <Breadcrumbs>
@@ -337,7 +337,7 @@
                                 {
                                     var avatarName = AppState.Identity.User.Avatar.Name;
 
-                                    var avatarUrl = $"https://adoptingmsastorage.blob.core.windows.net/accountavatars/{avatarName}";
+                                    var avatarUrl = $"https://formeestorage.blob.core.windows.net/formeeavatars/{avatarName}";
 
                                     <FmAvatar Url="@avatarUrl"
                                           Classes="e-avatar fm-avatar__profile" />
@@ -347,7 +347,6 @@
                                     <FmAvatar Url="_content/Clients.Web.Components/images/avatar.jpg"
                                           Classes="e-avatar fm-avatar__profile" />
                                 }
-
                             </Child>
                         </GridItem>
                         <GridItem ColumnSize="@GridSize.GridIteLarge">
@@ -377,7 +376,6 @@
         </FmTabItem>
     </FmTabItems>
 </FmTab>
-
 
 <SfDialog Width="600px"
           @bind-Visible="_isVisibleConfirmationDialog"

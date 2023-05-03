@@ -39,7 +39,7 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity>
             }
         }
 
-        return await query.FirstOrDefaultAsync();
+        return await query.AsNoTracking().FirstOrDefaultAsync();
     }
 
     /// <inheritdoc />
@@ -58,7 +58,7 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity>
             }
         }
 
-        return await query.ToListAsync();
+        return await query.AsNoTracking().ToListAsync();
     }
 
     /// <inheritdoc />

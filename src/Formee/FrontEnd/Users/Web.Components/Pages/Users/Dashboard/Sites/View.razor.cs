@@ -1,13 +1,15 @@
-﻿using Client.Web.Utilities.Dtos.Forms;
-using Client.Web.Utilities.Services;
+﻿using Client.Web.Utilities.Services;
 using Microsoft.AspNetCore.Authorization;
 
 namespace Clients.Web.Components.Pages.Users.Dashboard.Sites;
 
-[Route(Routes.ViewSites)]
 [Authorize]
-public partial class View
+[Route(Routes.ViewSites)]
+public partial class View : IDisposable
 {
+    [Inject]
+    public AppStateService AppState { get; set; }
+    
     [Inject]
     public AnalyticsService AnalyticsService { get; set; }
 
@@ -15,35 +17,50 @@ public partial class View
     public FormsService FormsService { get; set; }
 
     [Parameter]
-    [SupplyParameterFromQuery(Name = "siteId")]
+    [SupplyParameterFromQuery(Name = "user_id")]
+    public string UserId { get; set; }
+    
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "container_id")]
+    public string ContainerId { get; set; }
+    
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "site_id")]
     public int SiteId { get; set; }
 
-    private SiteDto _site { get; set; }
-
-    private List<FormDto> _forms { get; set; }
-
-    private List<FormResponseDto> _formResponses { get; set; }
-
-    private List<PageHitDto> _pageHits { get; set; }
-
-    private bool IsFetching { get; set; }
-
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
-        IsFetching = true;
+        await AggregatePageData(SiteId);
+    }
 
-        //_site = await AnalyticsService.GetSiteByIdAsync(SiteId);
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="siteId"></param>
+    /// <returns></returns>
+    private async Task AggregatePageData(int siteId)
+    {
+        AppState.Analytics.StateChanged += async () => 
+            await InvokeAsync(StateHasChanged);
+        
+        AppState.Forms.StateChanged += async () => 
+            await InvokeAsync(StateHasChanged);
 
-        //_forms = await FormsService.GetAllBySiteIdAsync(_site.Id);
+        var today = DateTime.Now;
+        var lastWeek = today.AddDays(-15);
 
-        //_formResponses = await FormsService.GetAllResponsesByFormIdAsync(1);
+        await AnalyticsService.GetSiteByIdAsync(siteId);
 
-        //var startDate = DateTime.Now.AddMonths(-1);
-        //var endDate = DateTime.Now;
+        await FormsService.GetAllBySiteIdAsync(siteId);
 
-        //_pageHits = await AnalyticsService
-        //    .GetAllHitsInTimePeriodAsync(SiteId, startDate, endDate);
+        await AnalyticsService.GetAllHitsInTimePeriodAsync(siteId, 
+            lastWeek, 
+            today, 
+            "modeled");
+    }
 
-        IsFetching = false;
+    public void Dispose()
+    {
+        AppState.Analytics.StateChanged -= StateHasChanged;
     }
 }

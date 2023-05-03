@@ -61,6 +61,9 @@ else
 }
 
 @code {
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthenticationState { get; set; }
+
     private List<UserDto>? _usersCollection;
     private bool _isFetching;
 
@@ -74,7 +77,28 @@ else
 
         _isFetching = true;
 
-        _usersCollection = await GetAllUsersAsync("active");
+        var authState = await AuthenticationState;
+
+        if (authState.User.Identity.IsAuthenticated)
+        {
+
+            const string typeName = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier";
+
+            var authId = authState.User
+                .Claims
+                .FirstOrDefault(c => c.Type == typeName)
+                ?.Value;
+
+            var accessToken = await HttpClient
+                .GetFromJsonAsync<string>($"/gateway/identity/users/{authId}");
+
+            HttpClient.DefaultRequestHeaders.Authorization = new
+                AuthenticationHeaderValue("Bearer", accessToken);
+
+            _usersCollection = await GetAllUsersAsync("active");
+        }
+
+       
 
         _isFetching = false;
     }

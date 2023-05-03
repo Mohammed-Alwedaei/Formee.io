@@ -1,0 +1,143 @@
+﻿@using Client.Web.Utilities.Dtos.Forms
+
+@inject FormsService FormsService
+
+<SfDialog Width="1000px"
+          @bind-Visible="@DialogRevealState"
+          AllowPrerender="true"
+          IsModal="true">
+    <DialogAnimationSettings Effect="DialogEffect.SlideBottom" Duration=400 />
+    <DialogTemplates>
+        <Header>
+            <FmTypography Text="Create new Form"
+                          Type="@Typography.LevelTwo" />
+        </Header>
+        <Content>
+            @if (!_isUpsertOperationProcessing)
+            {
+                <FmTypography Text="You are going to create a new container, please fill the following fields" />
+
+                <FmSpacer />
+
+                <EditForm Model="Form" OnValidSubmit="HandleValidFormSubmit">
+                    <Grid Gap="@GridGap.Large">
+                        <Items>
+                            <GridItem ColumnSize="@GridSize.GridItemMedium">
+                                <Child>
+                                    <div>
+                                        <label for="@nameof(Form.Details.Name)" class="mb-1">
+                                            Name
+                                        </label>
+
+                                        <SfTextBox ID="@nameof(Form.Details.Name)"
+                                               @bind-Value="Form.Details.Name"
+                                               Readonly="_isDeleteOperation" />
+
+                                        <ValidationMessage For="() => Form.Details.Name" />
+                                    </div>
+                                </Child>
+                            </GridItem>
+
+                            <GridItem ColumnSize="@GridSize.GridItemMedium">
+                                <Child>
+                                    <div>
+                                        <label for="@nameof(Form.Details.Description)" class="mb-1">
+                                            Description
+                                        </label>
+
+                                        <SfTextBox ID="@nameof(Form.Details.Description)"
+                                               @bind-Value="Form.Details.Description"
+                                               Readonly="_isDeleteOperation" />
+
+                                        <ValidationMessage For="() => Form.Details.Description" />
+                                    </div>
+                                </Child>
+                            </GridItem>
+
+                            <GridItem ColumnSize="@GridSize.GridItemMedium">
+                                <Child>
+                                    @switch (UpsertType)
+                                    {
+                                        case "create":
+                                            <SfButton IconCss="fa-solid fa-plus"
+                                                      IsPrimary="@true">
+                                                Create
+                                            </SfButton>
+                                            break;
+                                        case "update":
+                                            <SfButton IconCss="fa-solid fa-pen-to-square"
+                                                      CssClass="e-info">
+                                                Edit
+                                            </SfButton>
+                                            break;
+                                        default:
+                                            <SfButton IconCss="fa-solid fa-trash-can"
+                                                      CssClass="e-danger">
+                                                Delete
+                                            </SfButton>
+                                            break;
+                                    }
+                                </Child>
+                            </GridItem>
+                        </Items>
+                    </Grid>
+                </EditForm>
+            }
+            else
+            {
+                <SfSpinner Visible="true" />
+            }
+        </Content>
+    </DialogTemplates>
+    <DialogButtons>
+        <DialogButton Content="Cancel"
+                      IconCss="fa-solid fa-xmark"
+                      IconPosition="IconPosition.Right"
+                      Disabled="_isUpsertOperationProcessing"
+                      OnClick="HandleUpsertDialogRevealEvent" />
+    </DialogButtons>
+</SfDialog>
+
+@code {
+    [Parameter]
+    public FormDto Form { get; set; }
+
+    [Parameter]
+    public bool DialogRevealState { get; set; }
+
+    [Parameter]
+    public string UpsertType { get; set; }
+
+    private bool _isDeleteOperation = false;
+
+    private bool _isUpsertOperationProcessing = false;
+
+    protected override void OnParametersSet()
+    {
+        if (UpsertType == "delete")
+            _isDeleteOperation = true;
+    }
+
+    private void HandleUpsertDialogRevealEvent() =>
+    DialogRevealState = !DialogRevealState;
+
+    private async Task HandleValidFormSubmit()
+    {
+        _isUpsertOperationProcessing = true;
+
+        switch (UpsertType)
+        {
+            case "create":
+                await FormsService.CreateAsync(Form);
+                break;
+            case "update":
+                await FormsService.UpdateAsync(Form);
+                break;
+            case "delete":
+                await FormsService.DeleteAsync(Form.Id, Form.SiteId);
+                break;
+        }
+
+        _isUpsertOperationProcessing = false;
+    }
+}

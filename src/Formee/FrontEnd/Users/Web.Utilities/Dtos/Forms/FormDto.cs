@@ -7,6 +7,9 @@ public class FormDto
     public int Id { get; set; }
 
     [Required]
+    public int SiteId { get; set; }
+
+    [Required]
     public Guid UserId { get; set; }
 
     [Required]

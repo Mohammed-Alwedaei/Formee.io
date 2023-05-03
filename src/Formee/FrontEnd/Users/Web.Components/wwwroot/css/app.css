@@ -211,24 +211,6 @@ h1:focus {
     font-weight: 500;
 }
 
-.fm-markdown__display > * {
-    margin-bottom: 1rem;
-}
-
-.fm-markdown__display h1 {
-    font-size: 1.1rem;
-}
-
-.fm-markdown__display ol,
-.fm-markdown__display ul {
-    padding-left: 2rem;
-}
-
-.fm-markdown__display p,
-.fm-markdown__display li {
-    font-size: 1.1rem;
-}
-
 .fm-link__small {
     font-size: 1rem;
     color: #bebebe;
@@ -287,4 +269,72 @@ h1:focus {
     height: 200px;
     width: 200px;
     border-radius: 10px;
+}
+
+
+.markdown-renderer__wrapper {
+    color: var(--color-text);
+}
+
+.markdown-renderer__wrapper h1 {
+    font-size: 1.95rem;
+}
+
+.markdown-renderer__wrapper h2 {
+    font-size: 1.9rem;
+}
+
+.markdown-renderer__wrapper h3 {
+    font-size: 1.8rem;
+}
+
+.markdown-renderer__wrapper h4 {
+    font-size: 1.7rem;
+}
+
+.markdown-renderer__wrapper h5 {
+    font-size: 1.6rem;
+}
+
+.markdown-renderer__wrapper h6 {
+    font-size: 1.5;
+}
+
+.markdown-renderer__wrapper p {
+    font-size: 1.1rem;
+    font-weight: 400;
+}
+
+.markdown-renderer__wrapper ol,
+.markdown-renderer__wrapper ul {
+    padding-left: 3rem
+}
+
+.markdown-renderer__wrapper li {
+    font-size: 1.1rem;
+}
+
+.markdown-renderer__wrapper h1,
+.markdown-renderer__wrapper h2,
+.markdown-renderer__wrapper h3 {
+    margin-bottom: 2rem;
+}
+
+.markdown-renderer__wrapper h4,
+.markdown-renderer__wrapper h5,
+.markdown-renderer__wrapper h6,
+.markdown-renderer__wrapper p,
+.markdown-renderer__wrapper ol,
+.markdown-renderer__wrapper {
+    margin-bottom: 1.2rem;
+}
+
+.markdown-renderer__wrapper li:not(last-of-type) {
+    margin-bottom: 0.5rem;
+}
+
+
+.e-avatar-large {
+    width: 100px !important;
+    height: 100px !important;
 }

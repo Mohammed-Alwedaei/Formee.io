@@ -14,7 +14,7 @@
 <FmSpacer />
 
 @if (AppState.Containers.ContainersCollection is not null &&
-   AppState.Containers.ContainersCollection.Any())
+  AppState.Containers.ContainersCollection.Any())
 {
     <FmTab OnTabChange="HandleContainerChangeEvent">
         <FmTabItems>
@@ -29,7 +29,6 @@
                     </Header>
 
                     <Body>
-
                         <FmSpacer />
 
                         <div class="d-flex justify-content-between align-items-center">
@@ -37,9 +36,9 @@
                                   Type="@Typography.LevelTwo" />
 
                             <SfTooltip Position="Syncfusion.Blazor.Popups.Position.BottomCenter"
-                                       Content="Refresh">
+                               Content="Refresh">
                                 <SfButton OnClick="() => HandleNewContainerClick(container.Id)"
-                                          IconCss="fa-solid fa-plus">
+                                  IconCss="fa-solid fa-plus">
                                     New Link
                                 </SfButton>
                             </SfTooltip>
@@ -57,12 +56,12 @@
                                     <Header>
                                         <div class="d-flex justify-content-between align-items-center">
                                             <FmTypography Text="Analytics"
-                                                          Type="@Typography.LevelTwo" />
-                                            
+                                                  Type="@Typography.LevelTwo" />
+
                                             <SfTooltip Position="Syncfusion.Blazor.Popups.Position.BottomCenter"
-                                                       Content="Refresh">
-                                                <SfButton IconCss="fa-solid fa-arrows-rotate" 
-                                                          OnClick="() => HandleLinkHitsRefresh(container.Id)" />
+                                               Content="Refresh">
+                                                <SfButton IconCss="fa-solid fa-arrows-rotate"
+                                                  OnClick="() => HandleLinkHitsRefresh(container.Id)" />
                                             </SfTooltip>
                                         </div>
                                     </Header>
@@ -80,9 +79,9 @@
 
                                                 <ChartSeriesCollection>
                                                     <ChartSeries DataSource="AppState.Links.LinkHitsInContainerCollection"
-                                                                 XName="Date"
-                                                                 YName="Count"
-                                                                 Type="ChartSeriesType.Spline">
+                                                     XName="Date"
+                                                     YName="Count"
+                                                     Type="ChartSeriesType.Spline">
                                                         <ChartMarker Visible="true" />
                                                     </ChartSeries>
                                                 </ChartSeriesCollection>
@@ -118,17 +117,17 @@
 
                                             foreach (var link in AppState.Links.LinksCollection)
                                             {
-                                                <FmLinkItem Link="link" OnClick="HandleLinkItemClick"/>
+                                                <FmLinkItem Link="link" OnClick="HandleLinkItemClick" />
 
                                                 if (link != lastItem)
                                                 {
-                                                    <FmSpacer/>
+                                                    <FmSpacer />
                                                 }
                                             }
                                         }
                                         else
                                         {
-                                            <FmNotFound Message="There are no links to display"/>
+                                            <FmNotFound Message="There are no links to display" />
                                         }
                                     </ContentTemplate>
                                 </DashboardLayoutPanel>
@@ -137,7 +136,7 @@
                                     <Header>
                                         <div class="d-flex justify-content-between align-items-center">
                                             <FmTypography Text="Top Performing Links"
-                                                          Type="@Typography.LevelTwo" />
+                                                  Type="@Typography.LevelTwo" />
 
                                             <SfTooltip Position="Syncfusion.Blazor.Popups.Position.BottomCenter"
                                                Content="Refresh">
@@ -151,24 +150,24 @@
                                         @if (AppState.Links.LinkHitsInContainerCollection is { Count: > 0 })
                                         {
                                             <SfChart Width="100%"
-                                                     Title="Created Links"
-                                                     Palettes="@_palettes">
+                                         Title="Created Links"
+                                         Palettes="@_palettes">
                                                 <ChartPrimaryXAxis ValueType="Syncfusion.Blazor.Charts.ValueType.DateTime"
-                                                                   IntervalType="IntervalType.Days"/>
+                                                       IntervalType="IntervalType.Days" />
 
-                                                <ChartTooltipSettings Enable="true"/>
+                                                <ChartTooltipSettings Enable="true" />
 
                                                 <ChartSeriesCollection>
                                                     <ChartSeries DataSource="AppState.Links.LinkHitsInContainerCollection"
-                                                                 XName="Date"
-                                                                 YName="Count"
-                                                                 Type="ChartSeriesType.Column"/>
+                                                     XName="Date"
+                                                     YName="Count"
+                                                     Type="ChartSeriesType.Column" />
                                                 </ChartSeriesCollection>
                                             </SfChart>
                                         }
                                         else
                                         {
-                                            <FmNotFound Message="There are no data to display"/>
+                                            <FmNotFound Message="There are no data to display" />
                                         }
                                     </ContentTemplate>
                                 </DashboardLayoutPanel>

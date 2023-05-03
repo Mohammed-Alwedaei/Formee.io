@@ -4,7 +4,7 @@
 @inject HttpClient HttpClient
 
 <div class="d-flex justify-content-between align-items-center">
-    <h3>All Active Subscriptions</h3>
+    <h3>All Active Coupons</h3>
 
     <a class="btn btn-primary" href="/coupons/upsert?coupon_id=0&upsert_type=create">
         Create
@@ -72,6 +72,13 @@ else
 }
 
 @code {
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "auth_id")]
+    public string AuthId { get; set; }
+
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthenticationState { get; set; }
+
     private List<CouponDto>? _couponsCollection;
     private bool _isFetching;
 
@@ -85,7 +92,33 @@ else
 
         HttpClient.BaseAddress = baseUrl;
 
-        await GetAllCouponsAsync();
+        var authId = "";
+
+        var authState = await AuthenticationState;
+
+        if (authState.User.Identity.IsAuthenticated)
+        {
+            if (string.IsNullOrEmpty(AuthId))
+            {
+                const string typeName = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier";
+
+                authId = authState.User
+                    .Claims
+                    .FirstOrDefault(c => c.Type == typeName)
+                    ?.Value;
+
+                //var route = $"{NavigationManager.BaseUri}?auth_id={authId}";
+                //NavigationManager.NavigateTo(route);
+            }
+
+            var accessToken = await HttpClient
+                .GetFromJsonAsync<string>($"/gateway/identity/users/{authId}");
+
+            HttpClient.DefaultRequestHeaders.Authorization = new
+                AuthenticationHeaderValue("Bearer", accessToken);
+
+            await GetAllCouponsAsync();
+        }
     }
 
     /// <summary>

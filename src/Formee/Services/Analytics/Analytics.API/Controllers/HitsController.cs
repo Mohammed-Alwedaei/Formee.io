@@ -44,52 +44,63 @@ public class HitsController : ControllerBase
 
     [HttpGet("all/{siteId:int}/{startDate:DateTime}/{endDate:DateTime}")]
     public async Task<IActionResult> GetAllInTimePeriod
-        (int siteId, 
-            DateTime startDate, 
-            DateTime endDate, 
-            [FromQuery] string filter)
+        (int siteId,
+            DateTime startDate,
+            DateTime endDate,
+            [FromQuery] string filter = "sites")
     {
         _logger.LogInformation("GET: request at /api/hits/all/{siteId}/{startDate}/{endDate} at {datetime}",
             siteId, startDate, endDate, DateTime.Now);
 
-        List<PageHitDto> result = new();
-
         if (string.Equals(filter, "sites"))
         {
-            result = await _hitRepository
+            var result = await _hitRepository
                 .GetAllByDateAsync(siteId, startDate, endDate, x => x.Site);
+
+            return result is { Count: > 0 } ? Ok(result) : NotFound();
         }
 
         if (string.Equals(filter, "categories"))
         {
-            result = await _hitRepository
+            var result = await _hitRepository
                 .GetAllByDateAsync(siteId, startDate, endDate, x => x.Category);
+
+            return result is { Count: > 0 } ? Ok(result) : NotFound();
         }
 
         if (string.Equals(filter, "all"))
         {
-            result = await _hitRepository
-                .GetAllByDateAsync(siteId, 
-                    startDate, 
+            var result = await _hitRepository
+                .GetAllByDateAsync(siteId,
+                    startDate,
                     endDate,
                     x => x.Site,
                     x => x.Category);
+
+            return result is { Count: > 0 } ? Ok(result) : NotFound();
         }
 
         if (string.Equals(filter, "none"))
         {
-            result = await _hitRepository
+            var result = await _hitRepository
                 .GetAllByDateAsync(siteId,
                     startDate,
                     endDate);
+
+            return result is { Count: > 0 } ? Ok(result) : NotFound();
         }
 
-        if (result.Count is 0)
+        if (string.Equals(filter, "modeled"))
         {
-            return NotFound();
+            var formatted = await _hitRepository
+                .GetAllByDateAndFormatAsync(siteId,
+                    startDate,
+                    endDate);
+
+            return formatted is { Count: > 0 } ? Ok(formatted) : NotFound();
         }
 
-        return Ok(result);
+        return BadRequest();
     }
 
     [HttpGet("all/{siteId:int}")]
@@ -111,17 +122,16 @@ public class HitsController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateHit(CreatePageHitDto hit)
     {
-        _logger.LogInformation("POST: request at /api/hits at {datetime}",
-            DateTime.Now);
+        _logger.LogInformation("POST: request at /api/hits at {datetime}", DateTime.Now);
 
         var hasActiveSession = await _sessionRepository
             .GetAsync(hit.DeviceId);
 
-        //If the user doesn't have active session
+        //If the user doesn't has an active session
         //Create operation
         if (hasActiveSession.Id == 0)
         {
-            //allow the hit to be created
+            //allow the hit to be initiated
             var siteFromDb = await _siteRepository
                 .GetSiteByIdAsync(hit.SiteId);
 
@@ -156,27 +166,20 @@ public class HitsController : ControllerBase
         if (DateTime.Compare(timeInLast10Minutes, sessionLastHit) > 0)
         {
             //allow the hit to be created
-            var siteFromDb = await _siteRepository
-                .GetSiteByIdAsync(hit.SiteId);
+            var siteFromDb = await _siteRepository.GetSiteByIdAsync(hit.SiteId);
 
             var requestDomain = HttpContext.Request.Host.Host;
 
-            if (requestDomain != siteFromDb.Domain)
-            {
-                return BadRequest();
-            }
+            if (requestDomain != siteFromDb.Domain) return BadRequest();
 
             var result = await _hitRepository.CreateAsync(hit);
 
-            if (result is null)
-            {
-                return BadRequest();
-            }
+            if (result is null) return BadRequest();
 
             await _sessionRepository.UpdateAsync(hasActiveSession);
 
             return Ok(result);
-        } // in case the session is not valid
+        }
 
         //Reject the hit since the session is still active
         return BadRequest();

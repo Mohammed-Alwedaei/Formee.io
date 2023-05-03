@@ -17,4 +17,6 @@ public class AppStateService
     public readonly NotificationsState Notifications = new();
 
     public readonly SubscriptionsState Subscriptions = new();
+
+    public readonly FormsState Forms = new();
 }

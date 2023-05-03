@@ -6,9 +6,11 @@ services:
     build:
       context: .
       dockerfile: "./FrontEnd/Users/Client.Web/Dockerfile"
-    profiles: [ "client" ]
+    profiles: [ "client", "debug" ]
     expose:
       - "80"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
     ports:
       - "8080:80"
     depends_on:
@@ -19,9 +21,11 @@ services:
     build:
       context: .
       dockerfile: "./FrontEnd/Admins/Admins.Web/Dockerfile"
-    profiles: [ "client" ]
+    profiles: [ "client", "debug" ]
     expose:
       - "80"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
     ports:
       - "8081:80"
     depends_on:
@@ -32,7 +36,7 @@ services:
     build: 
       context: .
       dockerfile: ./Gateways/Gateway.Core/Dockerfile
-    profiles: [ "service", "gateway" ]
+    profiles: [ "service", "gateway", "debug" ]
     expose:
       - "80"
     ports:
@@ -54,7 +58,7 @@ services:
     build: 
       context: .
       dockerfile: ./Services/Analytics/Analytics.API/Dockerfile
-    profiles: [ "service" ]
+    profiles: [ "service", "debug" ]
     expose:
       - "80"
     ports:
@@ -62,16 +66,17 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       ConnectionStrings__DefaultConnection: Server=host.docker.internal, 1433;Database=Formee.Analytics;User Id=Admin;Password=Admin@123123;integrated security=false;TrustServerCertificate=True
-      ServiceBus__ConnectionString: Endpoint=sb://formee.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=+prGrnIC0RwHSKHF3zJ/5HW35R08KH4wG+ASbPIkqlk=
-      ServiceBus__HistoryTopic: topic-history
-      ServiceBus__NotificationsTopic: topic-notifications
+      USER_SECRETS_ID: b96bbd99-d256-47f4-91f5-fc6f970cce93
+      Services__Subscriptions: http://host.docker.internal:5007
+    volumes:
+      - $APPDATA/Microsoft/UserSecrets/b96bbd99-d256-47f4-91f5-fc6f970cce93:/root/.microsoft/usersecrets/b96bbd99-d256-47f4-91f5-fc6f970cce93
 
   containers.service:
     container_name: containers.service
     build:
       context: .
       dockerfile: ./Services/Containers/API/Dockerfile
-    profiles: [ "service" ]
+    profiles: [ "service", "debug" ]
     expose:
       - "80"
     ports:
@@ -82,17 +87,17 @@ services:
       ContainersDatabase__ConnectionString: mongodb://host.docker.internal:27017/
       ContainersDatabase__DatabaseName: ContainersDatabase
       ContainersDatabase__CollectionName: Containers
-      ServiceBus__ConnectionString: Endpoint=sb://formee.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=+prGrnIC0RwHSKHF3zJ/5HW35R08KH4wG+ASbPIkqlk=
-      ServiceBus__History: topic-history
-      ServiceBus__Notifications: topic-notifications
-      ServiceBus__NotificationsSubscription: notifications
+      Services__Subscriptions: http://host.docker.internal:5007
+      USER_SECRETS_ID: f4a574a5-b519-48fb-95f8-ec4b2052e819
+    volumes:
+      - $APPDATA/Microsoft/UserSecrets/f4a574a5-b519-48fb-95f8-ec4b2052e819:/root/.microsoft/usersecrets/f4a574a5-b519-48fb-95f8-ec4b2052e819
 
   forms.service:
     container_name: forms.service
     build:
       context: .
       dockerfile: ./Services/Forms/Presentation/Dockerfile
-    profiles: [ "service" ]
+    profiles: [ "service", "debug" ]
     expose:
       - "80"
     ports:
@@ -100,13 +105,17 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: development
       ConnectionStrings__DefaultConnection: Server=host.docker.internal, 1433;Database=Formee.Forms;User Id=Admin;Password=Admin@123123;integrated security=false;TrustServerCertificate=True
+      USER_SECRETS_ID: a47c8ec2-628b-4a74-ad10-48c90edfe538
+      Services__Subscriptions: http://host.docker.internal:5007
+    volumes:
+      - $APPDATA/Microsoft/UserSecrets/a47c8ec2-628b-4a74-ad10-48c90edfe538:/root/.microsoft/usersecrets/a47c8ec2-628b-4a74-ad10-48c90edfe538
   
   identity.service:
     container_name: identity.service
     build:
       context: .
       dockerfile: ./Services/Identity/Identity.API/Dockerfile
-    profiles: [ "service" ]
+    profiles: [ "service", "debug" ]
     expose:
       - "80"
     ports:
@@ -117,13 +126,16 @@ services:
       AzureStorage__ConnectionString: DefaultEndpointsProtocol=https;AccountName=adoptingmsastorage;AccountKey=QNiF+oq3F+EpswAiImlnQINuLurflfMI/EgC+SvqHv/OW9yLJ6+42hm4/W+DipcLK+qpqDk9qHpN+AStIzFf1g==;EndpointSuffix=core.windows.net
       AzureStorage__ContainerName: accountavatars
       Services__Subscriptions: http://host.docker.internal:5007
+      USER_SECRETS_ID: 61be48a8-f4e2-492a-90dd-82977071d35a
+    volumes:
+      - $APPDATA/Microsoft/UserSecrets/61be48a8-f4e2-492a-90dd-82977071d35a:/root/.microsoft/usersecrets/61be48a8-f4e2-492a-90dd-82977071d35a
 
   links.service:
     container_name: links.service
     build:
       context: .
       dockerfile: ./Services/Links/Links.API/Dockerfile
-    profiles: [ "service" ]
+    profiles: [ "service", "debug" ]
     expose:
       - "80"
     ports:
@@ -131,13 +143,17 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: development
       ConnectionStrings__DefaultConnection: Server=host.docker.internal, 1433;Database=Formee.Links;User Id=Admin;Password=Admin@123123;integrated security=false;TrustServerCertificate=True
+      USER_SECRETS_ID: df198d92-929d-4212-a283-7f1da49c50ac
+      Services__Subscriptions: http://host.docker.internal:5007
+    volumes:
+      - $APPDATA/Microsoft/UserSecrets/df198d92-929d-4212-a283-7f1da49c50ac:/root/.microsoft/usersecrets/df198d92-929d-4212-a283-7f1da49c50ac
 
   notifications.service:
     container_name: notifications.service
     build:
       context: .
       dockerfile: ./Services/Notifications/Presentation/Dockerfile
-    profiles: [ "service" ]
+    profiles: [ "service", "debug" ]
     expose:
       - "80"
     ports:
@@ -145,18 +161,16 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: development
       ConnectionStrings__DefaultConnection: Server=host.docker.internal, 1433;Database=Formee.Notifications;User Id=Admin;Password=Admin@123123;integrated security=false;TrustServerCertificate=True
-      ServiceBus__ConnectionString: Endpoint=sb://formee.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=+prGrnIC0RwHSKHF3zJ/5HW35R08KH4wG+ASbPIkqlk=
-      ServiceBus__History: topic-history
-      ServiceBus__Notifications: topic-notifications
-      ServiceBus__NotificationsSubscription: notifications
-      ServiceBus__HistorySubscription: history
+      USER_SECRETS_ID: 113c5cdb-45da-4c53-9aaa-445f716e33b3
+    volumes:
+      - $APPDATA/Microsoft/UserSecrets/113c5cdb-45da-4c53-9aaa-445f716e33b3:/root/.microsoft/usersecrets/113c5cdb-45da-4c53-9aaa-445f716e33b3
 
   subscriptions.service:
     container_name: subscriptions.service
     build:
       context: .
       dockerfile: ./Services/Subscriptions/Subscriptions.API/Dockerfile
-    profiles: [ "service" ]
+    profiles: [ "service", "debug" ]
     expose:
       - "80"
     ports:
@@ -164,24 +178,27 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: development
       ConnectionStrings__DefaultConnection: Server=host.docker.internal, 1433;Database=Formee.Subscriptions;User Id=Admin;Password=Admin@123123;integrated security=false;TrustServerCertificate=True
+      USER_SECRETS_ID: f278b404-f12b-4d75-b620-1c67a3928c36
+    volumes:
+      - $APPDATA/Microsoft/UserSecrets/f278b404-f12b-4d75-b620-1c67a3928c36:/root/.microsoft/usersecrets/f278b404-f12b-4d75-b620-1c67a3928c36
       
   history.service:
     container_name: history.service
     build:
       context: .
       dockerfile: ./Services/History/Dockerfile
-    profiles: [ "service" ]
+    profiles: [ "service", "debug" ]
     expose: 
       - "3000"
     ports:
       - "5008:3000"
     environment:
-      AZURE_SERVICE_BUS: Endpoint=sb://formee.servicebus.windows.net/;SharedAccessKeyName=SharedAccessPolicy;SharedAccessKey=2zjgyBu0KGgdOiVx8rHy5GPnHBNvKoR9d+ASbDEu2fw=;EntityPath=topic-history
       MONGO_DB_HISTORY: mongodb://host.docker.internal/history
+      AZURE_SERVICE_BUS: Endpoint=sb://formee.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=i1Th61VWEHrL1y/hTosam+dO0G6O/klaC+ASbBMzEL4=
 
   monitoring.service:
     container_name: monitoring.service
-    profiles: [ "client" ]
+    profiles: [ "client", "debug" ]
     build:
       context: .
       dockerfile: ./Services/Monitoring/Monitoring/Dockerfile

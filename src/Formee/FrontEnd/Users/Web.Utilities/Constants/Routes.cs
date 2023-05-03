@@ -14,6 +14,10 @@ public static class Routes
     public const string ViewSites = "/dashboard/sites/view";
     public const string UpsertSites = "/dashboard/sites/upsert";
 
+    //Forms pages routes
+    public const string Forms = "/dashboard/forms";
+    public const string ViewForm = "/dashboard/forms/view";
+
     public const string Links = "/dashboard/links";
 
     public const string LinksView = "/dashboard/links/view";

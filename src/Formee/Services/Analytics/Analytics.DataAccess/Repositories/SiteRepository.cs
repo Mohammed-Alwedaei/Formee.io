@@ -15,7 +15,7 @@ public class SiteRepository : ISiteRepository
     {
         return await _db.Sites
             .AsNoTracking()
-            .FirstOrDefaultAsync(s => s.Id == id 
+            .FirstOrDefaultAsync(s => s.Id == id
                                       && s.IsDeleted == false);
     }
 
@@ -23,16 +23,16 @@ public class SiteRepository : ISiteRepository
     {
         return await _db.Sites
             .AsNoTracking()
-            .Where(s => s.ContainerId == containerId 
+            .Where(s => s.ContainerId == containerId
                         && s.IsDeleted == false)
             .ToListAsync();
     }
-    
+
     public async Task<List<SiteEntity>> GetAllSitesByUserIdAsync(Guid userId)
     {
         return await _db.Sites
             .AsNoTracking()
-            .Where(s => s.UserId == userId 
+            .Where(s => s.UserId == userId
                         && s.IsDeleted == false)
             .ToListAsync();
     }

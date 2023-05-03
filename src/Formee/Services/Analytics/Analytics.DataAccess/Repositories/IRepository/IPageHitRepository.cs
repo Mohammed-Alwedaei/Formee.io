@@ -16,5 +16,8 @@ public interface IPageHitRepository
             DateTime endDate,
             params Expression<Func<PageHitEntity, object>>[] includes);
 
+    Task<List<DateChartDto>> GetAllByDateAndFormatAsync
+        (int siteId, DateTime startDate, DateTime endDate);
+
     Task<PageHitDto> CreateAsync(CreatePageHitDto hit);
 }

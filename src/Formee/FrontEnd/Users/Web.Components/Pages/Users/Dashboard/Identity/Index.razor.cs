@@ -34,6 +34,8 @@ public partial class Index : IDisposable
         var subscriptionId = AppState.Identity.User.SubscriptionId;
 
         await AggregatePageData(Guid.Parse(UserId), subscriptionId);
+
+        var userProfile = "# Hi Im Mohammed Alwedaei\r\n## I like\r\n- Software design and development\r\n- Drinking Coffee \r\n- Writing my daily routine\r\n- Help people learn more\r\n- Watch movies\r\n## Im currently doing my Bachelors degree in\r\n1. Multimedia Systems\r\n   - Web design and programming \r\n   - Multimedia tools\r\n   - Software architecture principles\r\n## Im currently intrested in:\r\n1. Software Architecture and design patterns\r\n   - Software design patterns\r\n   - Software development principles and rules\r\n   - Microservices Architecture";
     }
 
     private async Task AggregatePageData(Guid userId, int subcriptionId)

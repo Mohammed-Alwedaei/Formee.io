@@ -6,7 +6,7 @@ AS
 BEGIN
 	UPDATE dbo.[Link]
 	SET IsDeleted = 1, DeletedDate = @DeletedDate
-	WHERE ContainerId = @ContainerId AND IsDeleted != 1 AND DeletedDate IS NULL;
+	WHERE ContainerId = @ContainerId AND IsDeleted != 1;
 
 	SELECT [L].[Id], [L].[ContainerId], [L].[UserId], [L].[LinksDetailsId], 
 	[L].[OriginalUrl], [L].[TargetUrl], [L].[IsDeleted], [L].[DeletedDate], [L].[CreatedDate], 
@@ -15,6 +15,5 @@ BEGIN
 	INNER JOIN dbo.[LinkDetails] as D
 	ON (L.LinksDetailsId = D.Id)
 	WHERE ContainerId = @ContainerId 
-	AND IsDeleted != 1
-	AND DeletedDate != @DeletedDate;
+	AND DeletedDate = @DeletedDate;
 END

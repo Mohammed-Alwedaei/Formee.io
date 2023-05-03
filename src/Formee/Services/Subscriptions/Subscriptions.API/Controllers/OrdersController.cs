@@ -30,7 +30,7 @@ public class OrdersController : ControllerBase
 
         var result = await _orderRepository.GetByIdAsync(id);
 
-        if (result is OrderHeaderDto)
+        if (result is not { Id: > 0 })
         {
             return NotFound();
         }
@@ -38,15 +38,14 @@ public class OrdersController : ControllerBase
         return Ok(result);
     }
 
-    [HttpGet("all/{adminId:int}")]
-    public async Task<IActionResult> GetAllOrdersByUserId(int adminId)
+    [HttpGet("all/{userId:int}")]
+    public async Task<IActionResult> GetAllOrdersByUserId(int userId)
     {
-        _logger.LogInformation("GET: request at /api/orders/all/{adminId} at {datetime}",
-            adminId,
+        _logger.LogInformation("GET: request at /api/orders/all/{userId} at {datetime}",
+            userId,
             DateTime.Now);
 
-        var result = await _orderRepository
-            .GetAllByUserIdAsync(adminId);
+        var result = await _orderRepository.GetAllByUserIdAsync(userId);
 
         if (!result.Any())
         {
@@ -63,11 +62,6 @@ public class OrdersController : ControllerBase
         _logger.LogInformation("POST: request at /api/orders/{userId} at {datetime}",
             userId,
             DateTime.Now);
-
-        if (!ModelState.IsValid)
-        {
-            return BadRequest();
-        }
 
         var result = await _orderRepository
             .CreateAsync(orderDetails, userId);

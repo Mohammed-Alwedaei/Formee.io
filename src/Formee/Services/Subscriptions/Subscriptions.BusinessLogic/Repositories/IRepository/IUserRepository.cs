@@ -6,11 +6,7 @@ public interface IUserRepository
 {
     Task<List<UserDto>> GetAllAsync();
 
-    Task<List<UserDto>> GetAllSubscribedAsync();
-    
     Task<UserSubscriptionDto> GetSubscriptionByIdAsync(Guid userId);
-
-    Task<List<UserDto>> GetAllInASubscriptionAsync(int subscriptionId);
 
     Task<UserDto> CreateAsync(UserDto user);
 

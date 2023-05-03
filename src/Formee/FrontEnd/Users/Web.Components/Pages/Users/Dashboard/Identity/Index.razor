@@ -50,15 +50,15 @@
                                     {
                                         var avatarName = AppState.Identity.User.Avatar.Name;
 
-                                        var avatarUrl = $"https://adoptingmsastorage.blob.core.windows.net/accountavatars/{avatarName}";
+                                        var avatarUrl = $"https://formeestorage.blob.core.windows.net/formeeavatars/{avatarName}";
 
                                         <FmAvatar Url="@avatarUrl"
-                                          Classes="e-avatar fm-avatar__profile" />
+                                                  Classes="e-avatar fm-avatar__profile" />
                                     }
                                     else
                                     {
                                         <FmAvatar Url="_content/Clients.Web.Components/images/avatar.jpg"
-                                          Classes="e-avatar fm-avatar__profile" />
+                                                  Classes="e-avatar fm-avatar__profile" />
                                     }
 
                                 </Child>
@@ -119,8 +119,7 @@
                               Type="@Typography.LevelTwo" />
                 </Header>
                 <ContentTemplate>
-                    <FmTypography Text="A great bio"
-                              Type="@Typography.LevelTwo" />
+                    <FmMarkdown Markup="@AppState.Identity.User.Bio" />
                 </ContentTemplate>
             </DashboardLayoutPanel>
 

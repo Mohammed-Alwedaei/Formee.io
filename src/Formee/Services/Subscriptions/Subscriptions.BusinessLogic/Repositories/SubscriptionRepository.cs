@@ -86,7 +86,7 @@ public class SubscriptionRepository : ISubscriptionRepository
 
         await _context.SaveChangesAsync();
 
-        return _mapper.Map<SubscriptionDto>(updatedSubscription)
+        return _mapper.Map<SubscriptionDto>(updatedSubscription.Entity)
                        ?? new SubscriptionDto();
     }
 
@@ -128,7 +128,7 @@ public class SubscriptionRepository : ISubscriptionRepository
     public async Task<UserSubscriptionModel> RemoveSubscriptionFromUserAsync(int userId)
     {
         var userSubscriptionFromDb = await _context.UserSubscriptions
-            .FirstOrDefaultAsync(u => u.Id == userId);
+            .FirstOrDefaultAsync(u => u.UserId == userId);
 
         if (userSubscriptionFromDb is null)
         {

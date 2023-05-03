@@ -4,7 +4,7 @@
 @inject HttpClient HttpClient
 
 <div class="d-flex justify-content-between align-items-center">
-    <h3>All Active coupons</h3>
+    <h3>All Active Subscriptions</h3>
 
     <a class="btn btn-primary" href="/subscriptions/upsert?subscription_id=0&upsert_type=create">
         Create
@@ -71,6 +71,9 @@ else
 }
 
 @code {
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthenticationState { get; set; }
+
     private List<SubscriptionDto>? _subscriptionsCollection;
     private bool _isFetching;
 
@@ -84,7 +87,27 @@ else
 
         HttpClient.BaseAddress = baseUrl;
 
-        await GetAllSubscriptionsAsync();
+        var authState = await AuthenticationState;
+
+        if (authState.User.Identity.IsAuthenticated)
+        {
+
+            const string typeName = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier";
+
+            var authId = authState.User
+                .Claims
+                .FirstOrDefault(c => c.Type == typeName)
+                ?.Value;
+
+            var accessToken = await HttpClient
+                .GetFromJsonAsync<string>($"/gateway/identity/users/{authId}");
+
+            HttpClient.DefaultRequestHeaders.Authorization = new
+                AuthenticationHeaderValue("Bearer", accessToken);
+
+            await GetAllSubscriptionsAsync();
+        }
+        
     }
 
     /// <summary>
@@ -96,7 +119,7 @@ else
         _isFetching = true;
 
         var response = await HttpClient
-            .GetAsync("/gateway/coupons/all");
+            .GetAsync("/gateway/subscriptions/all");
 
         if (response.IsSuccessStatusCode)
             _subscriptionsCollection = await response.Content

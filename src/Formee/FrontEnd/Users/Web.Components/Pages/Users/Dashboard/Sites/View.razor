@@ -1,144 +1,150 @@
-﻿<FmLoader>
-    <Content>
-        <FmPageIntro Heading="@_site.Name">
-            <Breadcrumbs>
-                <BreadcrumbItem IconCss="fa-solid fa-house"
-                                Text="Dashboard"
-                                Url="/" />
+﻿@if (AppState.Analytics.Site is { Id: > 0 })
+{
+    <FmPageIntro Heading="@AppState.Analytics.Site.Name">
+        <Breadcrumbs>
+            <BreadcrumbItem IconCss="fa-solid fa-house"
+                        Text="Dashboard"
+                        Url="/" />
 
-                <BreadcrumbItem IconCss="fa-solid fa-table"
-                                Text="Containers"
-                                Url="/containers" />
+            <BreadcrumbItem IconCss="fa-solid fa-window-restore"
+                        Text="Sites"
+                        Url=@($"Routes.Sites?user_id={UserId}&container_id={ContainerId}&site_id={SiteId}") />
 
-                <BreadcrumbItem IconCss="@_site.Icon"
-                                Disabled="true"
-                                Text="@_site.Name" />
-            </Breadcrumbs>
-        </FmPageIntro>
+            <BreadcrumbItem IconCss="@AppState.Analytics.Site.Icon"
+                        Disabled="true"
+                        Text="@AppState.Analytics.Site.Name" />
+        </Breadcrumbs>
+    </FmPageIntro>
 
-        <FmSpacer />
+    <FmSpacer />
 
-        <SfDashboardLayout Columns="4"
-                           CellSpacing="@(new double[]{ 40 ,40 })"
-                           AllowResizing="false"
-                           AllowDragging="false"
-                           AllowFloating="false">
-            <DashboardLayoutPanels>
-                <DashboardLayoutPanel Column="0"
-                                      Row="0"
-                                      SizeX="2"
-                                      SizeY="1">
-                    <ContentTemplate>
-                        <div class="fm-markdown__display">
-                            @((MarkupString)Markdown.ToHtml(_site.Description))
-                        </div>
-                    </ContentTemplate>
-                </DashboardLayoutPanel>
-                <DashboardLayoutPanel Column="3"
-                                      Row="0"
-                                      SizeX="2"
-                                      SizeY="1">
-                    <ContentTemplate>
-                        <Grid Gap="@GridGap.Large">
-                            <Items>
-                                <GridItem ColumnSize="@GridSize.GridItemSmall">
-                                    <Child>
-                                        <FmCard Classes="@Card.Success">
-                                            <FmHeader>
-                                                <SfIcon IconCss="fa-brands fa-wpforms" />
+    <SfDashboardLayout Columns="4"
+                   CellSpacing="@(new double[]{ 40 ,40 })"
+                   AllowResizing="false"
+                   AllowDragging="false"
+                   AllowFloating="false">
+        <DashboardLayoutPanels>
+            <DashboardLayoutPanel Column="0"
+                              Row="0"
+                              SizeX="2"
+                              SizeY="2">
+                <Header>
+                    <FmTypography Text="Metadata" />
+                </Header>
 
-                                                @if (_forms is not null)
-                                                {
-                                                    <FmTypography Text="@_forms.Count.ToString()"
-                                                              Type="@Typography.LevelThree" />
-                                                }
-                                            </FmHeader>
+                <ContentTemplate>
+                    <FmMarkdown Markup="@AppState.Analytics.Site.Description" />
+                </ContentTemplate>
+            </DashboardLayoutPanel>
 
-                                            <FmBody>
-                                                <div>
-                                                    <FmTypography Text="Active Forms"
-                                                                  Type="@Typography.LevelTwo" />
-                                                </div>
-                                            </FmBody>
-                                        </FmCard>
+            @*<DashboardLayoutPanel Column="2"
+                              Row="0"
+                              SizeX="2"
+                              SizeY="1">
+                <Header>
+                    <FmTypography Text="Site Statistics" />
+                </Header>
 
+                <ContentTemplate>
+                    <FmMarkdown Markup="@AppState.Analytics.Site.Description" />
+                </ContentTemplate>
+            </DashboardLayoutPanel>*@
 
-                                    </Child>
-                                </GridItem>
+            <DashboardLayoutPanel Column="3"
+                              Row="0"
+                              SizeX="2"
+                              SizeY="1">
+                <Header>
+                    <FmTypography Text="Forms in Site" />
+                </Header>
 
-                                <GridItem ColumnSize="@GridSize.GridItemSmall">
-                                    <Child>
-                                        <FmCard Classes="@Card.Danger">
-                                            <FmHeader>
-                                                <SfIcon IconCss="fa-solid fa-share-from-square" />
+                <ContentTemplate>
+                    
+                    @if (AppState.Analytics.HitChartDataSeries is { Count: > 0 })
+                    {
+                        <SfChart Width="100%" Title="Number of hits">
+                            <ChartPrimaryXAxis ValueType="Syncfusion.Blazor.Charts.ValueType.DateTime"
+                                       IntervalType="IntervalType.Days" />
 
-                                                @if (_formResponses is not null)
-                                                {
-                                                    <FmTypography Text="5"
-                                                                  Type="@Typography.LevelThree" />
-                                                }
-                                            </FmHeader>
+                            <ChartTooltipSettings Enable="true" />
 
-                                            <FmBody>
-                                                <div>
-                                                    <FmTypography Text="Sent Forms"
-                                                                  Type="@Typography.LevelTwo" />
-                                                </div>
-                                            </FmBody>
-                                        </FmCard>
-                                    </Child>
-                                </GridItem>
+                            <ChartSeriesCollection>
+                                <ChartSeries DataSource="AppState.Analytics.HitChartDataSeries"
+                                     XName="Date"
+                                     YName="Count"
+                                     Type="ChartSeriesType.StackingBar">
+                                    <ChartMarker Visible="true" />
+                                </ChartSeries>
+                            </ChartSeriesCollection>
+                        </SfChart>
+                    }
+                    else
+                    {
+                        <FmNotFound Message="There are no data to display" />
+                    }
+                </ContentTemplate>
+            </DashboardLayoutPanel>
 
-                                <GridItem ColumnSize="@GridSize.GridItemSmall">
-                                    <Child>
-                                        <FmCard Classes="@Card.Warning">
-                                            <FmHeader>
-                                                <SfIcon IconCss="fa-solid fa-location-crosshairs" />
+            <DashboardLayoutPanel Column="3"
+                              Row="1"
+                              SizeX="1"
+                              SizeY="1">
+                <ContentTemplate>
+                    @if (AppState.Analytics.HitChartDataSeries is { Count: > 0 })
+                    {
+                        <SfChart Width="100%"
+                         Title="Number of hits">
+                            <ChartPrimaryXAxis ValueType="Syncfusion.Blazor.Charts.ValueType.DateTime"
+                                       IntervalType="IntervalType.Days" />
 
-                                                @if (_forms is not null)
-                                                {
-                                                    <FmTypography Text="145"
-                                                              Type="@Typography.LevelThree" />
-                                                }
-                                            </FmHeader>
+                            <ChartTooltipSettings Enable="true" />
 
-                                            <FmBody>
-                                                <div>
-                                                    <FmTypography Text="Total Hits"
-                                                                  Type="@Typography.LevelTwo" />
-                                                </div>
-                                            </FmBody>
-                                        </FmCard>
-                                    </Child>
-                                </GridItem>
+                            <ChartSeriesCollection>
+                                <ChartSeries DataSource="AppState.Analytics.HitChartDataSeries"
+                                     XName="Date"
+                                     YName="Count"
+                                     Type="ChartSeriesType.Spline">
+                                    <ChartMarker Visible="true" />
+                                </ChartSeries>
+                            </ChartSeriesCollection>
+                        </SfChart>
+                    }
+                    else
+                    {
+                        <FmNotFound Message="There are no data to display" />
+                    }
+                </ContentTemplate>
+            </DashboardLayoutPanel>
 
-                                <GridItem ColumnSize="@GridSize.GridItemSmall">
-                                    <Child>
-                                        <FmCard Classes="@Card.Chill">
-                                            <FmHeader>
-                                                <SfIcon IconCss="fa-solid fa-globe" />
+            <DashboardLayoutPanel Column="4"
+                              Row="1"
+                              SizeX="1"
+                              SizeY="1">
+                <ContentTemplate>
+                    @if (AppState.Forms.FormsCollection is { Count: > 0 })
+                    {
+                        var lastForm = AppState.Forms.FormsCollection.LastOrDefault();
 
-                                                @if (_forms is not null)
-                                                {
-                                                    <FmTypography Text="30"
-                                                              Type="@Typography.LevelThree" />
-                                                }
-                                            </FmHeader>
+                        foreach (var form in AppState.Forms.FormsCollection)
+                        {
+                            <FormListItem Form="form" />
 
-                                            <FmBody>
-                                                <div>
-                                                    <FmTypography Text="Country"
-                                                                  Type="@Typography.LevelTwo" />
-                                                </div>
-                                            </FmBody>
-                                        </FmCard>
-                                    </Child>
-                                </GridItem>
-                            </Items>
-                        </Grid>
-                    </ContentTemplate>
-                </DashboardLayoutPanel>
-            </DashboardLayoutPanels>
-        </SfDashboardLayout>
-    </Content>
-</FmLoader>
+                            if (form != lastForm)
+                            {
+                                <FmSpacer />
+                            }
+                        }
+                    }
+                    else
+                    {
+                        <FmNotFound Message="There are no forms in this site" />
+                    }
+                </ContentTemplate>
+            </DashboardLayoutPanel>
+        </DashboardLayoutPanels>
+    </SfDashboardLayout>
+}
+else
+{
+    <FmLoadingScreen />
+}

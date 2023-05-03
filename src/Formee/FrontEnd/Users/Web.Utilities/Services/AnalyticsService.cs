@@ -6,7 +6,6 @@ namespace Client.Web.Utilities.Services;
 public class AnalyticsService : BaseService
 {
     //Dependency injection
-    private readonly AppStateService _appState;
     private readonly ILogger<AnalyticsService> _logger;
 
     /// <summary>
@@ -18,7 +17,6 @@ public class AnalyticsService : BaseService
         ILogger<AnalyticsService> logger,
         IConfiguration configuration) : base(httpClient, configuration, appState)
     {
-        _appState = appState;
         _logger = logger;
     }
 
@@ -29,7 +27,7 @@ public class AnalyticsService : BaseService
     /// <returns></returns>
     public async Task GetSiteByIdAsync(int id)
     {
-        _appState.Analytics.IsFetching = true;
+        AppState.Analytics.IsFetching = true;
 
         try
         {
@@ -39,16 +37,16 @@ public class AnalyticsService : BaseService
 
             var response = await client.GetFromJsonAsync<SiteDto>(url);
 
-            _appState.Analytics.Site = response ?? new SiteDto();
+            AppState.Analytics.Site = response ?? new SiteDto();
         }
         catch (Exception exception)
         {
-            _appState.Analytics.Site = new SiteDto();
+            AppState.Analytics.Site = new SiteDto();
             _logger.LogError(exception.Message);
         }
         finally
         {
-            _appState.Analytics.IsFetching = false;
+            AppState.Analytics.IsFetching = false;
         }
     }
 
@@ -59,27 +57,32 @@ public class AnalyticsService : BaseService
     /// <returns></returns>
     public async Task GetAllSitesAsync(string containerId)
     {
-        _appState.Analytics.IsFetching = true;
-
         try
         {
+            AppState.Analytics.IsFetching = true;
+
             var url = $"/api/sites/all/{containerId}";
 
             var client = await HttpClient();
 
-            var response = await client.GetFromJsonAsync<List<SiteDto>>(url);
+            var response = await client.GetAsync(url);
 
-            _appState.Analytics.Sites = new List<SiteDto>();
-            _appState.Analytics.Sites = response;
+            if (!response.IsSuccessStatusCode)
+                throw new Exception("Something went wrong");
+
+            var sites = await response.Content
+                .ReadFromJsonAsync<List<SiteDto>>();
+
+            AppState.Analytics.SetSitesState(sites);
         }
         catch (Exception exception)
         {
-            _appState.Analytics.Sites = new List<SiteDto>();
+            AppState.Analytics.Sites = new List<SiteDto>();
             _logger.LogError(exception.Message);
         }
         finally
         {
-            _appState.Analytics.IsFetching = false;
+            AppState.Analytics.IsFetching = false;
         }
     }
 
@@ -95,7 +98,7 @@ public class AnalyticsService : BaseService
     {
         try
         {
-            _appState.Analytics.IsFetching = true;
+            AppState.Analytics.IsFetching = true;
 
             var formattedStartDate = startDate.ToString("yyyy-MM-dd");
             var formattedEndDate = endDate.AddDays(1)
@@ -105,24 +108,24 @@ public class AnalyticsService : BaseService
 
             var client = await HttpClient();
 
-            var response = await client.GetFromJsonAsync<List<PageHitDto>>(url);
+            var response = await client.GetFromJsonAsync<List<DateChartModel>>(url);
 
             if (response is not null)
             {
-                _appState.Analytics.Hits = new List<PageHitDto>();
-                _appState.Analytics.Hits = response;
+                AppState.Analytics.HitChartDataSeries = new List<DateChartModel>();
+                AppState.Analytics.HitChartDataSeries = response;
             }
 
         }
         catch (Exception exception)
         {
-            _appState.Analytics.Hits = new List<PageHitDto>();
+            AppState.Analytics.HitChartDataSeries = new List<DateChartModel>();
 
             _logger.LogError(exception.Message);
         }
         finally
         {
-            _appState.Analytics.IsFetching = false;
+            AppState.Analytics.IsFetching = false;
         }
     }
 
@@ -136,7 +139,7 @@ public class AnalyticsService : BaseService
         {
             var url = $"/api/category/top/{siteId}";
 
-            _appState.Analytics.IsFetching = true;
+            AppState.Analytics.IsFetching = true;
 
             var client = await HttpClient();
 
@@ -144,22 +147,20 @@ public class AnalyticsService : BaseService
 
             if (response is not null)
             {
-                _appState.Analytics.TopPerformingCategories = new List<BarChartModel>();
-                _appState.Analytics.TopPerformingCategories = response;
+                AppState.Analytics.TopPerformingCategories = new List<BarChartModel>();
+                AppState.Analytics.TopPerformingCategories = response;
             }
             else
-                _appState.Analytics.TopPerformingCategories = new List<BarChartModel>();
-
-
+                AppState.Analytics.TopPerformingCategories = new List<BarChartModel>();
         }
         catch (Exception exception)
         {
-            _appState.Analytics.TopPerformingCategories = new List<BarChartModel>();
+            AppState.Analytics.TopPerformingCategories = new List<BarChartModel>();
             _logger.LogError(exception.Message);
         }
         finally
         {
-            _appState.Analytics.IsFetching = false;
+            AppState.Analytics.IsFetching = false;
         }
     }
 }

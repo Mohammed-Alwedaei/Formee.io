@@ -3,7 +3,7 @@
 public class AnalyticsState
 {
     //Raw data collections
-    public List<SiteDto> Sites;
+    public List<SiteDto> Sites = new();
     public List<PageHitDto> Hits;
 
     public SiteDto Site;
@@ -17,4 +17,10 @@ public class AnalyticsState
 
     //State notifier
     public event Action StateChanged;
+
+    public void SetSitesState(List<SiteDto> sites)
+    {
+        Sites = sites;
+        StateChanged.Invoke();
+    }
 }

@@ -13,6 +13,31 @@
 
 <FmSpacer/>
 
+<div>
+    <FmTypography Type="@Typography.LevelTwo" 
+    Text="Filter History" />
+
+    <FmSpacer />
+
+    <SfButtonGroup>
+        <SfButton CssClass="e-links" 
+            IconCss="fa-solid fa-boxes-stacked">
+            Containers
+         </SfButton>
+        <SfButton CssClass="e-links" IconCss="fa-solid fa-window-restore">
+            Sites
+        </SfButton>
+        <SfButton CssClass="e-links" IconCss="fa-solid fa-envelope">
+            Forms
+        </SfButton>
+        <SfButton CssClass="e-links" IconCss="fa-solid fa-arrow-up-right-from-square">
+            Links
+        </SfButton>
+    </SfButtonGroup>
+</div>
+
+<FmSpacer />
+
 @if (!string.IsNullOrEmpty(AppState.Identity.User.Avatar.Name) && AppState.History.HistoryCollection != null)
 {
     <Grid Gap="@GridGap.Large">
@@ -23,21 +48,24 @@
                     <Child>
                         <FmCard>
                             <FmBody>
-                                <div>
-                                    @{
-                                        var avatarUrl = $"https://adoptingmsastorage.blob.core.windows.net/accountavatars/{AppState.Identity.User.Avatar.Name}";
+                                <div class="d-flex justify-content-start align-items-center">
+                                    <div>
+                                        @{
+                                            var avatarName = AppState.Identity.User.Avatar.Name;
+                                            var avatarUrl = $"https://formeestorage.blob.core.windows.net/formeeavatars/{avatarName}";
 
-                                        <img class="e-avatar e-avatar-large" src="@avatarUrl" alt=""/>
-                                    }
-                                </div>
+                                            <FmAvatar Url="@avatarUrl" Classes="e-avatar e-avatar-large" />
+                                        }
+                                    </div>
 
-                                <div>
-                                    <FmTypography Text="@history.Action"/>
+                                    <div class="ml-2">
+                                        <FmTypography Text="@history.Action" />
 
-                                    <FmTypography Text="@history.Title"
-                                                  Type="@Typography.LevelTwo"/>
+                                        <FmTypography Text="@history.Title"
+                                              Type="@Typography.LevelTwo" />
 
-                                    <FmTypography Text="@history.Service"/>
+                                        <FmTypography Text="@history.Service" />
+                                    </div>
                                 </div>
                             </FmBody>
                         </FmCard>
@@ -50,7 +78,7 @@
     <FmSpacer/>
 
     <SfPager @ref="_pager"
-             PageSize=5
+             PageSize=3
              NumericItemsCount=4
              TotalItemsCount=25
              ItemClick="HandlePageChange">

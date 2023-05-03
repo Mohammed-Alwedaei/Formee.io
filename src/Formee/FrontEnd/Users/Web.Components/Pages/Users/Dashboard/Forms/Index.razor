@@ -1,0 +1,90 @@
+﻿<FmPageIntro Heading="My Forms">
+    <Breadcrumbs>
+        <BreadcrumbItem IconCss="fa-solid fa-house"
+                        Text="Dashboard"
+                        Url="/" />
+
+        <BreadcrumbItem IconCss="fa-solid fa-envelope"
+                                Disabled
+                        Text="Forms"
+                        Url="/dashboard/forms" />
+    </Breadcrumbs>
+    </FmPageIntro>
+
+    @if (AppState.Containers.ContainersCollection is { Count: > 0 })
+{
+    <FmTab OnTabChange="HandleSiteIdChange">
+        <FmTabItems>
+            @if (AppState.Analytics.Sites is { Count: > 0 })
+            {
+                foreach (var site in AppState.Analytics.Sites)
+                {
+                    <FmTabItem Id="@site.Id.ToString()">
+                        <Header>
+                            <FmTypography Type="@Typography.LevelTwo"
+                              Icon="@site.Icon"
+                              Text="@site.Name"
+                              Classes="d-flex justify-content-center align-items-center" />
+                        </Header>
+
+                        <Body>
+                            <FmSpacer />
+
+                            <div class="d-flex justify-content-between align-items-center">
+                                <FmTypography Text="Create new form"
+                                  Type="@Typography.LevelTwo" />
+
+                                <SfTooltip Position="Syncfusion.Blazor.Popups.Position.BottomCenter"
+                               Content="Refresh">
+                                    <SfButton OnClick="HandleUpsertDialogRevealEvent"
+                                  IconCss="fa-solid fa-plus">
+                                        New Form
+                                    </SfButton>
+                                </SfTooltip>
+                            </div>
+
+                            <FmSpacer />
+
+                            <SfDashboardLayout Columns="4"
+                                   CellSpacing="@(new double[] {40, 40})"
+                                   AllowResizing="false"
+                                   AllowDragging="false"
+                                   AllowFloating="false">
+                                <DashboardLayoutPanels>
+                                    <DashboardLayoutPanel Column="0"
+                                              Row="0"
+                                              SizeX="3"
+                                              SizeY="1">
+                                        <ContentTemplate>
+                                            <div class="fm-markdown__display">
+                                                @if (!string.IsNullOrEmpty(site.Description))
+                                                {
+                                                    @((MarkupString)Markdown.ToHtml(site.Description))
+                                                }
+                                            </div>
+                                        </ContentTemplate>
+                                    </DashboardLayoutPanel>
+                                </DashboardLayoutPanels>
+                            </SfDashboardLayout>
+                        </Body>
+                    </FmTabItem>
+                }
+            }
+        </FmTabItems>
+    </FmTab>
+}
+else
+{
+    <p>
+        There are no container, please start creating one here
+        <FmLink Route="@($"{Routes.UpsertContainer}?user_id={UserId}&upsert_type=create")"
+            Text="Create container" />
+    </p>
+}
+
+@if (_formDto is { SiteId: > 0 })
+{
+    <FmUpsertFormDialog Form="_formDto" 
+                        DialogRevealState="_isVisibleUpsertDialog"
+                        UpsertType="create" />
+}

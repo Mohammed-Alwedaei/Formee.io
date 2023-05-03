@@ -112,9 +112,9 @@
                         @if (AppState.Links.LinkHitsInContainerCollection is { Count: > 0 })
                         {
                             <SfChart Width="100%"
-                             Title="Number of hits">
+                             Title="Number of hits" Palettes="@_palettes">
                                 <ChartPrimaryXAxis ValueType="Syncfusion.Blazor.Charts.ValueType.DateTime"
-                                           IntervalType="IntervalType.Days" />
+                                           IntervalType="IntervalType.Days"  />
 
                                 <ChartTooltipSettings Enable="true" />
 

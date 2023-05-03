@@ -16,19 +16,19 @@
         </div>
 
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="subscriptions">
+            <NavLink class="nav-link" href="@($"subscriptions?auth_id={AuthId}")">
                 <span class="oi oi-list-rich" aria-hidden="true"></span> Subscriptions
             </NavLink>
         </div>
 
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="coupons">
+            <NavLink class="nav-link" href="@($"coupons?auth_id={AuthId}")">
                 <span class="oi oi-list-rich" aria-hidden="true"></span> Coupons
             </NavLink>
         </div>
         
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="users">
+            <NavLink class="nav-link" href="@($"users?auth_id={AuthId}")">
                 <span class="oi oi-list-rich" aria-hidden="true"></span> Users Management
             </NavLink>
         </div>
@@ -36,6 +36,10 @@
 </div>
 
 @code {
+    [Parameter]
+    [SupplyParameterFromQuery(Name = "auth_id")]
+    public string AuthId { get; set; }
+
     private bool collapseNavMenu = true;
 
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;

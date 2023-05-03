@@ -20,13 +20,15 @@ router.get("/all/:userId", async (req, res) => {
   }
 });
 
-router.get("/all/:service", async (req, res) => {
+router.get("/filter/:service", async (req, res) => {
   try {
     var service = req.params.service;
 
-    res.send(
-      await History.find({ service: { $regex: service, $options: "i" } })
-    );
+    var query = await History.find({
+      service: { $regex: service, $options: "i" },
+    });
+
+    res.send(query);
   } catch (e) {
     console.error(e);
   }

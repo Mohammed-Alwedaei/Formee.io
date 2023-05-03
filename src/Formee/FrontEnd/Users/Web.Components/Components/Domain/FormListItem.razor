@@ -1,0 +1,28 @@
+﻿@using Client.Web.Utilities.Dtos.Forms
+
+@inject NavigationManager NavigationManager
+
+<div class="d-flex justify-content-between">
+    <div>
+        <FmTypography Text="@Form.Details.Name" Type="@Typography.LevelTwo" />
+
+        <FmTypography Text="@Form.CreatedDate.ToString("D")" />
+    </div>
+    
+    <div>
+        <SfButton IconCss="fa-solid fa-eye" 
+                  OnClick="HandleViewFormEvent" />
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public FormDto Form { get; set; }
+
+    private void HandleViewFormEvent()
+    {
+        var route = $"{Routes.Forms}/view?user_id={Form.UserId}&form_id={Form.Id}";
+
+        NavigationManager.NavigateTo(route);
+    }
+}

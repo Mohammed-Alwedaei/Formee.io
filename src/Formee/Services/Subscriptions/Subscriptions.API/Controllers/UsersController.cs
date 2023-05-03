@@ -13,7 +13,7 @@ public class UsersController : ControllerBase
     private readonly ILogger<UsersController> _logger;
     private readonly IUserRepository _userRepository;
 
-    public UsersController(ILogger<UsersController> logger, 
+    public UsersController(ILogger<UsersController> logger,
         IUserRepository userRepository)
     {
         _logger = logger;
@@ -23,27 +23,10 @@ public class UsersController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAllUsers()
     {
-        _logger.LogInformation("GET: request at /api/users/all at {datetime}", 
+        _logger.LogInformation("GET: request at /api/users/all at {datetime}",
             DateTime.Now);
 
         var result = await _userRepository.GetAllAsync();
-
-        if (!result.Any())
-        {
-            return NotFound();
-        }
-
-        return Ok(result);
-    }
-
-    [HttpGet("all/subscribed/{subscriptionId:int}")]
-    public async Task<IActionResult> GetAllSubscribedUsers(int subscriptionId)
-    {
-        _logger.LogInformation("GET: request at /api/users/all/subscribed/{id} at {datetime}",
-            subscriptionId, DateTime.Now);
-
-        var result = await _userRepository
-            .GetAllInASubscriptionAsync(subscriptionId);
 
         if (!result.Any())
         {
@@ -58,29 +41,12 @@ public class UsersController : ControllerBase
     public async Task<IActionResult> GetUserSubscriptions(Guid userId)
     {
         _logger.LogInformation("GET: request at /api/users/all/subscription/{userId} at {datetime}",
-            userId, 
+            userId,
             DateTime.Now);
 
         var result = await _userRepository.GetSubscriptionByIdAsync(userId);
 
         if (result.Id is 0)
-        {
-            return NotFound();
-        }
-
-        return Ok(result);
-    }
-
-    [HttpGet("all/subscribed")]
-    public async Task<IActionResult> GetAllSubscribedUsers()
-    {
-        _logger.LogInformation("GET: request at /api/users/all/subscribed at {datetime}",
-            DateTime.Now);
-
-        var result = await _userRepository
-            .GetAllSubscribedAsync();
-
-        if (!result.Any())
         {
             return NotFound();
         }
@@ -106,8 +72,8 @@ public class UsersController : ControllerBase
         return Ok(result);
     }
 
-    [HttpDelete]
-    public async Task<IActionResult> DeleteUser(Guid userId)
+    [HttpDelete("{id:Guid}")]
+    public async Task<IActionResult> DeleteUser(Guid id)
     {
         _logger.LogInformation("post: request at /api/users at {datetime}",
             DateTime.Now);
@@ -118,7 +84,7 @@ public class UsersController : ControllerBase
         }
 
         var result = await _userRepository
-            .DeleteAsync(userId);
+            .DeleteAsync(id);
 
         return Ok(result);
     }

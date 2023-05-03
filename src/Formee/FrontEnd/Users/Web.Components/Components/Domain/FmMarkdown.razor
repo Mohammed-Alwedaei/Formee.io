@@ -1,0 +1,8 @@
+﻿<div class="markdown-renderer__wrapper">
+    @((MarkupString)Markdown.ToHtml(Markup))
+</div>
+
+@code {
+    [Parameter]
+    public string Markup { get; set; }
+}

@@ -57,6 +57,41 @@ public class PageHitRepository : IPageHitRepository
         return _mapper.Map<List<PageHitDto>>(hits);
     }
 
+    public async Task<List<DateChartDto>> GetAllByDateAndFormatAsync
+        (int siteId, DateTime startDate, DateTime endDate)
+    {
+
+        var hits = await _db.PageHits
+            .AsNoTracking()
+            .Where(h => h.SiteId == siteId 
+                        && h.Category.IsDeleted != true 
+                        && h.CreatedDate >= startDate 
+                        && h.CreatedDate <= endDate)
+            .ToListAsync();
+
+        var linkHitsChartDto = new List<DateChartDto>();
+
+        foreach (var hit in hits)
+        {
+            var isAvailableDate = linkHitsChartDto
+                .FirstOrDefault(c => c.Date.Date == hit.CreatedDate.Date);
+            if (isAvailableDate is not null)
+            {
+                isAvailableDate.Count++;
+            }
+            else
+            {
+                linkHitsChartDto.Add(new DateChartDto
+                {
+                    Date = hit.CreatedDate,
+                    Count = 1
+                });
+            }
+        }
+
+        return linkHitsChartDto;
+    }
+
     public async Task<PageHitDto> CreateAsync(CreatePageHitDto hit)
     {
         var hitToCreate = _mapper.Map<PageHitEntity>(hit);

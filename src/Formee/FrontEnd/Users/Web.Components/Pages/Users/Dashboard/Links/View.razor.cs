@@ -28,6 +28,7 @@ public partial class View : IDisposable
 
     private bool _isVisibleDeleteLinkDialog;
 
+    private readonly string[] _palettes = { "#9e8ddf" };
 
     protected override async Task OnParametersSetAsync()
     {

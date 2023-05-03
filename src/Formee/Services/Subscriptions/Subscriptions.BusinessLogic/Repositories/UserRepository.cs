@@ -23,11 +23,6 @@ public class UserRepository : IUserRepository
         return _mapper.Map<List<UserDto>>(usersFromDb);
     }
 
-    public async Task<List<UserDto>> GetAllSubscribedAsync()
-    {
-        throw new NotImplementedException();
-    }
-
     public async Task<UserSubscriptionDto> GetSubscriptionByIdAsync(Guid userId)
     {
         var userFromDb = await _context.Users.FirstOrDefaultAsync(u => u.GlobalUserId == userId);
@@ -42,11 +37,6 @@ public class UserRepository : IUserRepository
 
         return _mapper.Map<UserSubscriptionDto>(subscriptionFromDb) 
                ?? new UserSubscriptionDto();
-    }
-
-    public async Task<List<UserDto>> GetAllInASubscriptionAsync(int subscriptionId)
-    {
-        throw new NotImplementedException();
     }
 
     public async Task<UserDto> CreateAsync(UserDto user)

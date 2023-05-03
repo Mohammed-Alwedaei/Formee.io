@@ -223,8 +223,10 @@ public class IdentityManager : IIdentityManager
 
             //Attach the new avatar to the user
             var createdAvatar = await _context.Avatar.AddAsync(avatarToCreate);
+            await _context.SaveChangesAsync();
 
             userFromDb.AvatarId = createdAvatar.Entity.Id;
+
             _context.User.Update(userFromDb);
             await _context.SaveChangesAsync();
 

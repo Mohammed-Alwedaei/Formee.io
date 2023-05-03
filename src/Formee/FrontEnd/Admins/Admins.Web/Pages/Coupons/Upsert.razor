@@ -11,7 +11,7 @@
     <PageTitle>@UpsertType - coupons</PageTitle>
 }
 
-<h3 class="display-5 my-3">Upsert</h3>
+<h3 class="display-5 my-3">Create Coupon</h3>
 
 <EditForm Model="_coupon" OnValidSubmit="HandleValidFormSubmit">
     <DataAnnotationsValidator />
@@ -39,9 +39,9 @@
             </label>
 
             <InputText id="@nameof(_coupon.AdminEmail)"
-                         class="form-control"
-                         @bind-Value="_coupon.AdminEmail"
-                         disabled="disabled" />
+                       class="form-control"
+                       @bind-Value="_coupon.AdminEmail"
+                       disabled="disabled" />
 
             <ValidationMessage For="() => _coupon.AdminEmail" />
         </div>
@@ -99,9 +99,9 @@
             </label>
 
             <InputDate id="@nameof(_coupon.ExpireDate)"
-                         class="form-control"
-                         @bind-Value="_coupon.ExpireDate"
-                         disabled="@_isDisabledFields" />
+                       class="form-control"
+                       @bind-Value="_coupon.ExpireDate"
+                       disabled="@_isDisabledFields" />
 
             <ValidationMessage For="() => _coupon.ExpireDate" />
         </div>
@@ -130,9 +130,6 @@
 </EditForm>
 
 @code {
-    [CascadingParameter]
-    public Task<AuthenticationState> authenticationState { get; set; }
-
     [Parameter]
     [SupplyParameterFromQuery(Name = "coupon_id")]
     public int Id { get; set; }
@@ -140,6 +137,9 @@
     [Parameter]
     [SupplyParameterFromQuery(Name = "upsert_type")]
     public string? UpsertType { get; set; }
+
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthenticationState { get; set; }
 
     private CouponDto? _coupon = new();
 
@@ -158,7 +158,26 @@
 
         _isFetching = true;
 
-        await AggregatePageData(Id);
+        var authState = await AuthenticationState;
+
+        if (authState.User.Identity.IsAuthenticated)
+        {
+
+            const string typeName = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier";
+
+            var authId = authState.User
+                .Claims
+                .FirstOrDefault(c => c.Type == typeName)
+                ?.Value;
+
+            var accessToken = await HttpClient
+                .GetFromJsonAsync<string>($"/gateway/identity/users/{authId}");
+
+            HttpClient.DefaultRequestHeaders.Authorization = new
+                AuthenticationHeaderValue("Bearer", accessToken);
+
+            await AggregatePageData(Id);
+        }
 
         _isFetching = false;
     }
@@ -172,7 +191,7 @@
     {
         var upsertType = UpsertType.ToLower();
 
-        var authState = await authenticationState;
+        var authState = await AuthenticationState;
 
         if (Id is 0 && upsertType == "create")
         {

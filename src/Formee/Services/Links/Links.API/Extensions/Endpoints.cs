@@ -34,7 +34,8 @@ public static class LinksEndpoints
 
             if (id is 0) throw new BadRequestException(ErrorMessages.BadRequest);
 
-            if (await linkRepository.GetLinkByIdAsync(id) is LinkEntity link) return link;
+            if (await linkRepository.GetLinkByIdAsync(id) is LinkEntity link) 
+                return Results.Ok(link);
             
             throw new NotFoundException(ErrorMessages.NotFound);
         });
@@ -57,7 +58,7 @@ public static class LinksEndpoints
             var results = await linkRepository
                 .GetAllLinksByContainerIdAsync(containerId);
 
-            if (results.Count is not 0) return results;
+            if (results.Count is not 0) return Results.Ok(results);
             
 
             throw new NotFoundException(ErrorMessages.NotFound);
@@ -145,7 +146,6 @@ public static class LinksEndpoints
                 Message = $"You have deleted {result.LinkDetails.Name} link"
             });
 
-
             await historyServiceBus.SendMessage(new HistoryModel
             {
                 Title = $"{result.LinkDetails.Name} link is deleted",
@@ -153,6 +153,8 @@ public static class LinksEndpoints
                 UserId = result.UserId,
                 Service = Services.Links
             });
+
+            return Results.Ok(result);
         });
 
         /*
@@ -169,7 +171,6 @@ public static class LinksEndpoints
 
             if (string.IsNullOrEmpty(containerId) || containerId.Length > 24)
                 throw new BadRequestException(ErrorMessages.BadRequest);
-            
 
             var results = await linkRepository
                 .DeleteAllLinksByContainerIdAsync(containerId);
@@ -177,7 +178,7 @@ public static class LinksEndpoints
             if (results.Count is 0)
                 throw new NotFoundException(ErrorMessages.NotFound);
             
-            return results;
+            return Results.Ok(results);
         });
 
         return app;

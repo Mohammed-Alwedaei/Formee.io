@@ -31,168 +31,150 @@
 
 <FmSpacer />
 
-<section>
+<EditForm Model="_container" OnValidSubmit="HandleValidFormSubmit">
     <Grid Gap="@GridGap.Large">
         <Items>
             <GridItem ColumnSize="@GridSize.GridIteLarge">
                 <Child>
-                    <EditForm Model="_container" OnValidSubmit="HandleValidFormSubmit">
-                        <Grid Gap="@GridGap.Large">
-                            <Items>
-                                <GridItem ColumnSize="@GridSize.GridItemXLarge">
-                                    <Child>
-                                        <FmCard Classes="p-2" IsHoverable="false">
-                                            <FmHeader>
-                                                <FmTypography Type="@Typography.LevelTwo"
-                                                              Text="Basic Info"
-                                                              TextAlign="left"
-                                                              Icon="fa-solid fa-plus-circle"
-                                                              IconSize="1.5rem" />
-                                            </FmHeader>
-                                            <FmBody>
-                                                <Grid Gap="@GridGap.Large">
-                                                    <Items>
-                                                        <GridItem ColumnSize="@GridSize.GridItemMedium">
-                                                            <Child>
-                                                                <label for="@nameof(_container.Name)">
-                                                                    Name
-                                                                </label>
+                    <Grid Gap="@GridGap.Large">
+                        <Items>
+                            <GridItem ColumnSize="@GridSize.GridItemXLarge">
+                                <Child>
+                                    <FmCard Classes="p-2" IsHoverable="false">
+                                        <FmHeader>
+                                            <FmTypography Type="@Typography.LevelTwo"
+                                                          Text="Basic Info"
+                                                          TextAlign="left"
+                                                          Icon="fa-solid fa-plus-circle"
+                                                          IconSize="1.5rem" />
+                                        </FmHeader>
+                                        <FmBody>
+                                            <Grid Gap="@GridGap.Large">
+                                                <Items>
+                                                    <GridItem ColumnSize="@GridSize.GridItemMedium">
+                                                        <Child>
+                                                            <label for="@nameof(_container.Name)">
+                                                                Name
+                                                            </label>
 
-                                                                <SfTextBox ID="@nameof(_container.Name)"
-                                                                           @bind-Value="_container.Name"
-                                                                           Readonly="IsDeleteOperation" />
-                                                            </Child>
-                                                        </GridItem>
-                                                        
-                                                        <GridItem ColumnSize="@GridSize.GridItemMedium">
-                                                            <Child>
-                                                                <label for="@nameof(_container.Icon)">
-                                                                    Icon
-                                                                </label>
+                                                            <SfTextBox ID="@nameof(_container.Name)"
+                                                                       @bind-Value="_container.Name"
+                                                                       Readonly="IsDeleteOperation" />
+                                                        </Child>
+                                                    </GridItem>
 
-                                                                <SfTextBox ID="@nameof(_container.Icon)"
-                                                                           @bind-Value="_container.Icon"
-                                                                           Readonly="IsDeleteOperation" />
-                                                            </Child>
-                                                        </GridItem>
-                                                    </Items>
-                                                </Grid>
-                                            </FmBody>
-                                        </FmCard>
-                                    </Child>
-                                </GridItem>
+                                                    <GridItem ColumnSize="@GridSize.GridItemMedium">
+                                                        <Child>
+                                                            <label for="@nameof(_container.Icon)">
+                                                                Icon
+                                                            </label>
 
-                                <GridItem ColumnSize="@GridSize.GridItemXLarge">
-                                    <Child>
-                                        <FmCard Classes="p-2"
-                                                IsHoverable="false">
-                                            <FmHeader>
-                                                <FmTypography Type="@Typography.LevelTwo"
-                                                              Text="Markdown Description"
-                                                              TextAlign="left"
-                                                              Icon="fa-solid fa-plus-circle"
-                                                              IconSize="1.5rem" />
-                                            </FmHeader>
-                                            <FmBody>
-                                                <Grid Gap="@GridGap.Large">
-                                                    <Items>
-                                                        <GridItem ColumnSize="@GridSize.GridItemXLarge">
-                                                            <Child>
-                                                                <label for="@nameof(_container.Description)">
-                                                                    Description
-                                                                </label>
+                                                            <SfTextBox ID="@nameof(_container.Icon)"
+                                                                       @bind-Value="_container.Icon"
+                                                                       Readonly="IsDeleteOperation" />
+                                                        </Child>
+                                                    </GridItem>
+                                                </Items>
+                                            </Grid>
+                                        </FmBody>
+                                    </FmCard>
+                                </Child>
+                            </GridItem>
 
-                                                                <SfRichTextEditor @bind-Value="@_container.Description"
-                                                                                  EditorMode="@EditorMode.Markdown"
-                                                                                  Readonly="IsDeleteOperation">
-                                                                    <RichTextEditorEvents ValueChange="HandleContainerDescriptionChange" />
-                                                                </SfRichTextEditor>
-                                                            </Child>
-                                                        </GridItem>
-                                                    </Items>
-                                                </Grid>
-                                            </FmBody>
-                                        </FmCard>
-                                    </Child>
-                                </GridItem>
+                            <GridItem ColumnSize="@GridSize.GridItemXLarge">
+                                <Child>
+                                    <FmCard Classes="p-2"
+                                            IsHoverable="false">
+                                        <FmHeader>
+                                            <FmTypography Type="@Typography.LevelTwo"
+                                                          Text="Markdown Description"
+                                                          TextAlign="left"
+                                                          Icon="fa-solid fa-plus-circle"
+                                                          IconSize="1.5rem" />
+                                        </FmHeader>
+                                        <FmBody>
+                                            <Grid Gap="@GridGap.Large">
+                                                <Items>
+                                                    <GridItem ColumnSize="@GridSize.GridItemXLarge">
+                                                        <Child>
+                                                            <label for="@nameof(_container.Description)">
+                                                                Description
+                                                            </label>
 
-                                <GridItem ColumnSize="@GridSize.GridItemXLarge">
-                                    <Child>
-                                        <FmCard Classes="p-2"
-                                                IsHoverable="false">
-                                            <FmHeader>
-                                                <FmTypography Type="@Typography.LevelTwo"
-                                                              Text="Submit"
-                                                              TextAlign="left"
-                                                              Icon="fa-solid fa-plus-circle"
-                                                              IconSize="1.5rem" />
-                                            </FmHeader>
-                                            <FmBody>
-                                                <div>
-                                                    @if (UpsertType == "update")
-                                                    {
-                                                        <SfButton CssClass="e-primary"
-                                                                  IconCss="fa-solid fa-trash"
-                                                                  IconPosition="IconPosition.Right"
-                                                                  style="padding: 0.5rem 1rem;"
-                                                                  IsPrimary="true">
-                                                            @UpsertType.ToUpper()
-                                                        </SfButton>
-                                                    }
-                                                    else if (IsDeleteOperation && UpsertType == "delete")
-                                                    {
-                                                        <SfButton CssClass="e-primary"
-                                                                  IconCss="fa-solid fa-trash"
-                                                                  IconPosition="IconPosition.Right"
-                                                                  style="padding: 0.5rem 1rem;"
-                                                                  IsPrimary="true">
-                                                            @UpsertType.ToUpper()
-                                                        </SfButton>
-                                                    }
-                                                    else
-                                                    {
+                                                            <SfRichTextEditor @bind-Value="@_container.Description"
+                                                                              EditorMode="@EditorMode.Markdown"
+                                                                              Readonly="IsDeleteOperation">
+                                                                <RichTextEditorEvents ValueChange="HandleContainerDescriptionChange" />
+                                                            </SfRichTextEditor>
+                                                        </Child>
+                                                    </GridItem>
+                                                </Items>
+                                            </Grid>
+                                        </FmBody>
+                                    </FmCard>
+                                </Child>
+                            </GridItem>
 
-                                                        <SfButton CssClass="e-primary"
-                                                                  IconCss="fa-solid fa-trash"
-                                                                  IconPosition="IconPosition.Right"
-                                                                  style="padding: 0.5rem 1rem;"
-                                                                  IsPrimary="true">
-                                                            @UpsertType.ToUpper()
-                                                        </SfButton>
-                                                    }
-                                                </div>
-                                            </FmBody>
-                                        </FmCard>
-                                    </Child>
-                                </GridItem>
+                            <GridItem ColumnSize="@GridSize.GridItemXLarge">
+                                <Child>
+                                    <FmCard Classes="p-2"
+                                            IsHoverable="false">
+                                        <FmHeader>
+                                            <FmTypography Type="@Typography.LevelTwo"
+                                                          Text="Submit"
+                                                          TextAlign="left"
+                                                          Icon="fa-solid fa-plus-circle"
+                                                          IconSize="1.5rem" />
+                                        </FmHeader>
+                                        <FmBody>
+                                            <div>
+                                                @if (UpsertType == "update")
+                                                {
+                                                    <SfButton CssClass="e-primary"
+                                                          IconCss="fa-solid fa-trash"
+                                                          IconPosition="IconPosition.Right"
+                                                              style="padding: 0.5rem 1rem;"
+                                                          IsPrimary="true">
+                                                        @UpsertType.ToUpper()
+                                                    </SfButton>
+                                                }
+                                                else if (IsDeleteOperation && UpsertType == "delete")
+                                                {
+                                                    <SfButton CssClass="e-primary"
+                                                          IconCss="fa-solid fa-trash"
+                                                          IconPosition="IconPosition.Right"
+                                                              style="padding: 0.5rem 1rem;"
+                                                          IsPrimary="true">
+                                                        @UpsertType.ToUpper()
+                                                    </SfButton>
+                                                }
+                                                else
+                                                {
 
-                                <GridItem ColumnSize="@GridSize.GridItemXLarge">
-                                    <Child>
-                                        <FmCard Classes="p-2"
-                                                IsHoverable="false">
-                                            <FmHeader>
-                                                <FmTypography Type="@Typography.LevelTwo"
-                                                              Text="Form Validation"
-                                                              TextAlign="left"
-                                                              Icon="fa-solid fa-check"
-                                                              IconSize="1.5rem" />
-                                            </FmHeader>
-                                            <FmBody>
-                                                <DataAnnotationsValidator />
-                                                <ValidationSummary />
-                                            </FmBody>
-                                        </FmCard>
-                                    </Child>
-                                </GridItem>
-                            </Items>
-                        </Grid>
-                    </EditForm>
+                                                    <SfButton CssClass="e-primary"
+                                                          IconCss="fa-solid fa-trash"
+                                                          IconPosition="IconPosition.Right"
+                                                              style="padding: 0.5rem 1rem;"
+                                                          IsPrimary="true">
+                                                        @UpsertType.ToUpper()
+                                                    </SfButton>
+                                                }
+                                            </div>
+                                        </FmBody>
+                                    </FmCard>
+                                </Child>
+                            </GridItem>
+
+
+                        </Items>
+                    </Grid>
+
                 </Child>
             </GridItem>
 
             <GridItem ColumnSize="@GridSize.GridItemSmall">
                 <Child>
-                    <FmCard Classes="p-2"
+                    @*<FmCard Classes="p-2"
                             IsHoverable="false">
                         <FmHeader>
                             <FmTypography Type="@Typography.LevelTwo"
@@ -202,15 +184,39 @@
                                           IconSize="1.5rem" />
                         </FmHeader>
                         <FmBody>
-                            <h2>@_container.Name</h2>
-                            <p>@((MarkupString)_containerPreview.Description)</p>
+                            <h2>@_container.Name </h2>
+
+                           
+
+                            @if (!string.IsNullOrEmpty(_containerPreview.Description))
+                            {
+                                <FmMarkdown Markup="@_containerPreview.Description" />
+                            }
                         </FmBody>
                     </FmCard>
+
+                    <FmSpacer />*@
+
+                    <FmCard Classes="p-2"
+                            IsHoverable="false">
+                        <FmHeader>
+                            <FmTypography Type="@Typography.LevelTwo"
+                                          Text="Form Validation"
+                                          TextAlign="left"
+                                          Icon="fa-solid fa-check"
+                                          IconSize="1.5rem" />
+                        </FmHeader>
+                        <FmBody>
+                            <DataAnnotationsValidator />
+                            <ValidationSummary />
+                        </FmBody>
+                    </FmCard>
+
                 </Child>
             </GridItem>
         </Items>
     </Grid>
-</section>
+</EditForm>
 
 <SfDialog Width="600px"
           @bind-Visible="IsVisibleModal"

@@ -15,9 +15,8 @@ public class IdentityService : BaseService
         IConfiguration configuration,
         AppStateService appState,
         ILogger<IdentityService> logger,
-        AppStateService appStateService,
         NavigationManager navigationManager) 
-        : base(httpClient, configuration, appStateService)
+        : base(httpClient, configuration, appState)
     {
         _appState = appState;
         _logger = logger;

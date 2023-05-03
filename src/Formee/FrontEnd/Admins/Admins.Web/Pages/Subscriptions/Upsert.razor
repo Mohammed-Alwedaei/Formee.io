@@ -185,6 +185,23 @@
 
         var authState = await authenticationState;
 
+        if (authState.User.Identity.IsAuthenticated)
+        {
+
+            const string typeName = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier";
+
+            var authId = authState.User
+                .Claims
+                .FirstOrDefault(c => c.Type == typeName)
+                ?.Value;
+
+            var accessToken = await HttpClient
+                .GetFromJsonAsync<string>($"/gateway/identity/users/{authId}");
+
+            HttpClient.DefaultRequestHeaders.Authorization = new
+                AuthenticationHeaderValue("Bearer", accessToken);
+        }
+
         if (Id is 0 && upsertType == "create")
         {
             _subscription = new SubscriptionDto();

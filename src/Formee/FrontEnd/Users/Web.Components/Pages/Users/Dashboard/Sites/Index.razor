@@ -13,40 +13,96 @@
 
 <FmSpacer />
 
+@if (AppState.Containers.ContainersCollection is not null &&
+     AppState.Containers.ContainersCollection.Any())
+{
+    <FmTab OnTabChange="HandleContainerChangeEvent">
+        <FmTabItems>
+            @foreach (var container in AppState.Containers.ContainersCollection)
+            {
+                <FmTabItem Id="@container.Id">
+                    <Header>
+                        <FmTypography Type="@Typography.LevelTwo"
+                              Icon="@container.Icon"
+                              Text="@container.Name"
+                              Classes="d-flex justify-content-center align-items-center" />
+                    </Header>
 
+                    <Body>
+                        <FmSpacer />
 
-<Grid Gap="@GridGap.Large">
-    <Items>
-        @foreach (var site in Sites)
-        {
-            <GridItem ColumnSize="@GridSize.GridItemMedium">
-                <Child>
-                    <FmCard>
-                        <FmBody>
-                            <h1>@site.Name</h1>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <FmTypography Text="Create new Site"
+                                  Type="@Typography.LevelTwo" />
 
-                            <FmLink Route="@(Routes.ViewSites + "?id=" + site.Id)" Text="view site" />
-                        </FmBody>
-                    </FmCard>
-                </Child>
-            </GridItem>
-        }
-
-        <GridItem ColumnSize="@GridSize.GridItemXLarge">
-            <Child>
-                <FmCard Classes="py-4 fm-card__border-dashed"
-                        IsHoverable="true" OnClick="NavigateToUpsertSite">
-                    <FmBody>
-                        <div class="d-flex align-items-center justify-content-center">
-                            <FmTypography Type="@Typography.LevelTwo"
-                                          Text="Create new Site"
-                                          TextAlign="center"
-                                          Icon="fa-solid fa-plus-circle"
-                                          IconSize="1.5rem" />
+                            <SfTooltip Position="Syncfusion.Blazor.Popups.Position.BottomCenter"
+                               Content="Refresh">
+                                <SfButton IconCss="fa-solid fa-plus">
+                                    New Site
+                                </SfButton>
+                            </SfTooltip>
                         </div>
-                    </FmBody>
-                </FmCard>
-            </Child>
-        </GridItem>
-    </Items>
-</Grid>
+
+                        <FmSpacer />
+
+                        <Grid>
+                            <Items>
+                                @foreach (var site in AppState.Analytics.Sites)
+                                {
+                                    <GridItem ColumnSize="@GridSize.GridItemMedium">
+                                        <Child>
+
+                                            <FmCard Classes="p-2">
+                                                <FmHeader>
+                                                    <div class="d-flex justify-content-between w-100">
+                                                        <div class="d-flex justify-content-start align-items-center">
+                                                            <FmTypography Type="@Typography.LevelTwo"
+                                                              Text="@site.Name"
+                                                              TextAlign="center"
+                                                              Icon="@site.Icon" />
+                                                        </div>
+
+                                                        <div>
+                                                            <SfButton IconCss="fa-solid fa-eye"
+                                                                      IconPosition="IconPosition.Right"
+                                                                      OnClick="() => HandleSiteClick(site.Id)">
+                                                                View
+                                                            </SfButton>
+                                                            <SfDropDownButton Content="Config"
+                                                                  IconCss="fa-solid fa-wrench">
+                                                                <DropDownButtonEvents ItemSelected="ItemSelected" />
+
+                                                                <DropDownMenuItems>
+                                                                    <DropDownMenuItem Text="Edit"
+                                                                          Id="@site.Id.ToString()"
+                                                                          IconCss="fa-solid fa-edit" />
+
+                                                                    <DropDownMenuItem Text="Delete"
+                                                                          Id="@site.Id.ToString()"
+                                                                          IconCss="fa-solid fa-trash" />
+                                                                </DropDownMenuItems>
+                                                            </SfDropDownButton>
+                                                        </div>
+                                                    </div>
+                                                </FmHeader>
+                                            </FmCard>
+                                        </Child>
+                                    </GridItem>
+                                }
+                            </Items>
+                        </Grid>
+                    </Body>
+                </FmTabItem>
+            }
+        </FmTabItems>
+    </FmTab>
+}
+else if (AppState.Containers.ContainersCollection is null &&
+         !AppState.Containers.IsFetching)
+{
+    <FmTypography Text="No Containers found" />
+}
+else
+{
+    <SfSpinner Visible="true" />
+}

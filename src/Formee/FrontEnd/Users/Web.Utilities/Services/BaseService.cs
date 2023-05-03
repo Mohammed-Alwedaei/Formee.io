@@ -8,17 +8,17 @@ public class BaseService
 {
     public IHttpClientFactory HttpClientFactory { get; set; }
     public IConfiguration Configuration { get; set; }
-    public AppStateService AppStateService { get; set; }
+    public AppStateService AppState { get; set; }
 
     private readonly HttpClient _httpClient;
 
     public BaseService(IHttpClientFactory httpClientFactory, 
         IConfiguration configuration,
-        AppStateService appStateService)
+        AppStateService appState)
     {
         HttpClientFactory = httpClientFactory;
         Configuration = configuration;
-        AppStateService = appStateService;
+        AppState = appState;
 
         _httpClient = HttpClientFactory.CreateClient("ServerApi");
 
@@ -34,7 +34,7 @@ public class BaseService
     public async Task<HttpClient> HttpClient()
     {
         var accessToken = 
-            await GetAccessTokenAsync(AppStateService.Identity.AuthId);
+            await GetAccessTokenAsync(AppState.Identity.AuthId);
 
         _httpClient.DefaultRequestHeaders.Authorization = new
             AuthenticationHeaderValue("Bearer", accessToken);

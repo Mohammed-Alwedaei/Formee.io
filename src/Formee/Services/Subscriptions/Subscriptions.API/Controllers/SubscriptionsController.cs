@@ -100,7 +100,7 @@ public class SubscriptionsController : ControllerBase
         var result = await _subscriptionRepository
             .CreateAsync(subscription);
 
-        return Ok(result);
+        return Created("/", result);
     }
 
     [HttpPut]
@@ -121,13 +121,12 @@ public class SubscriptionsController : ControllerBase
         return Ok(result);
     }
 
-    [AllowAnonymous]
     [HttpPut("users")]
     public async Task<IActionResult> UpsertUserSubscription
         (UpdateUserSubscriptionDto newUserSubscription)
     {
         _logger.LogInformation("PUT: request at /api/subscriptions/users at {datetime}",
-            
+
             DateTime.Now);
 
         var result = await _subscriptionRepository
